@@ -23,6 +23,7 @@
 
   .content-preview-container {
     position: relative;
+    user-select: none;
   }
 
   .content-preview-container span::after {
