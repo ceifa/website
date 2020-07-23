@@ -9,7 +9,7 @@ export default async () => {
 	let mdFiles = []
 
 	try {
-		mdFiles = await fs.readdir('./src/posts')
+		mdFiles = await fs.readdir('./posts')
 	} catch {
 		console.error('Failed to get posts')
 	}
@@ -17,7 +17,7 @@ export default async () => {
 	const posts = []
 
 	for (const mdFile of mdFiles) {
-		const content = await fs.readFile('./src/posts/' + mdFile, 'utf-8')
+		const content = await fs.readFile('./posts/' + mdFile, 'utf-8')
 		const metadataEnding = content.indexOf('}') + 1
 		const metadata = JSON.parse(content.substring(0, metadataEnding).trim())
 		const html = md.render(content.slice(metadataEnding))
