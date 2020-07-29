@@ -59,3 +59,7 @@
 <div class="content">
   {@html post.html}
 </div>
+
+<div>
+  <a href="/">&lt;- Voltar</a>
+</div>
