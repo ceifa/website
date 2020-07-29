@@ -17,6 +17,10 @@
     font-weight: bold;
   }
 
+  h1:hover {
+    color: #555;
+  }
+
   a {
     text-decoration: none;
   }
