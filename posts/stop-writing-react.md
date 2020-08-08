@@ -1,8 +1,7 @@
 {
     "title": "Pare de escrever React (carta de um svelter aflito)",
-    "written": "",
-    "description": "",
-    "hidden": true
+    "written": "2020-08-08",
+    "description": "React é bom, mas nem em todos os casos, vamos dar uma olhada no Svelte e seus comparativos"
 }
 
 Ahhh, o [React](https://pt-br.reactjs.org/), algumas pessoas dizem que é difícil de configurar, aprender, etc. mas eu não acho, para mim sempre foi muito simples, um `create-react-app` e você já tem um boilerplate pronto, agora só começar a escrever código JavaScript. Parece tudo funcionar tão bem, você escreve alguns "uses" e as coisas começam a ser reativas, a se comportarem da forma esperada, não poderia ser melhor.
@@ -15,7 +14,7 @@ Só para deixar claro de antemão, React é bom e tem boas aplicações, é bem 
 
 ### Tamanho do bundle
 
-No momento em que escrevo, de acordo com [esse gist](https://gist.github.com/Restuta/cda69e50a853aa64912d)(fácil de testar e reproduzir) React embarca em uma aplicação, com minificação e compressão GZip, obrigatóriamente, **31.8kB**. Já o svelte por si só, com minificação e compressão GZip, leva consigo um enorme valor de **0kB**. Isso porque svelte não é um framework ou uma biblioteca, **svelte é uma linguagem**, e ele não tem nenhum *runtime* ou algo do tipo, ele simplesmente compila seu código da forma que ele é.
+No momento em que escrevo, de acordo com [esse gist](https://gist.github.com/Restuta/cda69e50a853aa64912d)(fácil de testar e reproduzir) React embarca em uma aplicação, com minificação e compressão GZip, obrigatóriamente, **31.8kB**. Já o Svelte por si só, com minificação e compressão GZip, leva consigo um enorme valor de **0kB**. Isso porque Svelte não é um framework ou uma biblioteca, **Svelte é uma linguagem**, e ele não tem nenhum *runtime* ou algo do tipo, ele simplesmente compila seu código da forma que ele é.
 
 ### DOM vs DOM Virtual
 
@@ -29,7 +28,7 @@ O problema é, utilizando DOM Virtual não necessariamente resolve isso, pois el
 
 Não estou dizendo que o DOM Virtual é lento, os frameworks de hoje tem muitas otimizações para resolver isso. Mas e se nós simplesmente não precisássemos de um?
 
-Isso é exatamente o que svelte faz, diferente dos frameworks tradicionais, ele trabalha como um compilador e joga todo esse trabalho para o tempo de build, ao invés de resoluções em tempo de execução, deixando tudo bem mais simples para só fazer o necessário, utilizando o DOM real diretamente.
+Isso é exatamente o que Svelte faz, diferente dos frameworks tradicionais, ele trabalha como um compilador e joga todo esse trabalho para o tempo de build, ao invés de resoluções em tempo de execução, deixando tudo bem mais simples para só fazer o necessário, utilizando o DOM real diretamente.
 
 ## Código
 
@@ -137,10 +136,10 @@ Nesse caso ele está criando um novo array de elementos `li` e cada um com uma f
 
 ## Casos de uso
 
-**React vale a pena.** Apesar de optar por svelte em projetos pessoais(inclusive este blog), eu preferiria utilizar React em aplicações empresariais, isto porque react possui uma vasta comunidade engajada, com várias bibliotecas e ferramentas que ajudam no desenvolvimento e com certeza não seria deixada de lado tão facil, em vista também que é utilizado por várias empresas de nível astronômico.
+**React vale a pena.** Apesar de optar por Svelte em projetos pessoais(inclusive este blog), eu preferiria utilizar React em aplicações empresariais, isto porque react possui uma vasta comunidade engajada, com várias bibliotecas e ferramentas que ajudam no desenvolvimento, e com certeza não seria deixada de lado fácil, em vista que é utilizado por várias empresas de nível astronômico. Mas é preciso saber pesar caso a caso, se você possui um legado que já tem problemas de performance, colocar mais uma biblioteca pesada pode piorar as coisas, eu optaria por suportar micro-frontends e começar a passar partes criticas para o Svelte.
 
-Importante lembrar que o React por si só [nem é sobre paginas web](https://pt-br.reactjs.org/docs/react-dom.html), e sim sobre criação de interfaces. Eu com certeza optaria por utilizar React Native em casos de aplicativos mobile.
+Importante lembrar que o React por si só [nem é sobre paginas web](https://pt-br.reactjs.org/docs/react-dom.html), e sim sobre criação de interfaces. E em casos de aplicativos mobile eu com certeza optaria por utilizar React Native.
 
-O maior problema do React não é o React, e sim as pessoas que o desenvolvem, me irrito bastante com a *gangue do hook*, a falácia dos componentes puro e o [uso excessivo de gerenciadores de estado](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)(que algumas vezes só acabam trazendo mais complexidade). Mas isso talvez possa ser outra postagem.
+O maior problema do React não é o React, e sim as pessoas que o desenvolvem, me irrito bastante com a *gangue do hook*, a falácia dos componentes puros e o [uso excessivo de gerenciadores de estado](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)(que algumas vezes só acabam trazendo mais complexidade). Mas isso vou deixar para outra postagem.
 
 [DM aberta para xingamentos.](https://twitter.com/_ceifa)
