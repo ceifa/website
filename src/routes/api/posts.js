@@ -6,11 +6,14 @@ export async function get(req, res) {
 	})
 
 	let posts = await getPosts()
-	posts = posts.map(post => ({
-        title: post.title,
-        preview: post.preview,
-        slug: post.slug
-    }))
+	posts = posts
+		.filter(post => !post.hidden)
+		.map(post => ({
+			title: post.title,
+			preview: post.preview,
+			slug: post.slug
+		}))
+		.sort((a, b) => a.written > b.written)
 
 	res.end(JSON.stringify(posts))
 }
