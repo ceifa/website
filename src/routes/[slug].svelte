@@ -1,5 +1,5 @@
 <script context="module">
-  import "highlight.js/styles/vs2015.css"
+  import "highlight.js/styles/vs2015.css";
 
   export async function preload({ params, query }) {
     const res = await this.fetch(`api/${params.slug}.json`);

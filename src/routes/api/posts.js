@@ -7,8 +7,10 @@ export async function get(req, res) {
 
 	let posts = await getPosts()
 	posts = posts
-		.filter(post => !post.hidden)
-		.map(post => ({
+		.map(post => post.hidden ? ({
+			hidden: true,
+			slug: post.slug
+		}) : ({
 			title: post.title,
 			preview: post.preview,
 			slug: post.slug

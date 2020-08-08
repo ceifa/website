@@ -3,13 +3,13 @@
     return this.fetch("api/posts")
       .then(r => r.json())
       .then(posts => {
-        return { posts }
-      })
+        return { posts };
+      });
   }
 </script>
 
 <script>
-  export let posts
+  export let posts;
 </script>
 
 <style>
@@ -47,16 +47,21 @@
 </svelte:head>
 
 {#each posts as post}
-  <article>
-    <header>
-      <h1>
-        <a href={post.slug} rel="prefetch">{post.title}</a>
-      </h1>
-    </header>
-    <div class="content-preview-container">
-      <span>
-        {@html post.preview}
-      </span>
-    </div>
-  </article>
+  {#if post.hidden}
+    <!-- Lazy solution -->
+    <a href={post.slug} style="visibility: hidden; position: absolute;" />
+  {:else}
+    <article>
+      <header>
+        <h1>
+          <a href={post.slug} rel="prefetch">{post.title}</a>
+        </h1>
+      </header>
+      <div class="content-preview-container">
+        <span>
+          {@html post.preview}
+        </span>
+      </div>
+    </article>
+  {/if}
 {/each}
