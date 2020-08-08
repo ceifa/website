@@ -1,8 +1,16 @@
 const fs = require('fs').promises
-var md = require('markdown-it')({
+const hljs = require('highlight.js');
+const md = require('markdown-it')({
 	html: true,
 	linkify: true,
-	typographer: true
+	typographer: true,
+	highlight: function (str, lang) {
+		if (lang && hljs.getLanguage(lang)) {
+			return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+		}
+
+		return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>}`;
+	}
 })
 
 export default async () => {

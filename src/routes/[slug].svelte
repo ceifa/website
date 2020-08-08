@@ -1,20 +1,20 @@
 <script context="module">
+  import "highlight.js/styles/vs2015.css"
+
   export async function preload({ params, query }) {
-    const res = await this.fetch(
-      `api/${params.slug}.json`
-    )
-    const data = await res.json()
+    const res = await this.fetch(`api/${params.slug}.json`);
+    const data = await res.json();
 
     if (res.status === 200) {
-      return { post: data }
+      return { post: data };
     } else {
-      this.error(res.status, data.message)
+      this.error(res.status, data.message);
     }
   }
 </script>
 
 <script>
-  export let post
+  export let post;
 </script>
 
 <style>
@@ -27,19 +27,6 @@
     font-weight: 500;
   }
 
-  .content :global(pre) {
-    background-color: #f9f9f9;
-    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
-    padding: 0.5em;
-    border-radius: 2px;
-    overflow-x: auto;
-  }
-
-  .content :global(pre) :global(code) {
-    background-color: transparent;
-    padding: 0;
-  }
-
   .content :global(ul) {
     line-height: 1.5;
   }
@@ -47,11 +34,22 @@
   .content :global(li) {
     margin: 0 0 0.5em 0;
   }
+
+  .content :global(blockquote) {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 0;
+    padding: 0.5em 10px;
+  }
+
+  .content :global(blockquote p) {
+    display: inline;
+  }
 </style>
 
 <svelte:head>
   <title>{post.title}</title>
-  <meta name="description" content={post.description}>
+  <meta name="description" content={post.description} />
 </svelte:head>
 
 <h1>{post.title}</h1>

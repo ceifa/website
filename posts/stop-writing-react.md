@@ -64,9 +64,9 @@ Svelte já não é assim, apesar de focar em deixar as coisas o mais próximas d
 </script>
 
 <ul>
-	{#each todos as todo}
+    {#each todos as todo}
         <li>{todo}</li>
-	{/each}
+    {/each}
 </ul>
 ```
 
@@ -76,12 +76,12 @@ React depende que você utilize de algumas funções em sua API para que a reati
 
 ```html
 <script>
-	let counter = 0;
-	$: doubleCounter = counter * 2; // "$" significa que ele deve reagir às alterações das variáveis
+    let counter = 0;
+    $: doubleCounter = counter * 2; // "$" significa que ele deve reagir às alterações das variáveis
 </script>
 
 <button on:click={() => counter++}>
-	{counter} ~ {doubleCounter}
+    {counter} ~ {doubleCounter}
 </button>
 ```
 
@@ -98,17 +98,17 @@ function c() {
 
 // ...
 function instance($$self, $$props, $$invalidate) {
-	let counter = 0;
-	const click_handler = () => $$invalidate(0, counter++, counter); // Ao clicar no botão, incrementa ao counter e o invalida
-	let doubleCounter;
+    let counter = 0;
+    const click_handler = () => $$invalidate(0, counter++, counter); // Ao clicar no botão, incrementa ao counter e o invalida
+    let doubleCounter;
 
-	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*counter*/ 1) { // Se o counter foi modificado
-			$: $$invalidate(1, doubleCounter = counter * 2); // Troca o valor do doubleCounter e o invalida
-		}
-	};
+    $$self.$$.update = () => {
+        if ($$self.$$.dirty & 1) { // Se o counter foi modificado
+            $: $$invalidate(1, doubleCounter = counter * 2); // Troca o valor do doubleCounter e o invalida
+        }
+    };
 
-	return [counter, doubleCounter, click_handler];
+    return [counter, doubleCounter, click_handler];
 }
 
 ```
