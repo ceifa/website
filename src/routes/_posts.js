@@ -20,6 +20,11 @@ export default async () => {
 		const content = await fs.readFile('./posts/' + mdFile, 'utf-8')
 		const metadataEnding = content.indexOf('}') + 1
 		const metadata = JSON.parse(content.substring(0, metadataEnding).trim())
+		
+		if (metadata.hidden) {
+			continue;
+		}
+
 		const html = md.render(content.slice(metadataEnding))
 
 		posts.push({
