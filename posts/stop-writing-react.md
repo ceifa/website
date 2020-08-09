@@ -52,7 +52,7 @@ class TodoApp extends React.Component {
 }
 ```
 
-E para um desenvolvedor **JavaScript**(não necessariamente web designer) é muito claro o que está acontecendo, quando precisar da exibição do componente ele irá chamar o `render`, que em sua essência chamará fará o map dos `todos` transformando cada um em um novo elemento HTML. 
+E para um desenvolvedor **JavaScript**(não necessariamente web designer) é muito claro o que está acontecendo, quando precisar da exibição do componente ele irá chamar o `render`, que em sua essência fará o map dos `todos` transformando cada um em um novo elemento HTML. 
 
 
 Svelte já não é assim, apesar de focar em deixar as coisas o mais próximas do puro HTML, incluindo ter que especificar as tags `script` e `style`, o mesmo ainda tem o problema de ter o seu próprio *template engine*, que não necessariamente segue convenções do JavaScript:

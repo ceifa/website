@@ -17,7 +17,7 @@
     font-weight: bold;
   }
 
-  h1:hover {
+  a:hover h1 {
     color: #555;
   }
 
@@ -49,19 +49,21 @@
 {#each posts as post}
   {#if post.hidden}
     <!-- Lazy solution -->
-    <a href={post.slug} style="visibility: hidden; position: absolute;" />
+    <a href={post.slug} style="visibility: hidden; position: absolute;">
+      {post.slug}
+    </a>
   {:else}
     <article>
-      <header>
-        <h1>
-          <a href={post.slug} rel="prefetch">{post.title}</a>
-        </h1>
-      </header>
-      <div class="content-preview-container">
-        <span>
-          {@html post.preview}
-        </span>
-      </div>
+      <a href={post.slug} rel="prefetch">
+        <header>
+          <h1>{post.title}</h1>
+        </header>
+        <div class="content-preview-container">
+          <span>
+            {@html post.preview}
+          </span>
+        </div>
+      </a>
     </article>
   {/if}
 {/each}
