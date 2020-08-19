@@ -1,7 +1,6 @@
 {
     "title": "A onda do trap",
-    "written": "2020-07-23",
-    "description": "2020 é o ano do trap, todos querem ser trappers e querem ficar famosos com isso"
+    "written": "2020-07-23"
 }
 
 Assim como tivemos épocas em que as pessoas queriam ser astros do rock e jogadores de futebol, estamos vivendo uma em que as pessoas querem fazer trap. A quantidade de pessoas que conheço e estão fazendo isso saem das mãos, o padrão é obvio, se espelham no que gostam e vão atrás para tentar fazer o mesmo, gente da periferia, gente "rica" com emprego estável, não importa, uma hora ou outra eles vão te mandar a musica nova e que seu novo nome é lil X ou yung Y.

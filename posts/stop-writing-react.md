@@ -1,7 +1,7 @@
 {
     "title": "Pare de escrever React (carta de um svelter aflito)",
     "written": "2020-08-08",
-    "description": "React é bom, mas nem em todos os casos, vamos dar uma olhada no Svelte e seus comparativos"
+    "description": "React é bom, mas nem em todos os casos ele se aplica, vamos dar uma olhada no Svelte e seus comparativos"
 }
 
 Ahhh, o [React](https://pt-br.reactjs.org/), algumas pessoas dizem que é difícil de configurar, aprender, etc. mas eu não acho, para mim sempre foi muito simples, um `create-react-app` e você já tem um boilerplate pronto, agora só começar a escrever código JavaScript. Parece tudo funcionar tão bem, você escreve alguns "uses" e as coisas começam a ser reativas, a se comportarem da forma esperada, não poderia ser melhor.
