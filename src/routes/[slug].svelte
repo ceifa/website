@@ -52,6 +52,7 @@
 
   <meta name="description" content={post.description}>
   <meta name="twitter:description" content={post.description}>
+  <meta name="twitter:title" content={post.title}>
 </svelte:head>
 
 <h1>{post.title}</h1>
