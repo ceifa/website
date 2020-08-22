@@ -35,6 +35,10 @@
     margin: 0 0 0.5em 0;
   }
 
+  .content :global(p > code) {
+    background: #f9f9f9;
+  }
+
   .content :global(blockquote) {
     background: #f9f9f9;
     border-left: 10px solid #ccc;
