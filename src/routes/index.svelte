@@ -44,6 +44,7 @@
 
 <svelte:head>
   <title>Ceifa's Blog</title>
+  <meta name="description" content="Blog do ceifa só conteudo de qualidade">
 </svelte:head>
 
 {#each posts as post}
