@@ -6,7 +6,9 @@ export async function get(req, res) {
 	})
 
 	let posts = await getPosts()
+	console.log(posts.sort((a, b) => a.written.getTime() > b.written.getTime()).map(a => a.written))
 	posts = posts
+		.sort((a, b) => b.written - a.written)
 		.map(post => post.hidden ? ({
 			hidden: true,
 			slug: post.slug
@@ -15,7 +17,6 @@ export async function get(req, res) {
 			preview: post.preview,
 			slug: post.slug
 		}))
-		.sort((a, b) => a.written > b.written)
 
 	res.end(JSON.stringify(posts))
 }
