@@ -71,7 +71,7 @@ Svelte já não é assim, apesar de focar em deixar as coisas o mais próximas d
 
 ### React não é reativo
 
-React depende que você utilize de algumas funções em sua API para que a reatividade de fato aconteça(`this.setState()`, `useState()`, `useEffect()`), Svelte sendo uma linguagem não precisa fazer isso, ele por definição utiliza de declarações da linguagem como o [label](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label) para tratar a reatividade e embute tudo já no momento da compilação. Veja este [exemplo](https://svelte.dev/repl/3341b89218734139abe75ac1bc8aa530?version=3.24.1):
+React depende que você utilize de algumas funções em sua API para que a reatividade de fato aconteça(`this.setState()`, `useState()`, `useEffect()`), Svelte sendo uma linguagem não precisa fazer isso, ele por definição utiliza de declarações da linguagem como o [label](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/label) para tratar a reatividade e embute tudo já no momento da compilação. Veja este [exemplo](https://svelte.dev/repl/3341b89218734139abe75ac1bc8aa530?version=3.24.1):
 
 ```html
 <script>

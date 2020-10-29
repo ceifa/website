@@ -6,7 +6,6 @@ export async function get(req, res) {
 	})
 
 	let posts = await getPosts()
-	console.log(posts.sort((a, b) => a.written.getTime() > b.written.getTime()).map(a => a.written))
 	posts = posts
 		.sort((a, b) => b.written - a.written)
 		.map(post => post.hidden ? ({

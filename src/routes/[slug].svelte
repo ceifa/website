@@ -49,6 +49,10 @@
   .content :global(blockquote p) {
     display: inline;
   }
+
+  .content :global(details > summary) {
+    cursor: pointer;
+  }
 </style>
 
 <svelte:head>
