@@ -7,7 +7,7 @@ Recentemente eu aprendi sobre os efeitos colaterais do `setTimeout`, isso da pio
 
 ## Não use como eval
 
-Este caso é um pouco mais obvio, você provavelmente já sabe que usar [eval é também uma má pratica](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/eval#Don.27t_use_eval.21), a não ser que você esteja criando uma DRM é muito dificil encontrar um caso legítimo e que faça sentido o seu uso.
+Este caso é um pouco mais obvio, você provavelmente já sabe que usar eval é também uma má pratica, a não ser que você esteja criando uma DRM é muito dificil encontrar um caso legítimo e que faça sentido o seu uso.
 
 A questão que poucas pessoas sabem é que o `setTimeout` não aceita somente uma função como primeiro argumento, ele também aceita strings, e ela será executada no seu navegador com o mesmo comportamento do eval.
 
