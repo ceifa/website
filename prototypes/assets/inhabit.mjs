@@ -1,4 +1,5 @@
 import { SIZE, jump, drop, step } from "./walker.mjs";
+import { Companion } from "./companion.mjs";
 
 const resident = document.getElementById("resident");
 const whisper = document.getElementById("whisper");
@@ -6,6 +7,13 @@ const site = document.querySelector(".site");
 const actor = { x: 0, y: 0, vx: 0, vy: 0, ground: null };
 const keys = new Set();
 const found = new Set();
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const viewport = () => ({ top: scrollY, height: innerHeight });
+let companion = null,
+  autoTimer,
+  manualTimer,
+  manualUntil = 0,
+  behavior = "watching";
 const discoveries = [...document.querySelectorAll("[data-discovery]")];
 const horizontalKeys = {
   ArrowLeft: "left",
@@ -20,19 +28,25 @@ let floors = [],
   drag = null,
   frame = null;
 let lastTime = 0,
-  wanderUntil = 0,
   bubbleTimer,
   bubbleAnchor,
   inputAt = 0;
 
 function measure() {
   floors = [...document.querySelectorAll("[data-land]")].flatMap((el, i) => {
+    if (el.closest("details:not([open])") && !el.closest("summary")) return [];
     const font = parseFloat(getComputedStyle(el).fontSize);
     return [...el.getClientRects()]
       .filter((r) => r.width > 0 && r.height > 0)
       .map((r, j) => ({
         id: `land-${i}-${j}`,
         element: el,
+        interest:
+          el.closest("h1,h2,h3") || el.classList.contains("section-heading")
+            ? 2
+            : el.classList.contains("feature-project")
+              ? 1
+              : 0,
         left: r.left + scrollX,
         right: r.right + scrollX,
         y:
@@ -59,6 +73,7 @@ function measure() {
   wake();
 }
 function render() {
+  resident.dataset.behavior = drag ? "held" : active ? "playing" : behavior;
   resident.style.transform = `translate(${actor.x}px, ${actor.y}px)`;
   resident.classList.toggle(
     "walking",
@@ -93,10 +108,28 @@ function say(text, anchor = null, duration = 6000) {
     whisper.hidden = true;
   }, duration);
 }
-function select(value, hint = false) {
+function manualActivity() {
+  manualUntil = performance.now() + 6500;
+  clearTimeout(manualTimer);
+  clearTimeout(autoTimer);
+  manualTimer = setTimeout(() => {
+    if (drag) return;
+    active = false;
+    keys.clear();
+    resident.setAttribute("aria-pressed", "false");
+    companion?.reset();
+    wake();
+  }, 6500);
+}
+function select(value, hint = false, resume = false) {
   active = value;
   keys.clear();
-  wanderUntil = 0;
+  if (value) manualActivity();
+  if (resume) {
+    manualUntil = 0;
+    clearTimeout(manualTimer);
+    companion?.reset();
+  }
   resident.setAttribute("aria-pressed", String(active));
   if (active && hint)
     say(
@@ -122,15 +155,33 @@ function discover() {
 }
 function tick(now) {
   frame = null;
-  if (drag) return;
+  if (drag || document.hidden) return;
   const dt = lastTime ? Math.min(1 / 30, (now - lastTime) / 1000) : 1 / 60;
   lastTime = now;
+  const autonomous =
+    !active && now >= manualUntil && !reducedMotion.matches && companion;
+  const command = autonomous
+    ? companion.decide(actor, floors, viewport(), now)
+    : { mode: now < manualUntil ? "waiting" : "watching", direction: 0 };
+  behavior = command.mode;
+  if (command.reenter) {
+    actor.x = Math.max(
+      4,
+      Math.min(bounds.width - SIZE.width - 4, command.reenter.x),
+    );
+    actor.y = command.reenter.y;
+    actor.vx = 0;
+    actor.vy = 100;
+    actor.ground = null;
+  }
+  if (command.jump) jump(actor);
+  if (command.drop) drop(actor);
   const direction = active
     ? Number(keys.has("right")) - Number(keys.has("left"))
-    : now < wanderUntil
-      ? 0.35
-      : 0;
+    : command.direction;
+  const wasAirborne = actor.ground === null;
   step(actor, floors, bounds, dt, direction);
+  const landed = autonomous && wasAirborne && actor.ground !== null;
   render();
   discover();
   if (active && now - inputAt < 1800) {
@@ -143,8 +194,18 @@ function tick(now) {
           : 0;
     if (delta) window.scrollBy({ top: delta * 0.18, behavior: "instant" });
   }
-  if (direction || actor.ground === null || Math.abs(actor.vx) > 0.2)
+  if (
+    direction ||
+    landed ||
+    command.needsFrame ||
+    actor.ground === null ||
+    Math.abs(actor.vx) > 0.2
+  )
     frame = requestAnimationFrame(tick);
+  else if (command.wakeAt) {
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(wake, Math.max(0, command.wakeAt - now));
+  }
 }
 function wake() {
   if (frame === null && !drag && bounds) {
@@ -155,6 +216,7 @@ function wake() {
 resident.addEventListener("pointerdown", (e) => {
   if (!e.isPrimary || (e.pointerType === "mouse" && e.button !== 0)) return;
   select(false);
+  manualActivity();
   drag = {
     startX: e.pageX,
     startY: e.pageY,
@@ -170,6 +232,7 @@ resident.addEventListener("pointermove", (e) => {
   if (Math.hypot(e.pageX - drag.startX, e.pageY - drag.startY) > 4)
     drag.moved = true;
   if (!drag.moved) return;
+  manualActivity();
   actor.x = Math.max(
     4,
     Math.min(bounds.width - SIZE.width - 4, e.pageX - drag.offsetX),
@@ -204,7 +267,7 @@ resident.addEventListener("click", (e) => {
 });
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    select(false);
+    select(false, false, true);
     whisper.hidden = true;
     return;
   }
@@ -219,18 +282,21 @@ window.addEventListener("keydown", (e) => {
     e.preventDefault();
     keys.add(direction);
     inputAt = performance.now();
+    manualActivity();
     wake();
   }
   if (["ArrowDown", "s"].includes(e.key)) {
     e.preventDefault();
     if (!e.repeat) drop(actor);
     inputAt = performance.now();
+    manualActivity();
     wake();
   }
   if ([" ", "ArrowUp", "w"].includes(e.key)) {
     e.preventDefault();
     if (!e.repeat) jump(actor);
     inputAt = performance.now();
+    manualActivity();
     wake();
   }
 });
@@ -244,13 +310,14 @@ window.addEventListener("keyup", (e) => {
 window.addEventListener("blur", () => select(false));
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) select(false);
+  else wake();
 });
 document.addEventListener("focusin", (e) => {
   if (active && e.target !== resident) select(false);
 });
 document.querySelectorAll("a,summary").forEach((el) =>
   el.addEventListener("click", () => {
-    select(false);
+    select(false, false, true);
     whisper.hidden = true;
   }),
 );
@@ -261,6 +328,8 @@ window.addEventListener(
   "scroll",
   () => {
     if (!whisper.hidden) positionBubble();
+    companion?.scrolled(performance.now());
+    wake();
   },
   { passive: true },
 );
@@ -277,15 +346,21 @@ actor.ground = perch.id;
 resident.hidden = false;
 render();
 new ResizeObserver(measure).observe(site);
-if (!matchMedia("(prefers-reduced-motion: reduce)").matches)
-  setTimeout(() => {
-    if (
-      !active &&
-      !drag &&
-      actor.ground === perch.id &&
-      Math.abs(actor.y - scrollY) < innerHeight
-    ) {
-      wanderUntil = performance.now() + 450;
-      wake();
-    }
-  }, 1800);
+const firstHop =
+  floors
+    .filter((floor) => floor.element?.closest("h1") && floor.y < perch.y - 10)
+    .sort((a, b) => b.y - a.y)[0] || perch;
+companion = new Companion(
+  {
+    id: firstHop.id,
+    x: firstHop.left + (firstHop.right - firstHop.left) * 0.72,
+  },
+  viewport(),
+  performance.now(),
+);
+reducedMotion.addEventListener("change", () => {
+  clearTimeout(autoTimer);
+  companion.reset();
+  wake();
+});
+wake();

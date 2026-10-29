@@ -1,11 +1,12 @@
 export const SIZE = { width: 26, height: 30 };
+export const MOTION = { speed: 220, jump: 690, gravity: 1500 };
 const overlaps = (actor, floor) =>
   actor.x + SIZE.width > floor.left + 2 && actor.x < floor.right - 2;
 
 export function jump(actor) {
   if (actor.ground === null) return false;
   actor.ground = null;
-  actor.vy = -690;
+  actor.vy = -MOTION.jump;
   return true;
 }
 
@@ -18,7 +19,7 @@ export function drop(actor) {
 }
 
 export function step(actor, floors, bounds, dt, direction) {
-  actor.vx += (direction * 220 - actor.vx) * Math.min(1, dt * 16);
+  actor.vx += (direction * MOTION.speed - actor.vx) * Math.min(1, dt * 16);
   if (Math.abs(actor.vx) < 0.2) actor.vx = 0;
   actor.x = Math.max(
     4,
@@ -34,7 +35,7 @@ export function step(actor, floors, bounds, dt, direction) {
     actor.ground = null;
   }
   const previousBottom = actor.y + SIZE.height;
-  actor.vy = Math.min(950, actor.vy + 1500 * dt);
+  actor.vy = Math.min(950, actor.vy + MOTION.gravity * dt);
   actor.y += actor.vy * dt;
   if (actor.vy >= 0) {
     const landed = floors
