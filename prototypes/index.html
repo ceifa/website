@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Cinco direções."
+    />
+    <title>Cinco direções · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f5f7fa;
+        --ink: #1c2c3a;
+        --muted: #5b6c7a;
+        --border: #d5dfe7;
+        --accent: #2346dc;
+        --focus: #c45719;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .gallery-shell {
+        max-width: 1420px;
+        padding: 32px 5vw 80px;
+        margin: auto;
+      }
+      .gallery-mast {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        font: 11px Code;
+      }
+      .gallery-mast strong {
+        font: 700 17px Atlas;
+        letter-spacing: -0.5px;
+      }
+      .gallery-mast span {
+        color: var(--muted);
+      }
+      .gallery-hero {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 80px;
+        padding: 70px 0 55px;
+        align-items: end;
+      }
+      .gallery-hero h1 {
+        font: clamp(48px, 5.7vw, 80px) / 1.02 Book;
+        letter-spacing: -0.055em;
+      }
+      .gallery-hero h1 em {
+        font-family: Page;
+        font-weight: 400;
+        color: var(--accent);
+      }
+      .gallery-hero p {
+        font: 15px/1.75 Atlas;
+        color: var(--muted);
+        max-width: 38ch;
+      }
+      .gallery-hero p b {
+        color: var(--ink);
+        font-weight: 400;
+      }
+      .gallery-guide {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        padding: 18px 0 32px;
+        font: 11px/1.7 Code;
+        color: var(--muted);
+      }
+      .gallery-guide p {
+        max-width: 470px;
+      }
+      .concept-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 62px 32px;
+      }
+      .concept-image {
+        display: block;
+        position: relative;
+        overflow: hidden;
+        background: #e3e9f0;
+        aspect-ratio: 1.44;
+        outline-offset: 5px;
+      }
+      .concept-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+      }
+      .concept-image:hover img {
+        transform: scale(1.025);
+      }
+      .image-open {
+        position: absolute;
+        bottom: 18px;
+        right: 18px;
+        padding: 10px 15px;
+        background: #fff;
+        color: #243641;
+        font: 11px Code;
+        box-shadow: 0 2px 8px #10283920;
+      }
+      .concept-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 24px;
+        font: 9px/1.5 Code;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+      .concept h2 {
+        font: 42px/1.05 Book;
+        letter-spacing: -1.8px;
+        margin-top: 13px;
+      }
+      .concept h2 span {
+        display: block;
+        font: 16px Atlas;
+        letter-spacing: 0;
+        margin-top: 8px;
+      }
+      .concept-desc {
+        font: 15px/1.65 Atlas;
+        max-width: 51ch;
+        margin-top: 17px;
+        color: var(--muted);
+      }
+      .concept-try {
+        font: 11px/1.65 Code;
+        color: var(--muted);
+        margin-top: 13px;
+      }
+      .concept-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        margin-top: 24px;
+      }
+      .concept-actions a {
+        font: 12px Atlas;
+        font-weight: 700;
+        text-underline-offset: 5px;
+      }
+      .concept-actions label {
+        font: 11px Code;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+        min-height: 40px;
+      }
+      .concept-actions input {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #788b9a;
+        border-radius: 3px;
+        background: #fff;
+        display: grid;
+        place-content: center;
+        margin: 0;
+      }
+      .concept-actions input:checked {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .concept-actions input:checked:before {
+        content: "✓";
+        color: #fff;
+        font-size: 12px;
+      }
+      .concept:last-child {
+        grid-column: span 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 32px;
+        align-items: start;
+      }
+      .concept:last-child .concept-image {
+        grid-row: span 6;
+      }
+      .concept:last-child .concept-top {
+        margin-top: 14px;
+      }
+      .concept:last-child .concept-desc {
+        margin-top: 20px;
+      }
+      .gallery-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 60px;
+        margin-top: 75px;
+        padding-top: 30px;
+        border-top: 1px solid var(--border);
+      }
+      .gallery-bottom h2 {
+        font: 29px/1.2 Page;
+        max-width: 350px;
+      }
+      .gallery-bottom p {
+        font: 12px/1.8 Atlas;
+        max-width: 400px;
+        color: var(--muted);
+      }
+      .compare-tray {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        background: var(--ink);
+        color: white;
+        padding: 15px 18px 15px 25px;
+        box-shadow: 0 10px 35px #1c2c3a40;
+        border-radius: 6px;
+        z-index: 20;
+        width: max-content;
+        max-width: calc(100% - 30px);
+        font: 12px Atlas;
+      }
+      .compare-tray a {
+        background: #e6edff;
+        color: #14319c;
+        padding: 12px 17px;
+        border-radius: 3px;
+        font: 11px Code;
+        text-decoration: none;
+      }
+      .compare-tray a[aria-disabled="true"] {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .selection-warning {
+        font: 11px Code;
+        color: var(--muted);
+        min-height: 18px;
+      }
+      .footer-note {
+        font: 10px/1.7 Code;
+        color: var(--muted);
+        margin-top: 32px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #121f2b;
+          --ink: #e3ecf4;
+          --muted: #a7b6c4;
+          --border: #344757;
+          --accent: #b1c4ff;
+        }
+        .image-open {
+          background: #e6edff;
+        }
+        .compare-tray {
+          background: #dce7f5;
+          color: #172b3a;
+        }
+        .concept-actions input {
+          background: #172b3a;
+        }
+        .concept-actions input:checked {
+          background: #2346dc;
+        }
+        .concept-image {
+          background: #243645;
+        }
+      }
+      :root[data-theme="light"] {
+        --paper: #f5f7fa;
+        --ink: #1c2c3a;
+        --muted: #5b6c7a;
+        --border: #d5dfe7;
+        --accent: #2346dc;
+      }
+      :root[data-theme="dark"] {
+        --paper: #121f2b;
+        --ink: #e3ecf4;
+        --muted: #a7b6c4;
+        --border: #344757;
+        --accent: #b1c4ff;
+      }
+      @media (max-width: 700px) {
+        .gallery-shell {
+          padding: 25px 6vw 100px;
+        }
+        .gallery-mast {
+          font-size: 9px;
+        }
+        .gallery-hero {
+          grid-template-columns: 1fr;
+          gap: 28px;
+          padding: 45px 0 28px;
+        }
+        .gallery-hero h1 {
+          font-size: 49px;
+        }
+        .gallery-hero p {
+          font-size: 14px;
+          max-width: 100%;
+        }
+        .gallery-guide {
+          font-size: 10px;
+          display: block;
+        }
+        .gallery-guide p {
+          margin-bottom: 14px;
+        }
+        .concept-grid {
+          grid-template-columns: 1fr;
+          gap: 43px;
+        }
+        .concept:last-child {
+          grid-column: auto;
+          display: block;
+        }
+        .concept:last-child .concept-top {
+          margin-top: 24px;
+        }
+        .concept h2 {
+          font-size: 36px;
+        }
+        .concept-desc {
+          font-size: 14px;
+        }
+        .concept-top {
+          font-size: 8px;
+        }
+        .concept-actions {
+          margin-top: 15px;
+        }
+        .gallery-bottom {
+          display: block;
+          margin-top: 50px;
+        }
+        .gallery-bottom p {
+          margin-top: 25px;
+        }
+        .compare-tray {
+          bottom: 12px;
+          padding: 12px;
+          gap: 15px;
+          font-size: 11px;
+        }
+        .compare-tray a {
+          padding: 10px;
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="">
+    <div class="gallery-shell">
+      <header class="gallery-mast">
+        <strong>ceifa / possibilidades</strong
+        ><span>EXPLORAÇÕES DO SITE PESSOAL</span>
+      </header>
+      <main>
+        <section class="gallery-hero">
+          <h1>Cinco formas de<br />estar na <em>internet.</em></h1>
+          <p>
+            O mesmo universo, com cinco jeitos de entrar.<br /><b
+              >Abra, clique e veja em qual deles você gostaria de morar.</b
+            >
+          </p>
+        </section>
+        <div class="gallery-guide">
+          <p>
+            Não são só paletas diferentes. Cada direção muda a forma de
+            organizar e explorar o conteúdo.
+          </p>
+          <p>
+            Marque duas para comparar lado a lado.<br />No celular, a comparação
+            fica em sequência.
+          </p>
+        </div>
+        <div class="concept-grid">
+          <article class="concept" id="editorial">
+            <a
+              class="concept-image cobalt"
+              href="editorial.html"
+              aria-label="Explorar Margem"
+              ><img
+                src="assets/editorial-preview.webp"
+                width="1440"
+                height="1000"
+                alt="Prévia do protótipo Margem"
+              /><span class="image-open">Explorar ↗</span></a
+            >
+            <div class="concept-top">
+              <span class="concept-lens">LEITURA + PERSONALIDADE</span
+              ><span class="concept-id">DIREÇÃO 1</span>
+            </div>
+            <h2>Margem<span>Uma revista pessoal.</span></h2>
+            <p class="concept-desc">
+              Tipografia grande, assuntos em primeiro plano e uma home que faz
+              escolhas.
+            </p>
+            <p class="concept-try">Filtre por assunto e abra os textos.</p>
+            <div class="concept-actions">
+              <a href="editorial.html">Abrir protótipo ↗</a
+              ><label
+                ><input
+                  type="checkbox"
+                  value="editorial"
+                  class="compare-check"
+                />
+                Comparar</label
+              >
+            </div>
+          </article>
+          <article class="concept" id="desktop">
+            <a
+              class="concept-image plum"
+              href="desktop.html"
+              aria-label="Explorar Mesa"
+              ><img
+                src="assets/desktop-preview.webp"
+                width="1440"
+                height="1000"
+                alt="Prévia do protótipo Mesa"
+              /><span class="image-open">Explorar ↗</span></a
+            >
+            <div class="concept-top">
+              <span class="concept-lens">EXPLORAÇÃO + BRINCADEIRA</span
+              ><span class="concept-id">DIREÇÃO 2</span>
+            </div>
+            <h2>Mesa<span>Pode abrir as pastas.</span></h2>
+            <p class="concept-desc">
+              Um desktop pessoal com janelas para textos, projetos e coisas
+              guardadas.
+            </p>
+            <p class="concept-try">
+              Abra pastas, mova janelas e alterne pelo dock.
+            </p>
+            <div class="concept-actions">
+              <a href="desktop.html">Abrir protótipo ↗</a
+              ><label
+                ><input type="checkbox" value="desktop" class="compare-check" />
+                Comparar</label
+              >
+            </div>
+          </article>
+          <article class="concept" id="notebook">
+            <a
+              class="concept-image blue"
+              href="notebook.html"
+              aria-label="Explorar Caderno"
+              ><img
+                src="assets/notebook-preview.webp"
+                width="1440"
+                height="1000"
+                alt="Prévia do protótipo Caderno"
+                loading="lazy"
+              /><span class="image-open">Explorar ↗</span></a
+            >
+            <div class="concept-top">
+              <span class="concept-lens">VIDA PESSOAL + REPERTÓRIO</span
+              ><span class="concept-id">DIREÇÃO 3</span>
+            </div>
+            <h2>Caderno<span>Anotações à vista.</span></h2>
+            <p class="concept-desc">
+              Um caderno visual que mistura código, recortes e espaço para
+              histórias.
+            </p>
+            <p class="concept-try">Explore as folhas e use o índice.</p>
+            <div class="concept-actions">
+              <a href="notebook.html">Abrir protótipo ↗</a
+              ><label
+                ><input
+                  type="checkbox"
+                  value="notebook"
+                  class="compare-check"
+                />
+                Comparar</label
+              >
+            </div>
+          </article>
+          <article class="concept" id="map">
+            <a
+              class="concept-image navy"
+              href="map.html"
+              aria-label="Explorar Afinidades"
+              ><img
+                src="assets/map-preview.webp"
+                width="1440"
+                height="1000"
+                alt="Prévia do protótipo Afinidades"
+                loading="lazy"
+              /><span class="image-open">Explorar ↗</span></a
+            >
+            <div class="concept-top">
+              <span class="concept-lens">DESCOBERTA + CONEXÕES</span
+              ><span class="concept-id">DIREÇÃO 4</span>
+            </div>
+            <h2>Afinidades<span>Entre por um assunto.</span></h2>
+            <p class="concept-desc">
+              Um mapa de conexões entre jogos, programação, música e o que você
+              constrói.
+            </p>
+            <p class="concept-try">
+              Selecione os assuntos ou troque para a lista.
+            </p>
+            <div class="concept-actions">
+              <a href="map.html">Abrir protótipo ↗</a
+              ><label
+                ><input type="checkbox" value="map" class="compare-check" />
+                Comparar</label
+              >
+            </div>
+          </article>
+          <article class="concept" id="indexer">
+            <a
+              class="concept-image pink"
+              href="indexer.html"
+              aria-label="Explorar Índice"
+              ><img
+                src="assets/indexer-preview.webp"
+                width="1440"
+                height="1000"
+                alt="Prévia do protótipo Índice"
+                loading="lazy"
+              /><span class="image-open">Explorar ↗</span></a
+            >
+            <div class="concept-top">
+              <span class="concept-lens">CONTEÚDO + ATITUDE</span
+              ><span class="concept-id">DIREÇÃO 5</span>
+            </div>
+            <h2>Índice<span>Tudo na mesma lista.</span></h2>
+            <p class="concept-desc">
+              Um arquivo tipográfico direto, com busca e zero obrigação de
+              seguir uma ordem.
+            </p>
+            <p class="concept-try">Busque, filtre e peça uma surpresa.</p>
+            <div class="concept-actions">
+              <a href="indexer.html">Abrir protótipo ↗</a
+              ><label
+                ><input type="checkbox" value="indexer" class="compare-check" />
+                Comparar</label
+              >
+            </div>
+          </article>
+        </div>
+        <section class="gallery-bottom">
+          <h2>A melhor versão pode estar no encontro de duas ideias.</h2>
+          <p>
+            Escolha pela sensação, pela navegação ou pelo que dá vontade de
+            publicar. O escopo vem depois dessa escolha, não precisa caber
+            inteiro em cada protótipo.
+          </p>
+        </section>
+        <p class="footer-note">
+          Textos e projetos vêm do arquivo real. Áreas pessoais, favoritos e
+          laboratório são propostas identificadas como demonstração. As
+          paisagens são ilustrações, não fotos pessoais.
+        </p>
+        <p class="footer-note">
+          Links privados do Agent Host podem expirar após 15 dias sem visitas no
+          plano gratuito.
+        </p>
+      </main>
+      <p
+        class="selection-warning"
+        id="selection-warning"
+        aria-live="polite"
+      ></p>
+    </div>
+    <aside class="compare-tray" hidden aria-label="Comparação selecionada">
+      <span id="selected-names" aria-live="polite"
+        >Selecione mais uma direção</span
+      ><a href="compare.html" id="compare-link" aria-disabled="true"
+        >Comparar →</a
+      >
+    </aside>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script>
+      const names = {
+          editorial: "Margem",
+          desktop: "Mesa",
+          notebook: "Caderno",
+          map: "Afinidades",
+          indexer: "Índice",
+        },
+        checks = [...document.querySelectorAll(".compare-check")];
+      let selected = [];
+      try {
+        selected = JSON.parse(sessionStorage.getItem("ceifa-compare") || "[]")
+          .filter((s) => names[s])
+          .slice(0, 2);
+      } catch {}
+      checks.forEach((c) => (c.checked = selected.includes(c.value)));
+      function update() {
+        const tray = document.querySelector(".compare-tray"),
+          link = document.getElementById("compare-link");
+        tray.hidden = !selected.length;
+        document.getElementById("selected-names").textContent =
+          selected.length === 2
+            ? selected.map((s) => names[s]).join(" + ")
+            : names[selected[0]] + " + escolha outra";
+        link.setAttribute("aria-disabled", selected.length !== 2);
+        link.href =
+          "compare.html?a=" + selected[0] + "&b=" + (selected[1] || "desktop");
+        try {
+          sessionStorage.setItem("ceifa-compare", JSON.stringify(selected));
+        } catch {}
+      }
+      checks.forEach(
+        (c) =>
+          (c.onchange = () => {
+            if (c.checked && selected.length === 2) {
+              c.checked = false;
+              document.getElementById("selection-warning").textContent =
+                "Desmarque uma direção antes de escolher outra.";
+              return;
+            }
+            selected = checks.filter((c) => c.checked).map((c) => c.value);
+            document.getElementById("selection-warning").textContent = "";
+            update();
+          }),
+      );
+      update();
+    </script>
+  </body>
+</html>

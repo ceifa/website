@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Margem."
+    />
+    <title>Margem · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #fff;
+        --ink: #143ce5;
+        --pale: #e8edff;
+        --text: #182544;
+        --focus: #ed6936;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .mast {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 28px 4vw;
+        font: 12px Code;
+      }
+      .mast button {
+        border: 0;
+        background: none;
+        color: var(--ink);
+        padding: 10px;
+      }
+      .mast-name {
+        font-weight: 700;
+      }
+      .wordmark {
+        font:
+          700 clamp(128px, 24.5vw, 390px) / 0.75 Narrow,
+          sans-serif;
+        letter-spacing: -0.055em;
+        padding: 20px 3vw 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      .wordmark span:last-child {
+        font-family: Page;
+        line-height: 0.65;
+        font-weight: 400;
+      }
+      .intro {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 60px;
+        padding: 50px 4vw 35px;
+      }
+      .intro p {
+        font: clamp(22px, 2.5vw, 38px) / 1.14 Page;
+        max-width: 26ch;
+      }
+      .intro aside {
+        font: 14px/1.65 Atlas;
+        max-width: 37ch;
+        justify-self: end;
+        color: var(--text);
+        align-self: end;
+      }
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 4vw 27px;
+      }
+      .filters button {
+        border: 1px solid #aab9f4;
+        border-radius: 30px;
+        padding: 10px 20px;
+        background: transparent;
+        color: var(--ink);
+        font-size: 13px;
+      }
+      .filters button[aria-pressed="true"] {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+      .spread {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 35px;
+        padding: 0 4vw 65px;
+      }
+      .piece {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        border: 0;
+        padding: 30px;
+        background: var(--pale);
+        color: var(--ink);
+        min-height: 260px;
+        transition: transform 0.2s;
+      }
+      .piece:hover {
+        transform: translateY(-4px);
+      }
+      .piece .meta {
+        font: 11px Code;
+        letter-spacing: 0.05em;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+      }
+      .piece h2 {
+        font: 700 clamp(40px, 5.2vw, 78px) / 0.98 Narrow;
+        letter-spacing: -0.03em;
+        margin: 35px 0 20px;
+        text-transform: uppercase;
+      }
+      .piece p {
+        font: 15px/1.5 Atlas;
+        max-width: 37ch;
+      }
+      .piece .arrow {
+        font: 45px Atlas;
+        align-self: flex-end;
+        margin-top: auto;
+      }
+      .piece.lead {
+        background: var(--ink);
+        color: white;
+        grid-row: span 2;
+        justify-content: space-between;
+        min-height: 590px;
+      }
+      .piece.lead h2 {
+        font-size: clamp(65px, 8.5vw, 132px);
+        margin: 45px 0;
+      }
+      .piece.music {
+        background: #e5f6ef;
+        color: #135f53;
+      }
+      .piece.personal {
+        background: #ffd8cb;
+        color: #702d19;
+      }
+      .endline {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 24px 4vw 45px;
+        color: var(--text);
+        font: 12px Code;
+      }
+      .endline button {
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-decoration: underline;
+      }
+      .demo {
+        padding: 0 4vw 30px;
+      }
+      .empty {
+        padding: 30px 4vw;
+      }
+      .piece.project {
+        background: #d7e3ff;
+      }
+      .count {
+        padding: 0 4vw 16px;
+        font: 11px Code;
+      }
+      @media (max-width: 650px) {
+        .mast {
+          padding: 22px 5vw;
+        }
+        .mast-name span {
+          display: none;
+        }
+        .wordmark {
+          font-size: 26vw;
+          padding-top: 15px;
+        }
+        .intro {
+          grid-template-columns: 1fr;
+          gap: 24px;
+          padding: 32px 5vw;
+        }
+        .intro p {
+          font-size: 29px;
+        }
+        .intro aside {
+          justify-self: start;
+          font-size: 13px;
+        }
+        .filters {
+          padding-left: 5vw;
+          gap: 6px;
+        }
+        .filters button {
+          padding: 9px 13px;
+          font-size: 12px;
+        }
+        .spread {
+          grid-template-columns: 1fr;
+          gap: 15px;
+          padding: 0 5vw 35px;
+        }
+        .piece {
+          padding: 25px;
+          min-height: 235px;
+        }
+        .piece.lead {
+          grid-row: auto;
+          min-height: 430px;
+        }
+        .piece.lead h2 {
+          font-size: 74px;
+        }
+        .piece h2 {
+          font-size: 49px;
+        }
+        .endline {
+          font-size: 10px;
+        }
+        .count {
+          padding-left: 5vw;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="editorial">
+    <header class="mast">
+      <a class="mast-name" href="editorial.html"
+        >GABRIEL FRANCISCO <span>/ CEIFA</span></a
+      ><button data-open="about">Sobre +</button>
+    </header>
+    <main>
+      <h1 class="wordmark" aria-label="ceifa">
+        <span>CEIFA</span><span>*</span>
+      </h1>
+      <section class="intro">
+        <p>Código, cultura e outras coisas que ficam na cabeça.</p>
+        <aside>
+          Um arquivo pessoal em construção.<br />Projetos que saem do papel.
+          Ideias que ainda não.
+        </aside>
+      </section>
+      <nav class="filters" aria-label="Filtrar por assunto">
+        <button aria-pressed="true" data-filter="all">Tudo junto</button
+        ><button aria-pressed="false" data-filter="code">Código</button
+        ><button aria-pressed="false" data-filter="culture">Cultura</button
+        ><button aria-pressed="false" data-filter="projects">Projetos</button
+        ><button aria-pressed="false" data-filter="life">Fora da tela</button>
+      </nav>
+      <p class="count" aria-live="polite">5 entradas selecionadas</p>
+      <section class="spread" aria-label="Conteúdos">
+        <button class="piece lead" data-topic="code" data-open="garry">
+          <span class="meta">JOGOS / PROGRAMAÇÃO <span>2020 ↗</span></span>
+          <h2>Aprendi<br />com<br />o Garry.</h2>
+          <p>
+            Ensinamentos do Garry sobre programação. Um jogo, uma comunidade e
+            um monte de coisas para construir.
+          </p>
+          <span class="arrow" aria-hidden="true">↗</span></button
+        ><button class="piece music" data-topic="culture" data-open="trap">
+          <span class="meta">MÚSICA <span>2020 ↗</span></span>
+          <h2>A onda<br />do trap.</h2>
+          <p>
+            Originalidade, referências e vontade de fazer o próprio som.
+          </p></button
+        ><button class="piece project" data-topic="projects" data-open="eleven">
+          <span class="meta">PROJETO <span>CÓDIGO ABERTO ↗</span></span>
+          <h2>Eleven.</h2>
+          <p>pi from anywhere.</p></button
+        ><button class="piece" data-topic="code" data-open="react">
+          <span class="meta">DO ARQUIVO <span>2020 ↗</span></span>
+          <h2>Pare de<br />escrever React.</h2>
+          <p>Carta de um svelter aflito.</p></button
+        ><button class="piece personal" data-topic="life" data-open="personal">
+          <span class="meta">SEÇÃO PROPOSTA <span>DEMONSTRAÇÃO ↗</span></span>
+          <h2>O resto<br />também conta.</h2>
+          <p>Viagens, fotos, pequenas histórias e coisas sem categoria.</p>
+        </button>
+      </section>
+      <p class="proto-note demo">
+        Textos e projetos reais. A seção pessoal é demonstrativa.
+      </p>
+    </main>
+    <footer class="endline">
+      <span>UM SITE PESSOAL, SEM ROTEIRO FIXO.</span
+      ><button data-open="now">O que cabe no “agora”? ↗</button>
+    </footer>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script src="assets/content.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+      const filters = [...document.querySelectorAll("[data-filter]")];
+      function filter(topic) {
+        if (!filters.some((b) => b.dataset.filter === topic)) topic = "all";
+        filters.forEach((b) =>
+          b.setAttribute("aria-pressed", b.dataset.filter === topic),
+        );
+        let n = 0;
+        document.querySelectorAll("[data-topic]").forEach((p) => {
+          p.hidden = topic !== "all" && p.dataset.topic !== topic;
+          if (!p.hidden) n++;
+        });
+        document.querySelector(".count").textContent =
+          n +
+          " entrada" +
+          (n === 1 ? "" : "s") +
+          " selecionada" +
+          (n === 1 ? "" : "s");
+      }
+      filters.forEach(
+        (b) =>
+          (b.onclick = () => {
+            history.pushState(
+              {},
+              "",
+              b.dataset.filter === "all"
+                ? location.pathname
+                : "#" + b.dataset.filter,
+            );
+            filter(b.dataset.filter);
+          }),
+      );
+      window.addEventListener("popstate", () =>
+        filter(location.hash.slice(1) || "all"),
+      );
+      filter(location.hash.slice(1) || "all");
+    </script>
+  </body>
+</html>

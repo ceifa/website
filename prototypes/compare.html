@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Comparar direções."
+    />
+    <title>Comparar direções · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f5f7fa;
+        --ink: #1c2c3a;
+        --focus: #b94a13;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .compare-head {
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        border-bottom: 1px solid #cdd9e4;
+      }
+      .compare-head a {
+        font: 12px Code;
+        text-underline-offset: 4px;
+      }
+      .compare-head p {
+        font: 12px/1.6 Atlas;
+      }
+      .compare-head h1 {
+        font: 25px Book;
+        letter-spacing: -1px;
+      }
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: #bccbd6;
+      }
+      .compare-column {
+        min-width: 0;
+        background: var(--paper);
+      }
+      .frame-controls {
+        padding: 14px 20px;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        align-items: center;
+        background: var(--paper);
+      }
+      .frame-controls select {
+        padding: 9px 30px 9px 12px;
+        background: #fff;
+        color: var(--ink);
+        border: 1px solid #b3c4d0;
+        font: 12px Code;
+        max-width: 68%;
+      }
+      .frame-controls a {
+        font: 11px Code;
+        text-underline-offset: 4px;
+      }
+      .compare-column iframe {
+        display: block;
+        width: 100%;
+        height: calc(100dvh - 150px);
+        min-height: 550px;
+        border: 0;
+        background: white;
+      }
+      .compare-note {
+        font: 10px/1.6 Code;
+        padding: 15px 25px;
+        color: #51697c;
+      }
+      @media (max-width: 800px) {
+        .compare-head {
+          padding: 20px;
+          flex-wrap: wrap;
+        }
+        .compare-head h1 {
+          font-size: 22px;
+        }
+        .compare-head p {
+          font-size: 11px;
+        }
+        .compare-grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .compare-column iframe {
+          height: 720px;
+        }
+        .frame-controls {
+          padding: 13px 20px;
+        }
+        .compare-note {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="">
+    <header class="compare-head">
+      <a href="index.html">← Galeria</a>
+      <h1>Duas ideias, lado a lado.</h1>
+      <p>Role cada versão ou abra em tela inteira.</p>
+    </header>
+    <main class="compare-grid">
+      <section class="compare-column">
+        <div class="frame-controls">
+          <label class="sr-only" for="choose-a">Primeira direção</label
+          ><select id="choose-a"></select
+          ><a id="full-a" href="editorial.html" target="_blank" rel="noopener"
+            >Tela inteira ↗</a
+          >
+        </div>
+        <iframe
+          id="frame-a"
+          title="Primeiro protótipo"
+          src="about:blank"
+        ></iframe>
+      </section>
+      <section class="compare-column">
+        <div class="frame-controls">
+          <label class="sr-only" for="choose-b">Segunda direção</label
+          ><select id="choose-b"></select
+          ><a id="full-b" href="desktop.html" target="_blank" rel="noopener"
+            >Tela inteira ↗</a
+          >
+        </div>
+        <iframe
+          id="frame-b"
+          title="Segundo protótipo"
+          src="about:blank"
+        ></iframe>
+      </section>
+    </main>
+    <footer class="compare-note">
+      Cada painel se adapta à largura disponível. Abra em tela inteira para
+      avaliar o layout de desktop.
+    </footer>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script>
+      const variants = {
+          editorial: "Margem / editorial",
+          desktop: "Mesa / desktop",
+          notebook: "Caderno / visual",
+          map: "Afinidades / mapa",
+          indexer: "Índice / arquivo",
+        },
+        params = new URLSearchParams(location.search);
+      for (const side of ["a", "b"]) {
+        const select = document.getElementById("choose-" + side);
+        select.innerHTML = Object.entries(variants)
+          .map(([k, v]) => '<option value="' + k + '">' + v + "</option>")
+          .join("");
+        select.value = variants[params.get(side)]
+          ? params.get(side)
+          : side === "a"
+            ? "editorial"
+            : "desktop";
+        const set = () => {
+          const value = select.value;
+          document.getElementById("frame-" + side).src = value + ".html";
+          document.getElementById("frame-" + side).title = variants[value];
+          document.getElementById("full-" + side).href = value + ".html";
+          params.set(side, value);
+          history.replaceState({}, "", "?" + params.toString());
+        };
+        select.onchange = set;
+        set();
+      }
+    </script>
+  </body>
+</html>
