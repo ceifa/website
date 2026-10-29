@@ -14,7 +14,6 @@ let companion = null,
   manualTimer,
   manualUntil = 0,
   behavior = "watching";
-const discoveries = [...document.querySelectorAll("[data-discovery]")];
 const horizontalKeys = {
   ArrowLeft: "left",
   ArrowRight: "right",
@@ -56,14 +55,16 @@ function measure() {
             : r.top + (el.dataset.land === "text" ? font * 0.17 : 0)),
       }));
   });
-  discoveryPositions = discoveries.map((el) => {
-    const r = el.getBoundingClientRect();
-    return {
-      el,
-      x: r.left + scrollX + r.width / 2,
-      y: r.top + scrollY + r.height / 2,
-    };
-  });
+  discoveryPositions = [...document.querySelectorAll("[data-discovery]")].map(
+    (el) => {
+      const r = el.getBoundingClientRect();
+      return {
+        el,
+        x: r.left + scrollX + r.width / 2,
+        y: r.top + scrollY + r.height / 2,
+      };
+    },
+  );
   bounds = {
     width: document.documentElement.clientWidth,
     bottom:
@@ -315,15 +316,27 @@ document.addEventListener("visibilitychange", () => {
 document.addEventListener("focusin", (e) => {
   if (active && e.target !== resident) select(false);
 });
-document.querySelectorAll("a,summary").forEach((el) =>
-  el.addEventListener("click", () => {
+document.addEventListener("click", (e) => {
+  const note = e.target.closest("[data-discovery]");
+  if (note) return say(note.dataset.discovery, note, 8500);
+  if (e.target.closest("a,summary")) {
     select(false, false, true);
     whisper.hidden = true;
-  }),
-);
-discoveries.forEach((el) =>
-  el.addEventListener("click", () => say(el.dataset.discovery, el, 8500)),
-);
+  }
+});
+let screenY = 0;
+document.addEventListener("page:leave", () => {
+  screenY = actor.y - scrollY;
+});
+// The resident keeps its place on screen and falls onto the new page.
+document.addEventListener("page:enter", () => {
+  drag = null;
+  actor.y = scrollY + Math.max(40, Math.min(innerHeight - 120, screenY));
+  actor.vy = 0;
+  actor.ground = null;
+  if (companion) companion.goal = null;
+  measure();
+});
 window.addEventListener(
   "scroll",
   () => {
@@ -334,9 +347,7 @@ window.addEventListener(
   { passive: true },
 );
 window.addEventListener("resize", measure);
-document
-  .querySelectorAll("details")
-  .forEach((el) => el.addEventListener("toggle", measure));
+document.addEventListener("toggle", measure, true);
 await document.fonts.ready;
 measure();
 const perch = floors.find((f) => f.element?.id === "first-perch");

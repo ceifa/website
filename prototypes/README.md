@@ -65,3 +65,13 @@ Verification: 432 browser assertions across 13 pages at 320, 390, 768 and 1280 p
 `lean.html` returns to the inhabited single page, which Gabriel preferred over the multi-page minimal version. The complaint was the amount of text, not the layout. The hero bio, the section subtitles, the second project's description, the writing note and the expandable excerpts are gone. Posts are a plain list of title and year linking to the originals, and the personal items are one-line "em breve" rows. The "Sobre" nav link was dropped because the footer is now a single line. Visible words went from about 295 to 141. The resident's behavior is unchanged.
 
 Verified at 320, 390, 768 and 1440 pixels: 40 browser assertions (autonomous walking and jumping, following scroll without moving it, six posts, no overflow, dark mode). Desktop and mobile screenshots were inspected, and the deployed modules and fonts returned HTTP 200.
+
+## Multi-page inhabited site
+
+`pages/` splits the lean inhabited page into separate pages: a home (hero, projects, the three latest posts, a teaser for personal), plus projects, writing, personal and one page per article, all styled from `assets/lean.css`. Every page is a complete static HTML file, so direct loads, no-JS visits and new tabs work normally.
+
+`assets/navigate.mjs` intercepts same-site links, fetches the next page, swaps `<main>`, the nav and the title, and updates history, including the back and forward buttons. The resident is never recreated: on `page:leave` it records its screen position, and on `page:enter` it is placed at the same height and falls onto the new page's surfaces. The planner then picks a new perch. Pages are prefetched on hover or focus. A failed fetch falls back to a normal navigation. Inline article scripts are recreated so they run after a swap.
+
+The setTimeout article's demo loops looked up their canvas by id forever. After a swap they threw on every frame (2,887 console errors in one run), and a revisit would have animated twice. The site's copy of those two demo scripts now captures its canvas and stops once that canvas leaves the page. The code samples shown in the article are unchanged. With that change the console stayed empty.
+
+Verified with 60 browser assertions at 320, 390, 768 and 1440 pixels: no reload across home, writing, an article, back and home again; same resident element; screen position kept; landing on new content; title, URL and current nav updated; article demos drawing after a swap; scroll following after navigation; no overflow. A direct load of an article also works. The deployed site was checked the same way. The harness is disposable.
