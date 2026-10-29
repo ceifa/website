@@ -59,3 +59,9 @@ Two disposable regression cases caught integration defects: the loop initially s
 The resident's first perch is clamped inside short headings (it used to spawn off "Sobre" at desktop width). The opening hop now targets any reachable surface above the heading instead of only an `h1`.
 
 Verification: 432 browser assertions across 13 pages at 320, 390, 768 and 1280 pixels (single heading, real page links, no overflow, all articles complete, demos drawing, dark mode). The short-heading spawn check failed before the clamp and passed after it. On a long article at mobile width, the resident reaches the reading position and rests within about 8 seconds without moving the reader's scroll. The 15 physics and 15 planner assertions still pass. The deployed pages and assets returned HTTP 200. The harness is disposable; nothing was committed as automated coverage.
+
+## Lean inhabited page
+
+`lean.html` returns to the inhabited single page, which Gabriel preferred over the multi-page minimal version. The complaint was the amount of text, not the layout. The hero bio, the section subtitles, the second project's description, the writing note and the expandable excerpts are gone. Posts are a plain list of title and year linking to the originals, and the personal items are one-line "em breve" rows. The "Sobre" nav link was dropped because the footer is now a single line. Visible words went from about 295 to 141. The resident's behavior is unchanged.
+
+Verified at 320, 390, 768 and 1440 pixels: 40 browser assertions (autonomous walking and jumping, following scroll without moving it, six posts, no overflow, dark mode). Desktop and mobile screenshots were inspected, and the deployed modules and fonts returned HTTP 200.
