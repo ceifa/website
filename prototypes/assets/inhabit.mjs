@@ -1,5 +1,5 @@
 import { SIZE, jump, drop, step } from "./walker.mjs";
-import { Companion } from "./companion.mjs";
+import { Companion, findRoute } from "./companion.mjs";
 
 const resident = document.getElementById("resident");
 const whisper = document.getElementById("whisper");
@@ -340,7 +340,10 @@ document
 await document.fonts.ready;
 measure();
 const perch = floors.find((f) => f.element?.id === "first-perch");
-actor.x = Math.min(bounds.width - SIZE.width - 5, perch.right - 100);
+actor.x = Math.max(
+  perch.left + 3,
+  Math.min(perch.right - SIZE.width - 3, perch.right - 100),
+);
 actor.y = perch.y - SIZE.height;
 actor.ground = perch.id;
 resident.hidden = false;
@@ -348,7 +351,12 @@ render();
 new ResizeObserver(measure).observe(site);
 const firstHop =
   floors
-    .filter((floor) => floor.element?.closest("h1") && floor.y < perch.y - 10)
+    .filter(
+      (floor) =>
+        floor.y > 75 &&
+        floor.y < perch.y - 10 &&
+        findRoute(floors, perch.id, floor.id).length > 0,
+    )
     .sort((a, b) => b.y - a.y)[0] || perch;
 companion = new Companion(
   {
