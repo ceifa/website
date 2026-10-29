@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Mesa."
+    />
+    <title>Mesa · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        --desk: #d9c9e8;
+        --ink: #402a50;
+        --paper: #faf6fd;
+        --shade: #a98abd;
+        --focus: #a63b16;
+      }
+      body {
+        background: var(--desk);
+        color: var(--ink);
+      }
+      .os-menubar {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 16px 30px;
+        font: 12px Code;
+        background: #eaddf3;
+        border-bottom: 1px solid #a98abd;
+      }
+      .os-menubar button {
+        border: 0;
+        background: none;
+        color: inherit;
+      }
+      .os-menubar strong {
+        font: 700 17px Atlas;
+      }
+      .desk {
+        position: relative;
+        min-height: 740px;
+        height: calc(100dvh - 150px);
+        overflow: hidden;
+        background: radial-gradient(
+          ellipse at 75% 35%,
+          #eee5f5 0%,
+          #d9c9e8 55%
+        );
+      }
+      .desktop-name {
+        position: absolute;
+        left: 35%;
+        bottom: 42px;
+        font: clamp(160px, 22vw, 320px) / 1 Book;
+        color: #b69bc9;
+        letter-spacing: -0.06em;
+        pointer-events: none;
+      }
+      .desktop-note {
+        position: absolute;
+        right: 42px;
+        top: 40px;
+        max-width: 190px;
+        font: 12px/1.7 Code;
+        transform: rotate(3deg);
+      }
+      .app-icons {
+        position: absolute;
+        top: 45px;
+        left: 45px;
+        display: grid;
+        grid-template-columns: 100px;
+        gap: 25px;
+      }
+      .app-icon {
+        border: 0;
+        background: none;
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        font: 12px Code;
+      }
+      .app-icon:hover .file-icon {
+        transform: translateY(-4px);
+      }
+      .file-icon {
+        width: 64px;
+        height: 55px;
+        border: 2px solid var(--ink);
+        background: #f4b8cf;
+        border-radius: 3px 8px 8px 8px;
+        position: relative;
+        display: grid;
+        place-items: center;
+        box-shadow: 3px 4px 0 #a98abd;
+        transition: transform 0.2s;
+        font: 32px Page;
+      }
+      .file-icon::before {
+        content: "";
+        position: absolute;
+        top: -9px;
+        left: -2px;
+        width: 26px;
+        height: 10px;
+        border: 2px solid var(--ink);
+        border-bottom: 0;
+        border-radius: 4px 4px 0 0;
+        background: inherit;
+      }
+      .app-icon:nth-child(2) .file-icon {
+        background: #c9dcf2;
+      }
+      .app-icon:nth-child(3) .file-icon {
+        background: #f5dc9a;
+      }
+      .app-icon:nth-child(4) .file-icon {
+        background: #d3e8d9;
+      }
+      .os-window {
+        position: absolute;
+        left: 23%;
+        top: 66px;
+        width: min(690px, 65%);
+        background: var(--paper);
+        border: 1.5px solid var(--ink);
+        border-radius: 9px;
+        box-shadow: 9px 11px 0 #82649366;
+        overflow: hidden;
+        z-index: 3;
+      }
+      .os-window[data-app-window="projects"] {
+        left: 30%;
+        top: 120px;
+      }
+      .os-window[data-app-window="personal"] {
+        left: 35%;
+        top: 90px;
+      }
+      .os-window[data-app-window="shelf"] {
+        left: 28%;
+        top: 110px;
+      }
+      .window-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        background: #543b68;
+        color: #fff;
+        padding: 11px 15px;
+        cursor: grab;
+        touch-action: none;
+        font: 12px Code;
+      }
+      .window-controls {
+        display: flex;
+        gap: 9px;
+      }
+      .window-controls button {
+        border: 1px solid #c3adcf;
+        color: white;
+        background: transparent;
+        min-width: 28px;
+        height: 26px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .window-body {
+        max-height: 490px;
+        overflow: auto;
+        padding: 28px;
+      }
+      .window-body h1,
+      .window-body h2 {
+        font: 44px/1.05 Book;
+        letter-spacing: -1.8px;
+        margin-bottom: 12px;
+      }
+      .window-body .window-description {
+        font: 14px/1.65 Atlas;
+        max-width: 49ch;
+        margin-bottom: 23px;
+      }
+      .file-row {
+        width: 100%;
+        border: 0;
+        border-top: 1px solid #d8cce1;
+        background: none;
+        color: var(--ink);
+        padding: 19px 2px;
+        display: grid;
+        grid-template-columns: 38px 1fr 30px;
+        gap: 12px;
+        text-align: left;
+        align-items: center;
+      }
+      .file-row:hover {
+        background: #eee5f4;
+      }
+      .file-row .file-symbol {
+        font: 25px Page;
+        color: #876596;
+      }
+      .file-row strong {
+        font: 16px/1.25 Atlas;
+        display: block;
+        font-weight: 700;
+      }
+      .file-row small {
+        font: 10px Code;
+        display: block;
+        margin-top: 7px;
+        opacity: 0.7;
+      }
+      .welcome-line {
+        font: 10px Code;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 18px;
+        color: #876596;
+      }
+      .window-footer {
+        padding: 11px 18px;
+        background: #eee5f4;
+        font: 10px Code;
+        border-top: 1px solid #d8cce1;
+      }
+      .os-window.maximized {
+        left: 175px !important;
+        top: 20px !important;
+        width: calc(100% - 210px);
+        height: calc(100% - 55px);
+      }
+      .os-window.maximized .window-body {
+        max-height: calc(100% - 95px);
+      }
+      .dock {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 15px;
+        background: #eaddf3;
+        border-top: 1px solid #a98abd;
+        min-height: 65px;
+      }
+      .dock button {
+        border: 1px solid #a98abd;
+        border-radius: 5px;
+        padding: 11px 18px;
+        background: #f7effb;
+        color: var(--ink);
+        font: 12px Code;
+      }
+      .dock button[aria-pressed="true"] {
+        background: #543b68;
+        color: #fff;
+      }
+      .sticky-intro {
+        background: #f5dc9a;
+        padding: 23px;
+        box-shadow: 4px 4px 0 #d7be7b;
+        max-width: 300px;
+        font: 26px/1.15 Page;
+        margin-bottom: 25px;
+      }
+      .os-bottom {
+        padding: 12px 25px;
+        font: 10px/1.5 Code;
+        background: #eaddf3;
+      }
+      @media (max-width: 700px) {
+        .os-menubar {
+          padding: 17px;
+        }
+        .os-menubar .clock {
+          display: none;
+        }
+        .desk {
+          height: auto;
+          min-height: calc(100dvh - 200px);
+          overflow: visible;
+          padding: 20px 15px 35px;
+        }
+        .desktop-name,
+        .desktop-note {
+          display: none;
+        }
+        .app-icons {
+          position: static;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+          margin: 10px 0 30px;
+        }
+        .app-icon {
+          font-size: 10px;
+          gap: 8px;
+        }
+        .file-icon {
+          width: 48px;
+          height: 43px;
+          font-size: 27px;
+        }
+        .os-window,
+        .os-window[data-app-window],
+        .os-window.maximized {
+          position: relative;
+          inset: auto !important;
+          width: 100%;
+          height: auto;
+          box-shadow: 5px 6px 0 #82649366;
+        }
+        .os-window:not(.mobile-active) {
+          display: none;
+        }
+        .window-body {
+          padding: 23px 20px;
+          max-height: none !important;
+        }
+        .window-body h1,
+        .window-body h2 {
+          font-size: 35px;
+        }
+        .window-bar {
+          cursor: default;
+        }
+        .window-controls button:first-child {
+          display: none;
+        }
+        .file-row {
+          grid-template-columns: 25px 1fr 15px;
+          padding: 18px 0;
+        }
+        .file-row strong {
+          font-size: 14px;
+        }
+        .dock {
+          gap: 5px;
+          flex-wrap: wrap;
+        }
+        .dock button {
+          padding: 9px 10px;
+          font-size: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="desktop">
+    <header class="os-menubar">
+      <strong>ceifa / pessoal</strong
+      ><button data-open="about">Sobre esta mesa</button
+      ><span class="clock">SEM PRESSA PARA EXPLORAR</span>
+    </header>
+    <main class="desk">
+      <div class="desktop-name" aria-hidden="true">ceifa.</div>
+      <div class="desktop-note">
+        Pode abrir as pastas.<br />Tem código e outras coisas aqui.
+      </div>
+      <nav class="app-icons" aria-label="Pastas do site">
+        <button class="app-icon" data-app="writing">
+          <span class="file-icon" aria-hidden="true">Aa</span>Textos</button
+        ><button class="app-icon" data-app="projects">
+          <span class="file-icon" aria-hidden="true">⌘</span>Projetos</button
+        ><button class="app-icon" data-app="shelf">
+          <span class="file-icon" aria-hidden="true">≡</span>Prateleira</button
+        ><button class="app-icon" data-app="personal">
+          <span class="file-icon" aria-hidden="true">↗</span>Pessoal
+        </button>
+      </nav>
+      <section
+        class="os-window mobile-active"
+        data-app-window="writing"
+        aria-labelledby="writing-title"
+      >
+        <div class="window-bar">
+          <span>textos / arquivo</span>
+          <div class="window-controls">
+            <button data-maximize aria-label="Maximizar janela Textos">□</button
+            ><button data-close aria-label="Fechar janela Textos">×</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p class="welcome-line">Pasta aberta · 6 textos</p>
+          <h1 id="writing-title">Coisas que<br />já escrevi.</h1>
+          <p class="window-description">
+            Programação, jogos e música. Algumas opiniões envelhecem melhor que
+            outras.
+          </p>
+          <button class="file-row" data-open="garry">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>Ensinamentos do Garry sobre programação</strong
+              ><small>JOGOS + CÓDIGO · 2020</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="trap">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>A onda do trap</strong><small>MÚSICA · 2020</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="react">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>Pare de escrever React</strong
+              ><small>OPINIÃO · 2020</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="webrtc">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>Um pequeno resumo sobre WebRTC</strong
+              ><small>PROGRAMAÇÃO · 2021</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="learn">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>O verdadeiro segredo para começar a programar</strong
+              ><small>PROGRAMAÇÃO · 2021</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="timeout">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>Porque não utilizar setTimeouts</strong
+              ><small>PROGRAMAÇÃO · 2020</small></span
+            ><span>↗</span>
+          </button>
+        </div>
+        <div class="window-footer">
+          Abra um arquivo para ler. No computador, arraste a barra da janela.
+        </div>
+      </section>
+      <section
+        hidden
+        class="os-window"
+        data-app-window="projects"
+        aria-labelledby="projects-title"
+      >
+        <div class="window-bar">
+          <span>projetos / em construção</span>
+          <div class="window-controls">
+            <button data-maximize aria-label="Maximizar janela Projetos">
+              □</button
+            ><button data-close aria-label="Fechar janela Projetos">×</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p class="welcome-line">Feito por aqui</p>
+          <h2 id="projects-title">Saiu do papel.</h2>
+          <p class="window-description">
+            Um espaço para o que dá trabalho, dá errado e às vezes funciona.
+          </p>
+          <button class="file-row" data-open="eleven">
+            <span class="file-symbol">⌘</span
+            ><span><strong>Eleven</strong><small>pi from anywhere</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="website">
+            <span class="file-symbol">⌘</span
+            ><span
+              ><strong>Este site, de novo</strong
+              ><small>UMA DIREÇÃO AINDA EM ABERTO</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="lab">
+            <span class="file-symbol">+</span
+            ><span
+              ><strong>Laboratório</strong
+              ><small>SEÇÃO PROPOSTA · DEMONSTRAÇÃO</small></span
+            ><span>↗</span>
+          </button>
+        </div>
+      </section>
+      <section
+        hidden
+        class="os-window"
+        data-app-window="shelf"
+        aria-labelledby="shelf-title"
+      >
+        <div class="window-bar">
+          <span>prateleira / referências</span>
+          <div class="window-controls">
+            <button data-maximize aria-label="Maximizar janela Prateleira">
+              □</button
+            ><button data-close aria-label="Fechar janela Prateleira">×</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p class="welcome-line">Seção proposta · demonstração</p>
+          <h2 id="shelf-title">Vale guardar.</h2>
+          <p class="window-description">
+            Uma prateleira de favoritos com anotações, não só links jogados.
+          </p>
+          <button class="file-row" data-open="favorites">
+            <span class="file-symbol">≡</span
+            ><span
+              ><strong>Jogos, discos, livros e links</strong
+              ><small>VER COMO PODERIA FUNCIONAR</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="trap">
+            <span class="file-symbol">¶</span
+            ><span
+              ><strong>A onda do trap</strong
+              ><small>UM TEXTO REAL DO ARQUIVO</small></span
+            ><span>↗</span>
+          </button>
+        </div>
+      </section>
+      <section
+        hidden
+        class="os-window"
+        data-app-window="personal"
+        aria-labelledby="personal-title"
+      >
+        <div class="window-bar">
+          <span>pessoal / fora da tela</span>
+          <div class="window-controls">
+            <button data-maximize aria-label="Maximizar janela Pessoal">
+              □</button
+            ><button data-close aria-label="Fechar janela Pessoal">×</button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p class="welcome-line">Seção proposta · demonstração</p>
+          <h2 id="personal-title">O resto da vida.</h2>
+          <div class="sticky-intro">
+            Nem tudo precisa<br />virar um projeto.
+          </div>
+          <button class="file-row" data-open="personal">
+            <span class="file-symbol">↗</span
+            ><span
+              ><strong>Fotos, viagens e histórias</strong
+              ><small>UM ÁLBUM COM CONTEXTO</small></span
+            ><span>↗</span></button
+          ><button class="file-row" data-open="now">
+            <span class="file-symbol">↗</span
+            ><span
+              ><strong>Agora</strong><small>UM REGISTRO DO MOMENTO</small></span
+            ><span>↗</span>
+          </button>
+        </div>
+      </section>
+    </main>
+    <nav class="dock" aria-label="Alternar janelas">
+      <button data-app="writing" aria-pressed="true">Textos</button
+      ><button data-app="projects" aria-pressed="false">Projetos</button
+      ><button data-app="shelf" aria-pressed="false">Prateleira</button
+      ><button data-app="personal" aria-pressed="false">Pessoal</button>
+    </nav>
+    <footer class="os-bottom">
+      Textos e projetos reais. Prateleira e pessoal são propostas de conteúdo.
+    </footer>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script src="assets/content.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+      let topZ = 4;
+      const windows = [...document.querySelectorAll("[data-app-window]")];
+      function openApp(id) {
+        const w = windows.find((w) => w.dataset.appWindow === id);
+        if (!w) return;
+        w.hidden = false;
+        w.style.zIndex = ++topZ;
+        windows.forEach((el) => el.classList.toggle("mobile-active", el === w));
+        document
+          .querySelectorAll(".dock [data-app]")
+          .forEach((b) => b.setAttribute("aria-pressed", b.dataset.app === id));
+      }
+      document
+        .querySelectorAll("[data-app]")
+        .forEach((b) => (b.onclick = () => openApp(b.dataset.app)));
+      windows.forEach((w) => {
+        w.addEventListener("pointerdown", () => {
+          w.style.zIndex = ++topZ;
+        });
+        w.querySelector("[data-close]").onclick = () => {
+          w.hidden = true;
+          w.classList.remove("mobile-active");
+          document
+            .querySelectorAll(".dock [data-app]")
+            .forEach((b) => b.setAttribute("aria-pressed", "false"));
+          const remaining = windows
+            .filter((x) => !x.hidden)
+            .sort((a, b) => (+b.style.zIndex || 0) - (+a.style.zIndex || 0));
+          if (remaining.length) openApp(remaining[0].dataset.appWindow);
+          document
+            .querySelector(
+              '.app-icons [data-app="' + w.dataset.appWindow + '"]',
+            )
+            .focus();
+        };
+        w.querySelector("[data-maximize]").onclick = (e) => {
+          w.classList.toggle("maximized");
+          e.currentTarget.setAttribute(
+            "aria-label",
+            (w.classList.contains("maximized") ? "Restaurar" : "Maximizar") +
+              " janela",
+          );
+        };
+        const bar = w.querySelector(".window-bar");
+        let drag = null;
+        bar.addEventListener("pointerdown", (e) => {
+          if (
+            e.target.closest("button") ||
+            innerWidth <= 700 ||
+            w.classList.contains("maximized")
+          )
+            return;
+          drag = {
+            x: e.clientX,
+            y: e.clientY,
+            left: w.offsetLeft,
+            top: w.offsetTop,
+          };
+          bar.setPointerCapture(e.pointerId);
+        });
+        bar.addEventListener("pointermove", (e) => {
+          if (!drag) return;
+          const desk = document.querySelector(".desk");
+          w.style.left =
+            Math.max(
+              0,
+              Math.min(
+                desk.clientWidth - w.offsetWidth,
+                drag.left + e.clientX - drag.x,
+              ),
+            ) + "px";
+          w.style.top =
+            Math.max(
+              0,
+              Math.min(desk.clientHeight - 70, drag.top + e.clientY - drag.y),
+            ) + "px";
+        });
+        const end = () => {
+          drag = null;
+        };
+        bar.addEventListener("pointerup", end);
+        bar.addEventListener("pointercancel", end);
+      });
+    </script>
+  </body>
+</html>

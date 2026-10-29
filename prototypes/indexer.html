@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Índice."
+    />
+    <title>Índice · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f7a9cb;
+        --ink: #4d0828;
+        --tint: #f4c9db;
+        --deep: #941746;
+        --focus: #064c8a;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .index-mast {
+        padding: 28px 4vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font: 12px Code;
+      }
+      .index-mast a {
+        text-decoration: none;
+      }
+      .index-mast button {
+        border: 1px solid var(--ink);
+        background: none;
+        color: inherit;
+        font: 11px Code;
+        padding: 10px 14px;
+      }
+      .index-hero {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: 55px;
+        padding: 35px 4vw 55px;
+        align-items: end;
+      }
+      .index-hero h1 {
+        font: 700 clamp(65px, 9.2vw, 142px) / 0.92 Narrow;
+        letter-spacing: -0.025em;
+        text-transform: uppercase;
+      }
+      .index-hero h1 em {
+        font-family: Page;
+        font-weight: 400;
+        text-transform: none;
+      }
+      .index-hero aside p {
+        font: 16px/1.5 Atlas;
+      }
+      .index-hero aside span {
+        display: block;
+        font: 10px/1.7 Code;
+        margin-top: 22px;
+      }
+      .catalog-tools {
+        padding: 25px 4vw;
+        background: var(--ink);
+        color: var(--paper);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
+      }
+      .searchbox {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+      }
+      .searchbox label {
+        font: 13px Code;
+      }
+      .searchbox input {
+        background: none;
+        border: 0;
+        border-bottom: 1px solid #bb7091;
+        color: #ffd9e9;
+        padding: 10px 0;
+        width: 100%;
+        max-width: 380px;
+        outline-offset: 5px;
+      }
+      .searchbox input::placeholder {
+        color: #e1a7bf;
+        opacity: 1;
+      }
+      .catalog-tools select {
+        background: var(--ink);
+        border: 1px solid #bb7091;
+        color: var(--paper);
+        padding: 10px 30px 10px 12px;
+        font: 12px Code;
+      }
+      .index-table {
+        padding: 0 4vw;
+      }
+      .catalog-head {
+        display: grid;
+        grid-template-columns: 115px 1fr 70px;
+        gap: 22px;
+        padding: 20px 0;
+        font: 10px Code;
+        text-transform: uppercase;
+      }
+      .catalog-row {
+        display: grid;
+        grid-template-columns: 115px 1fr 70px;
+        align-items: center;
+        gap: 22px;
+        width: 100%;
+        text-align: left;
+        border: 0;
+        border-top: 2px solid var(--ink);
+        padding: 24px 0;
+        background: transparent;
+        color: inherit;
+        transition:
+          background 0.2s,
+          padding 0.2s;
+      }
+      .catalog-row:hover {
+        background: #ffcade;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      .row-kind {
+        font: 10px/1.7 Code;
+        letter-spacing: 0.03em;
+      }
+      .row-kind small {
+        display: block;
+        font: 9px Code;
+        opacity: 0.65;
+      }
+      .row-title {
+        font: clamp(25px, 3.8vw, 57px) / 1.05 Narrow;
+        letter-spacing: -0.015em;
+        text-transform: uppercase;
+      }
+      .row-title.serif {
+        font-family: Page;
+        text-transform: none;
+        font-size: clamp(32px, 4.2vw, 63px);
+        letter-spacing: -0.03em;
+      }
+      .row-end {
+        text-align: right;
+        font: 40px Page;
+      }
+      .row-end small {
+        font: 10px Code;
+        display: block;
+      }
+      .index-count {
+        padding: 25px 0;
+        font: 11px Code;
+        border-top: 2px solid var(--ink);
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .index-footer {
+        padding: 40px 4vw 50px;
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        font: 11px/1.6 Code;
+        background: var(--tint);
+      }
+      .index-footer button {
+        border: 0;
+        background: none;
+        color: inherit;
+        text-decoration: underline;
+        font: inherit;
+        padding: 0;
+        align-self: start;
+      }
+      .nothing {
+        font: 40px/1.2 Page;
+        padding: 60px 0;
+      }
+      .nothing small {
+        display: block;
+        font: 13px Atlas;
+        margin-top: 20px;
+      }
+      @media (max-width: 700px) {
+        .index-mast {
+          padding: 25px 5vw;
+          font-size: 10px;
+        }
+        .index-mast button {
+          font-size: 10px;
+          padding: 9px 10px;
+        }
+        .index-hero {
+          grid-template-columns: 1fr;
+          padding: 25px 5vw 35px;
+          gap: 30px;
+        }
+        .index-hero h1 {
+          font-size: 68px;
+        }
+        .index-hero aside {
+          max-width: 340px;
+        }
+        .index-hero aside p {
+          font-size: 14px;
+        }
+        .index-hero aside span {
+          margin-top: 10px;
+        }
+        .catalog-tools {
+          padding: 20px 5vw;
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+        .searchbox {
+          flex-basis: 100%;
+        }
+        .catalog-tools select {
+          width: 100%;
+          font-size: 11px;
+        }
+        .index-table {
+          padding: 0 5vw;
+        }
+        .catalog-head,
+        .catalog-row {
+          grid-template-columns: 70px 1fr 22px;
+          gap: 12px;
+        }
+        .catalog-row {
+          padding: 22px 0;
+        }
+        .row-title {
+          font-size: 27px;
+        }
+        .row-title.serif {
+          font-size: 32px;
+        }
+        .row-kind {
+          font-size: 8px;
+        }
+        .row-kind small {
+          font-size: 8px;
+        }
+        .row-end {
+          font-size: 26px;
+        }
+        .row-end small {
+          font-size: 8px;
+        }
+        .index-footer {
+          display: block;
+          padding: 25px 5vw;
+        }
+        .index-footer button {
+          margin-top: 20px;
+        }
+        .index-count {
+          font-size: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="indexer">
+    <header class="index-mast">
+      <a href="indexer.html">GABRIEL FRANCISCO / CEIFA</a
+      ><button id="surprise">Me surpreenda ↗</button>
+    </header>
+    <main>
+      <section class="index-hero">
+        <h1>Não cabe<br />tudo numa <em>bio.</em></h1>
+        <aside>
+          <p>Um índice de coisas feitas, escritas e guardadas.</p>
+          <span>SEM PÁGINA DE VENDAS.<br />PODE ENTRAR POR QUALQUER LADO.</span>
+        </aside>
+      </section>
+      <div class="catalog-tools">
+        <div class="searchbox">
+          <label for="search">Buscar</label
+          ><input
+            type="search"
+            id="search"
+            placeholder="Código, jogos, música..."
+            autocomplete="off"
+            aria-keyshortcuts="/"
+          />
+        </div>
+        <label class="sr-only" for="kind">Filtrar por tipo</label
+        ><select id="kind">
+          <option value="all">Todos os tipos</option>
+          <option value="project">Projetos</option>
+          <option value="text">Textos</option>
+          <option value="proposed">Seções propostas</option>
+        </select>
+      </div>
+      <section class="index-table" aria-label="Índice de conteúdo">
+        <div class="catalog-head">
+          <span>Tipo</span><span>O que tem aqui</span><span>Abrir</span>
+        </div>
+        <div id="catalog-rows"></div>
+        <p class="nothing" id="nothing" hidden>
+          Nada por aqui com esse filtro.<small
+            >Tente outra palavra ou selecione todos os tipos.</small
+          >
+        </p>
+        <div class="index-count">
+          <span id="result-count" aria-live="polite"></span
+          ><span>ATALHO: / PARA BUSCAR</span>
+        </div>
+      </section>
+    </main>
+    <footer class="index-footer">
+      <span
+        >Textos e projetos reais.<br />Seções propostas não representam relatos
+        ou preferências do Gabriel.</span
+      ><button data-open="about">Quem é ceifa? ↗</button>
+    </footer>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script src="assets/content.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+      const rows = [
+        {
+          key: "eleven",
+          title: "Eleven",
+          type: "project",
+          kind: "PROJETO",
+          tag: "pi from anywhere",
+          style: "serif",
+          search: "código projeto automação",
+        },
+        {
+          key: "garry",
+          title: "Ensinamentos do Garry",
+          type: "text",
+          kind: "TEXTO",
+          tag: "2020",
+          search: "jogos código programação garry mod",
+        },
+        {
+          key: "personal",
+          title: "O resto da vida",
+          type: "proposed",
+          kind: "PESSOAL",
+          tag: "DEMO",
+          style: "serif",
+          search: "viagens fotos pessoal histórias",
+        },
+        {
+          key: "trap",
+          title: "A onda do trap",
+          type: "text",
+          kind: "TEXTO",
+          tag: "2020",
+          search: "cultura música trap",
+        },
+        {
+          key: "react",
+          title: "Pare de escrever React",
+          type: "text",
+          kind: "TEXTO",
+          tag: "2020",
+          search: "código programação react svelte",
+        },
+        {
+          key: "favorites",
+          title: "Uma prateleira de favoritos",
+          type: "proposed",
+          kind: "FAVORITOS",
+          tag: "DEMO",
+          style: "serif",
+          search: "livros música filmes jogos referências",
+        },
+        {
+          key: "webrtc",
+          title: "Um pequeno resumo sobre WebRTC",
+          type: "text",
+          kind: "TEXTO",
+          tag: "2021",
+          search: "código programação webrtc",
+        },
+        {
+          key: "lab",
+          title: "Pode estar pela metade",
+          type: "proposed",
+          kind: "LABORATÓRIO",
+          tag: "DEMO",
+          style: "serif",
+          search: "experimentos projetos código",
+        },
+        {
+          key: "learn",
+          title: "Começar a programar",
+          type: "text",
+          kind: "TEXTO",
+          tag: "2021",
+          search: "aprender código programação",
+        },
+        {
+          key: "website",
+          title: "Este site, de novo",
+          type: "project",
+          kind: "PROJETO",
+          tag: "EM ABERTO",
+          style: "serif",
+          search: "código site website",
+        },
+      ];
+      const catalog = document.getElementById("catalog-rows"),
+        search = document.getElementById("search"),
+        kind = document.getElementById("kind");
+      const normalize = (s) =>
+        s
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+      function render() {
+        const q = normalize(search.value);
+        const found = rows.filter(
+          (r) =>
+            (kind.value === "all" || r.type === kind.value) &&
+            normalize(r.title + " " + r.search + " " + r.kind).includes(q),
+        );
+        catalog.innerHTML = found
+          .map(
+            (r) =>
+              `<button class="catalog-row" data-open="${r.key}"><span class="row-kind">${r.kind}<small>${r.tag}</small></span><span class="row-title ${r.style || ""}">${r.title}</span><span class="row-end" aria-hidden="true">↗</span></button>`,
+          )
+          .join("");
+        document.getElementById("result-count").textContent =
+          found.length + " de " + rows.length + " entradas";
+        document.getElementById("nothing").hidden = !!found.length;
+      }
+      search.oninput = render;
+      kind.onchange = render;
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "/" &&
+          !document.querySelector("dialog[open]") &&
+          !["INPUT", "TEXTAREA", "SELECT"].includes(
+            document.activeElement.tagName,
+          )
+        ) {
+          e.preventDefault();
+          search.focus();
+        }
+      });
+      document.getElementById("surprise").onclick = () => {
+        const r = rows[Math.floor(Math.random() * rows.length)];
+        window.openReader(r.key);
+      };
+      render();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Afinidades."
+    />
+    <title>Afinidades · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --night: #0d2030;
+        --surface: #193649;
+        --ice: #d7edf2;
+        --muted: #91b4c1;
+        --focus: #ffc07b;
+      }
+      body {
+        background: var(--night);
+        color: var(--ice);
+      }
+      .map-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+        padding: 30px 4vw;
+        font: 12px Code;
+      }
+      .map-head button {
+        background: none;
+        border: 0;
+        color: var(--ice);
+        padding: 9px 0;
+      }
+      .map-intro {
+        padding: 35px 4vw 25px;
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+        align-items: end;
+      }
+      .map-intro h1 {
+        font: clamp(46px, 5.8vw, 85px) / 1.03 Book;
+        letter-spacing: -0.05em;
+        max-width: 780px;
+      }
+      .map-intro p {
+        font: 12px/1.8 Code;
+        max-width: 225px;
+        color: var(--muted);
+        padding-bottom: 6px;
+      }
+      .map-tools {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 4vw 18px;
+        gap: 20px;
+      }
+      .map-tools .legend {
+        font: 10px/1.5 Code;
+        color: var(--muted);
+      }
+      .map-tools button {
+        border: 1px solid #6a8a9a;
+        background: none;
+        color: var(--ice);
+        padding: 9px 13px;
+        font: 11px Code;
+        border-radius: 3px;
+      }
+      .map-workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        margin: 0 4vw 50px;
+        border: 1px solid #365567;
+        min-height: 570px;
+      }
+      .map-stage {
+        position: relative;
+        min-height: 570px;
+        background-image: radial-gradient(#8bb5c12b 1px, transparent 1px);
+        background-size: 24px 24px;
+        overflow: hidden;
+      }
+      .map-stage canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .node {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        padding: 17px 23px;
+        border: 1px solid #6e9eae;
+        border-radius: 60px;
+        background: #173849;
+        color: var(--ice);
+        font: 16px Atlas;
+        z-index: 1;
+        min-width: 115px;
+        transition:
+          background 0.2s,
+          box-shadow 0.2s;
+      }
+      .node:hover {
+        background: #28516a;
+      }
+      .node[aria-pressed="true"] {
+        background: #d7edf2;
+        color: #0d2030;
+        box-shadow: 0 0 0 7px #d7edf212;
+      }
+      .node small {
+        display: block;
+        font: 9px Code;
+        margin-top: 6px;
+        opacity: 0.65;
+      }
+      .node.central {
+        width: 145px;
+        height: 145px;
+        border-radius: 50%;
+        font: 27px Page;
+      }
+      .node.proposed {
+        border-style: dashed;
+        background: #0d2030;
+        color: var(--muted);
+      }
+      .node-list {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+      }
+      .node-list button {
+        padding: 20px;
+        text-align: left;
+        background: #193649;
+        color: var(--ice);
+        border: 1px solid #365567;
+        font: 16px Atlas;
+      }
+      .node-list button[aria-pressed="true"] {
+        background: #d7edf2;
+        color: #0d2030;
+      }
+      .node-list small {
+        display: block;
+        font: 10px Code;
+        margin-top: 7px;
+      }
+      .connection-panel {
+        padding: 32px 27px;
+        background: #142d3e;
+        border-left: 1px solid #365567;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .panel-meta {
+        font: 10px Code;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+      .connection-panel h2 {
+        font: 40px/1.05 Page;
+        letter-spacing: -1px;
+      }
+      .connection-panel p {
+        font: 14px/1.7 Atlas;
+        color: #bdd2dc;
+      }
+      .panel-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .panel-links button {
+        padding: 20px 0;
+        border: 0;
+        border-top: 1px solid #365567;
+        background: none;
+        text-align: left;
+        color: var(--ice);
+        font: 15px/1.45 Atlas;
+      }
+      .panel-links button:hover {
+        color: var(--focus);
+      }
+      .panel-foot {
+        font: 10px/1.7 Code;
+        color: var(--muted);
+        margin-top: auto;
+        padding-top: 20px;
+      }
+      .map-foot {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 4vw 30px;
+        gap: 25px;
+        font: 11px/1.6 Code;
+        color: var(--muted);
+      }
+      .map-foot button {
+        border: 0;
+        background: none;
+        color: inherit;
+        text-decoration: underline;
+        font: inherit;
+        padding: 0;
+      }
+      @media (max-width: 1000px) {
+        .map-workspace {
+          grid-template-columns: 1fr 260px;
+        }
+        .node {
+          font-size: 13px;
+          padding: 14px 17px;
+          min-width: 90px;
+        }
+        .node.central {
+          width: 118px;
+          height: 118px;
+        }
+        .connection-panel {
+          padding: 27px 20px;
+        }
+        .map-intro h1 {
+          font-size: 60px;
+        }
+        .map-intro p {
+          max-width: 180px;
+        }
+      }
+      @media (max-width: 700px) {
+        .map-head {
+          padding: 25px 6vw;
+          font-size: 10px;
+        }
+        .map-intro {
+          padding: 25px 6vw;
+          display: block;
+        }
+        .map-intro h1 {
+          font-size: 49px;
+        }
+        .map-intro p {
+          max-width: 100%;
+          margin-top: 22px;
+        }
+        .map-tools {
+          padding: 0 6vw 20px;
+        }
+        .map-tools .legend {
+          max-width: 185px;
+        }
+        .map-workspace {
+          grid-template-columns: 1fr;
+          margin: 0 6vw 30px;
+          min-height: 0;
+        }
+        .map-stage {
+          min-height: 490px;
+        }
+        .node {
+          font-size: 11px;
+          min-width: 75px;
+          padding: 13px;
+        }
+        .node.central {
+          width: 92px;
+          height: 92px;
+          font-size: 23px;
+        }
+        .connection-panel {
+          border-left: 0;
+          border-top: 1px solid #365567;
+          padding: 27px;
+          min-height: 320px;
+        }
+        .node-list {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          padding: 15px;
+          gap: 10px;
+        }
+        .node-list button {
+          padding: 16px 12px;
+          font-size: 14px;
+        }
+        .node-list small {
+          font-size: 9px;
+        }
+        .map-foot {
+          padding: 0 6vw 30px;
+          font-size: 10px;
+        }
+        .map-foot span {
+          max-width: 220px;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="map">
+    <header class="map-head">
+      <a href="map.html">CEIFA / GABRIEL FRANCISCO</a
+      ><button data-open="about">Quem está por aqui ↗</button>
+    </header>
+    <main>
+      <section class="map-intro">
+        <h1>Uma coisa<br />puxa outra.</h1>
+        <p>
+          Jogos levam a código.<br />Código vira texto.<br />O resto a gente
+          conecta.
+        </p>
+      </section>
+      <div class="map-tools">
+        <p class="legend">
+          Selecione um assunto para explorar.<br />Contorno tracejado: seção
+          proposta.
+        </p>
+        <button id="view-toggle" aria-pressed="false">Ver como lista</button>
+      </div>
+      <section class="map-workspace" aria-label="Mapa de assuntos">
+        <div class="map-stage" id="map-stage">
+          <canvas aria-hidden="true"></canvas
+          ><button
+            class="node central"
+            style="left: 45%; top: 44%"
+            data-node="writing"
+            aria-pressed="true"
+          >
+            Escrita<small>6 TEXTOS</small></button
+          ><button
+            class="node"
+            style="left: 19%; top: 22%"
+            data-node="games"
+            aria-pressed="false"
+          >
+            Jogos<small>GARRY'S MOD</small></button
+          ><button
+            class="node"
+            style="left: 73%; top: 17%"
+            data-node="code"
+            aria-pressed="false"
+          >
+            Código<small>IDEIAS EM TEXTO</small></button
+          ><button
+            class="node"
+            style="left: 18%; top: 73%"
+            data-node="music"
+            aria-pressed="false"
+          >
+            Música<small>A ONDA DO TRAP</small></button
+          ><button
+            class="node"
+            style="left: 66%; top: 80%"
+            data-node="projects"
+            aria-pressed="false"
+          >
+            Projetos<small>FEITO POR AQUI</small></button
+          ><button
+            class="node proposed"
+            style="left: 83%; top: 50%"
+            data-node="personal"
+            aria-pressed="false"
+          >
+            Pessoal<small>SEÇÃO PROPOSTA</small>
+          </button>
+        </div>
+        <nav
+          class="node-list"
+          id="node-list"
+          hidden
+          aria-label="Assuntos em lista"
+        >
+          <button data-node="writing" aria-pressed="true">
+            Escrita<small>6 TEXTOS DO ARQUIVO</small></button
+          ><button data-node="games" aria-pressed="false">
+            Jogos<small>GARRY'S MOD → PROGRAMAÇÃO</small></button
+          ><button data-node="code" aria-pressed="false">
+            Código<small>IDEIAS EM TEXTO</small></button
+          ><button data-node="music" aria-pressed="false">
+            Música<small>A ONDA DO TRAP</small></button
+          ><button data-node="projects" aria-pressed="false">
+            Projetos<small>ELEVEN + ESTE SITE</small></button
+          ><button data-node="personal" aria-pressed="false">
+            Pessoal<small>SEÇÃO PROPOSTA</small>
+          </button>
+        </nav>
+        <aside class="connection-panel" aria-live="polite">
+          <span class="panel-meta">ASSUNTO SELECIONADO</span>
+          <h2 id="connection-title" tabindex="-1">Escrita</h2>
+          <p id="connection-description">
+            Uma forma de organizar o que aprendi e as coisas em que acredito.
+            Mesmo quando mudo de ideia depois.
+          </p>
+          <div class="panel-links" id="panel-links"></div>
+          <span class="panel-foot"
+            >As conexões vêm dos conteúdos.<br />Sem ordem certa para
+            começar.</span
+          >
+        </aside>
+      </section>
+    </main>
+    <footer class="map-foot">
+      <span
+        >Textos e projetos reais. Pessoal é uma proposta, sem relatos
+        inventados.</span
+      ><button data-open="now">E o agora? ↗</button>
+    </footer>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script src="assets/content.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+      const topics = {
+        writing: {
+          title: "Escrita",
+          desc: "Um arquivo de ideias sobre programação, jogos e música. As opiniões são da época de cada texto.",
+          links: ["garry", "react", "trap", "webrtc", "learn", "timeout"],
+        },
+        games: {
+          title: "Jogos",
+          desc: "No arquivo, Garry’s Mod vira uma conversa sobre comunidade e programação. Um assunto leva ao outro.",
+          links: ["garry"],
+        },
+        code: {
+          title: "Código",
+          desc: "Tecnologias, escolhas e algumas opiniões fortes. Textos do arquivo original do blog.",
+          links: ["react", "webrtc", "learn", "timeout"],
+        },
+        music: {
+          title: "Música",
+          desc: "Um texto sobre trap, referências e originalidade. Uma porta para abrir mais espaço para cultura no site.",
+          links: ["trap"],
+        },
+        projects: {
+          title: "Projetos",
+          desc: "Coisas feitas pelo ceifa. Cada projeto pode contar sua própria história.",
+          links: ["eleven", "website", "lab"],
+        },
+        personal: {
+          title: "Pessoal",
+          desc: "Seção proposta. Viagens, fotos, histórias e favoritos podem entrar sem precisar virar um blog separado.",
+          links: ["personal", "favorites", "now"],
+        },
+      };
+      let chosen = "writing";
+      const stage = document.getElementById("map-stage"),
+        list = document.getElementById("node-list"),
+        toggle = document.getElementById("view-toggle");
+      function selectNode(key, focus = false) {
+        chosen = key;
+        const t = topics[key];
+        document
+          .querySelectorAll("[data-node]")
+          .forEach((b) =>
+            b.setAttribute("aria-pressed", b.dataset.node === key),
+          );
+        document.getElementById("connection-title").textContent = t.title;
+        document.getElementById("connection-description").textContent = t.desc;
+        document.getElementById("panel-links").innerHTML = t.links
+          .map(
+            (k) =>
+              '<button data-open="' +
+              k +
+              '">' +
+              CONTENT[k].title +
+              " ↗</button>",
+          )
+          .join("");
+        draw();
+        if (focus && innerWidth <= 700) {
+          document
+            .querySelector(".connection-panel")
+            .scrollIntoView({ block: "nearest" });
+          document
+            .getElementById("connection-title")
+            .focus({ preventScroll: true });
+        }
+      }
+      document
+        .querySelectorAll("[data-node]")
+        .forEach((b) => (b.onclick = () => selectNode(b.dataset.node, true)));
+      function setList(on) {
+        stage.hidden = on;
+        list.hidden = !on;
+        toggle.setAttribute("aria-pressed", on);
+        toggle.textContent = on ? "Ver como mapa" : "Ver como lista";
+        if (!on) requestAnimationFrame(draw);
+      }
+      toggle.onclick = () => setList(list.hidden);
+      setList(innerWidth <= 700);
+      const edges = [
+        ["writing", "games", "aprendi jogando"],
+        ["writing", "code", "escrevi sobre"],
+        ["writing", "music", "também escrevi"],
+        ["code", "projects", "vira projeto"],
+      ];
+      function draw() {
+        if (stage.hidden) return;
+        const canvas = stage.querySelector("canvas"),
+          r = stage.getBoundingClientRect();
+        canvas.width = r.width * devicePixelRatio;
+        canvas.height = r.height * devicePixelRatio;
+        const c = canvas.getContext("2d");
+        c.scale(devicePixelRatio, devicePixelRatio);
+        c.clearRect(0, 0, r.width, r.height);
+        const pos = (k) => {
+          const n = stage.querySelector('[data-node="' + k + '"]');
+          return {
+            x: (parseFloat(n.style.left) * r.width) / 100,
+            y: (parseFloat(n.style.top) * r.height) / 100,
+          };
+        };
+        edges.forEach(([a, b, label]) => {
+          const p = pos(a),
+            q = pos(b),
+            on = chosen === a || chosen === b;
+          c.strokeStyle = on ? "#bde8f4" : "#416476";
+          c.lineWidth = on ? 1.5 : 1;
+          c.beginPath();
+          c.moveTo(p.x, p.y);
+          c.lineTo(q.x, q.y);
+          c.stroke();
+          const x = (p.x + q.x) / 2,
+            y = (p.y + q.y) / 2;
+          c.font = "10px Code,monospace";
+          const w = c.measureText(label).width;
+          c.fillStyle = "#0d2030";
+          c.fillRect(x - w / 2 - 5, y - 8, w + 10, 16);
+          c.fillStyle = on ? "#bde8f4" : "#91b4c1";
+          c.textAlign = "center";
+          c.fillText(label, x, y + 3);
+        });
+      }
+      new ResizeObserver(draw).observe(stage);
+      async function drawWithFonts() {
+        await document.fonts.ready;
+        draw();
+      }
+      drawWithFonts();
+      selectNode("writing");
+    </script>
+  </body>
+</html>

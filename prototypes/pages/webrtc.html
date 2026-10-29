@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="agenthost-live" content="off" />
+    <title>Um pequeno resumo sobre WebRTC · ceifa</title>
+    <meta
+      name="description"
+      content="Um canto do Gabriel Francisco na internet. Projetos, textos e outras histórias."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='9' y='8' width='22' height='25' rx='7' fill='%23ab4057'/%3E%3Ccircle cx='17' cy='17' r='2' fill='white'/%3E%3Ccircle cx='24' cy='17' r='2' fill='white'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/assets/lean.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Pular para o conteúdo</a>
+    <div class="site" id="top">
+      <header class="header">
+        <a href="index.html" class="logo">ceifa<i>.</i></a>
+        <nav aria-label="Navegação principal">
+          <a href="projects.html">Projetos</a
+          ><a href="writing.html" aria-current="page">Textos</a
+          ><a href="personal.html">Pessoal</a>
+        </nav>
+      </header>
+      <main id="main" tabindex="-1">
+        <a class="back" href="writing.html"
+          ><span data-land="text">← Textos</span></a
+        >
+        <header class="article-head">
+          <h1>
+            <span data-land="text" id="first-perch"
+              >Um pequeno resumo sobre WebRTC</span
+            >
+          </h1>
+          <p class="article-meta">05/05/2021</p>
+        </header>
+        <article class="article-body">
+          <p>
+            <span data-land="text"
+              >WebRTC API (Web Real-Time Communications) é uma tecnologia
+              idealizada pela Google em 2009 e padronizada pela W3C e IETF em
+              2013, após uma
+              <a
+                href="https://blog.chromium.org/2013/02/hello-firefox-this-is-chrome-calling.html"
+                >demonstração de uma video chamada entre a Mozilla e a Google em
+                seus browsers</a
+              >. Apesar de seu amplo uso com transmissão de mídia, WebRTC não
+              necessariamente é sobre isso, a tecnologia permite que aplicativos
+              e sites capturem e transmitam informações arbitrárias entre os
+              clientes via p2p(peer-to-peer), sem a necessidade de um
+              intermediador.</span
+            >
+          </p>
+          <h2><span data-land="text">Como funciona?</span></h2>
+          <h3><span data-land="text">Servidor STUN e ICE</span></h3>
+          <p>
+            <span data-land="text"
+              >Para conectar pares, primeiramente você precisará de um servidor
+              STUN(Session Traversal Utilities for NAT), este é um protocolo que
+              serve como ferramenta para outros protocolos no tratamento do
+              NAT(Network Address Translator). No nosso caso precisamos dele
+              para gerar os
+              <a
+                href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity#ice_candidates"
+                >ICE candidates</a
+              >, que consiste em uma lista de IPs, portas e protocolos
+              disponíveis naquele cliente.</span
+            >
+          </p>
+          <h3><span data-land="text">Servidor de Sinais</span></h3>
+          <p>
+            <span data-land="text"
+              >Os pares não tem conhecimento da existencia dos outros pares
+              antes de fazer a conexão, sendo assim, após cada um dos clientes
+              terem seus ICE candidates, eles precisarão negociar uma conexão,
+              para isso cada um dos pares precisa mandar um
+              <a href="https://developer.mozilla.org/en-US/docs/Glossary/SDP"
+                >SDP</a
+              >(Session Description Protocol) para os outros pares, e a tarefa
+              de fazer o SDP de cada um chegar na outra ponta é do
+              desenvolvedor.</span
+            >
+          </p>
+          <p>
+            <span data-land="text"
+              >O fluxo de troca de sinais é este: O primeiro par cria uma oferta
+              e a envia para o segundo par, este a recebe e envia uma resposta
+              de volta, quando o primeiro par recebe-la, eles estarão aptos a se
+              conectarem.</span
+            >
+          </p>
+          <h3><span data-land="text">Servidor TURN</span></h3>
+          <p>
+            <span data-land="text"
+              >Não é seguro confiar que os navegadores conseguirão fazer uma
+              conexão direta, isto porque algumas redes podem ser mais rigidas e
+              terem um firewall mais estrito, neste caso você precisaria de um
+              servidor TURN(Traversal Using Relays around NAT), este servirá
+              para intermediar o trafego de dados entre os pares.</span
+            >
+          </p>
+          <h3><span data-land="text">Fluxo final</span></h3>
+          <p>
+            <span data-land="text"
+              >Odeio estas imagens mostrando o handshake do WebRTC porque
+              costumam ser bem confusas, mas se você é uma pessoa visual, o
+              fluxo fica mais ou menos assim:</span
+            >
+          </p>
+          <p>
+            <span data-land="text"
+              ><a href="https://i.imgur.com/2S7ARGc.png"
+                >Ver o diagrama</a
+              ></span
+            >
+          </p>
+          <h2><span data-land="text">Na pratica</span></h2>
+          <p>
+            <span data-land="text"
+              >Apesar de todos estes servidores necessários para ter uma
+              comunicação confiavel sob WebRTC, na prática você não precisa tudo
+              isso para projetos pequenos, por serem tarefas baratas, um
+              <a
+                href="https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b"
+                >servidor STUN</a
+              >
+              e um servidor para trocar sinais podem ser facilmente encontrados
+              na internet. Já os servidores TURN são mais complicados por terem
+              altos consumos de rede, mas também nem sempre precisamos de um, e
+              caso precise, existem
+              <a href="https://github.com/coturn/coturn"
+                >boas soluções open source</a
+              >.</span
+            >
+          </p>
+          <p>
+            <span data-land="text"
+              >Para teste, fiz um <a href="https://chat.ceifa.tv">chat</a> em
+              100 linhas utilizando WebRTC sem nenhuma necessidade de um
+              servidor privado, utilizando somente ferramentas públicas,
+              <a
+                href="https://github.com/ceifa/serverless-webrtc-chat/blob/master/src/index.js"
+                >código disponivel aqui</a
+              >.</span
+            >
+          </p>
+        </article>
+        <p class="archive-end">Do arquivo do blog, com as opiniões da época.</p>
+      </main>
+      <footer class="footer" id="about" data-land="top">
+        <p>Gabriel Francisco, ceifa.</p>
+        <a href="https://github.com/ceifa" target="_blank" rel="noopener"
+          >GitHub ↗</a
+        >
+      </footer>
+      <p class="prototype-note">Protótipo. Textos e projetos reais.</p>
+      <noscript
+        ><p>
+          O site funciona sem JavaScript. O pequeno morador aparece quando ele
+          está disponível.
+        </p></noscript
+      >
+    </div>
+    <button
+      class="resident"
+      id="resident"
+      aria-label="Pequeno morador da página. Ele acompanha sua leitura sozinho. Arraste para explorar, ou clique e use as setas para andar, espaço para pular, seta para baixo para descer e Escape para sair."
+      aria-pressed="false"
+      hidden
+    >
+      <span class="sprite"><span class="eyes"></span></span
+      ><span class="leg left"></span><span class="leg right"></span>
+    </button>
+    <div
+      class="whisper"
+      id="whisper"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+    <script type="module" src="/assets/navigate.mjs"></script>
+    <script type="module" src="/assets/inhabit.mjs"></script>
+  </body>
+</html>

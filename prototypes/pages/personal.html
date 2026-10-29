@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="agenthost-live" content="off" />
+    <title>Pessoal · ceifa</title>
+    <meta
+      name="description"
+      content="Um canto do Gabriel Francisco na internet. Projetos, textos e outras histórias."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='9' y='8' width='22' height='25' rx='7' fill='%23ab4057'/%3E%3Ccircle cx='17' cy='17' r='2' fill='white'/%3E%3Ccircle cx='24' cy='17' r='2' fill='white'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/assets/lean.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Pular para o conteúdo</a>
+    <div class="site" id="top">
+      <header class="header">
+        <a href="index.html" class="logo">ceifa<i>.</i></a>
+        <nav aria-label="Navegação principal">
+          <a href="projects.html">Projetos</a><a href="writing.html">Textos</a
+          ><a href="personal.html" aria-current="page">Pessoal</a>
+        </nav>
+      </header>
+      <main id="main" tabindex="-1">
+        <section class="page-head">
+          <h1><span data-land="text" id="first-perch">Pessoal</span></h1>
+        </section>
+        <div class="personal-grid">
+          <div class="personal-intro">
+            <h3>
+              <span data-land="text">O resto da vida<br />também entra.</span>
+            </h3>
+          </div>
+          <div class="personal-links">
+            <p class="soon" data-land="bottom">
+              Viagens e fotos<span>em breve</span>
+            </p>
+            <p class="soon" data-land="bottom">
+              Favoritos<span>em breve</span>
+            </p>
+            <p class="soon" data-land="bottom">
+              Notas soltas<span>em breve</span>
+            </p>
+          </div>
+        </div>
+      </main>
+      <footer class="footer" id="about" data-land="top">
+        <p>Gabriel Francisco, ceifa.</p>
+        <a href="https://github.com/ceifa" target="_blank" rel="noopener"
+          >GitHub ↗</a
+        >
+      </footer>
+      <p class="prototype-note">Protótipo. Textos e projetos reais.</p>
+      <noscript
+        ><p>
+          O site funciona sem JavaScript. O pequeno morador aparece quando ele
+          está disponível.
+        </p></noscript
+      >
+    </div>
+    <button
+      class="resident"
+      id="resident"
+      aria-label="Pequeno morador da página. Ele acompanha sua leitura sozinho. Arraste para explorar, ou clique e use as setas para andar, espaço para pular, seta para baixo para descer e Escape para sair."
+      aria-pressed="false"
+      hidden
+    >
+      <span class="sprite"><span class="eyes"></span></span
+      ><span class="leg left"></span><span class="leg right"></span>
+    </button>
+    <div
+      class="whisper"
+      id="whisper"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+    <script type="module" src="/assets/navigate.mjs"></script>
+    <script type="module" src="/assets/inhabit.mjs"></script>
+  </body>
+</html>

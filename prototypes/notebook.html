@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Exploração visual para o site pessoal do ceifa: Caderno."
+    />
+    <title>Caderno · ceifa</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232744ec'/%3E%3Ctext x='14' y='49' fill='white' font-family='serif' font-size='55'%3Ec%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/base.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #e1edf4;
+        --ink: #203744;
+        --blue: #b9d8e8;
+        --yellow: #f1d347;
+        --focus: #a44a15;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        background-image: radial-gradient(#6e99ae30 0.6px, transparent 0.6px);
+        background-size: 9px 9px;
+      }
+      .notebook-wrap {
+        max-width: 1340px;
+        padding: 35px 5vw 70px;
+        margin: auto;
+      }
+      .notebook-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font: 12px Code;
+      }
+      .notebook-head button {
+        padding: 8px 0;
+        border: 0;
+        background: none;
+        color: inherit;
+      }
+      .notebook-title {
+        position: relative;
+        padding: 60px 0 45px;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 30px;
+      }
+      .notebook-title h1 {
+        font: clamp(70px, 9vw, 132px) / 0.95 Book;
+        letter-spacing: -0.065em;
+        max-width: 700px;
+      }
+      .notebook-title h1 em {
+        font-family: Page;
+        font-weight: 400;
+        position: relative;
+        z-index: 1;
+      }
+      .notebook-title h1 em:after {
+        content: "";
+        height: 19px;
+        background: var(--yellow);
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        right: -20px;
+        z-index: -1;
+        transform: rotate(-3deg);
+      }
+      .notebook-title p {
+        font: 13px/1.7 Code;
+        max-width: 225px;
+        padding-bottom: 10px;
+      }
+      .scraps {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: start;
+      }
+      .scrap {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+        border: 0;
+        color: var(--ink);
+        position: relative;
+      }
+      .scrap:hover .scrap-link {
+        text-decoration: underline;
+        text-underline-offset: 5px;
+      }
+      .typed {
+        background: #f8fbfd;
+        padding: 40px;
+        transform: rotate(-1.3deg);
+        box-shadow: 5px 7px 0 #9bb9c84a;
+      }
+      .typed:before {
+        content: "";
+        position: absolute;
+        width: 95px;
+        height: 28px;
+        background: #f1d347ba;
+        top: -11px;
+        left: 42%;
+        transform: rotate(4deg);
+      }
+      .scrap-label {
+        font: 11px Code;
+        letter-spacing: 0.03em;
+        margin-bottom: 40px;
+      }
+      .typed h2 {
+        font: clamp(32px, 3.4vw, 49px) / 1.12 Book;
+        letter-spacing: -1.8px;
+        margin-bottom: 25px;
+      }
+      .typed p {
+        font: 19px/1.5 Page;
+        margin-bottom: 32px;
+      }
+      .scrap-link {
+        font: 12px Code;
+        display: flex;
+        justify-content: space-between;
+      }
+      .contact-sheet {
+        background: #244554;
+        color: #eaf3f8;
+        padding: 19px;
+        transform: rotate(2deg);
+        margin-top: 40px;
+        box-shadow: 6px 6px 0 #9bb9c84a;
+      }
+      .scene {
+        width: 100%;
+        height: 280px;
+        display: block;
+        background: #b9d8e8;
+      }
+      .contact-sheet .caption {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        font: 10px/1.5 Code;
+        padding: 17px 0 0;
+      }
+      .margin-note {
+        font: 27px/1.1 Page;
+        transform: rotate(-5deg);
+        padding: 33px 10px 10px;
+      }
+      .lower-scraps {
+        display: grid;
+        grid-template-columns: 1fr 1fr 0.75fr;
+        gap: 35px;
+        align-items: start;
+        padding-top: 65px;
+      }
+      .project-sheet {
+        background: var(--yellow);
+        padding: 30px;
+        transform: rotate(1.5deg);
+      }
+      .project-sheet h2 {
+        font: 40px/1.1 Book;
+        letter-spacing: -1px;
+      }
+      .project-sheet p {
+        font: 14px/1.6 Atlas;
+        margin: 20px 0 30px;
+      }
+      .shelf-sheet {
+        padding: 15px 0;
+      }
+      .shelf-sheet .scrap-label {
+        margin-bottom: 25px;
+      }
+      .shelf-sheet h2 {
+        font: 32px/1.1 Page;
+        margin-bottom: 25px;
+      }
+      .shelf-sheet button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: 0;
+        border-bottom: 1px dashed #8faaba;
+        background: none;
+        color: inherit;
+        padding: 16px 0;
+        font: 14px/1.4 Atlas;
+      }
+      .stamp {
+        padding: 30px 20px;
+        transform: rotate(-6deg);
+        border: 2px solid var(--ink);
+        text-align: center;
+        margin: 30px 8px 0;
+      }
+      .stamp p {
+        font: 12px/1.8 Code;
+      }
+      .stamp b {
+        font: 40px Page;
+        font-weight: 400;
+      }
+      .caderno-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 25px;
+        margin-top: 70px;
+        font: 11px/1.7 Code;
+      }
+      .caderno-footer a {
+        text-underline-offset: 4px;
+      }
+      .index-pop {
+        background: #f8fbfd;
+        border: 1px solid #8faaba;
+        padding: 20px 25px;
+        position: absolute;
+        right: 5vw;
+        top: 115px;
+        z-index: 10;
+        box-shadow: 6px 6px 0 #9bb9c8;
+      }
+      .index-pop a {
+        display: block;
+        padding: 13px;
+        font: 13px Code;
+      }
+      .mark {
+        background: var(--yellow);
+        transition: background 1.5s;
+      }
+      @media (max-width: 700px) {
+        .notebook-wrap {
+          padding: 26px 6vw 45px;
+        }
+        .notebook-title {
+          padding: 40px 0;
+          display: block;
+        }
+        .notebook-title h1 {
+          font-size: 66px;
+          letter-spacing: -4px;
+        }
+        .notebook-title p {
+          margin-top: 30px;
+          max-width: 100%;
+          font-size: 11px;
+        }
+        .scraps {
+          grid-template-columns: 1fr;
+          gap: 15px;
+        }
+        .typed {
+          padding: 30px;
+        }
+        .typed h2 {
+          font-size: 34px;
+        }
+        .contact-sheet {
+          margin: 20px 5px 0;
+        }
+        .scene {
+          height: 240px;
+        }
+        .lower-scraps {
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          padding-top: 35px;
+        }
+        .project-sheet {
+          padding: 24px;
+          grid-column: span 2;
+        }
+        .shelf-sheet {
+          grid-column: span 2;
+        }
+        .stamp {
+          grid-column: span 2;
+          max-width: 240px;
+          margin: 20px auto;
+        }
+        .caderno-footer {
+          display: block;
+          margin-top: 45px;
+        }
+        .caderno-footer p {
+          margin-bottom: 15px;
+        }
+        .scrap-label {
+          margin-bottom: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body data-prototype="notebook">
+    <div class="notebook-wrap">
+      <header class="notebook-head">
+        <a href="notebook.html">GABRIEL FRANCISCO / CEIFA</a
+        ><button
+          id="notebook-index-button"
+          aria-expanded="false"
+          aria-controls="notebook-index"
+        >
+          Abrir índice ↗
+        </button>
+      </header>
+      <nav
+        class="index-pop"
+        id="notebook-index"
+        hidden
+        aria-label="Índice do caderno"
+      >
+        <a href="#notes">Notas</a><a href="#outside">Fora da tela</a
+        ><a href="#projects">Projetos</a><a href="#shelf">Prateleira</a>
+      </nav>
+      <main>
+        <section class="notebook-title">
+          <h1>Notas de<br />um <em>curioso.</em></h1>
+          <p>
+            Um caderno aberto.<br />Código, cultura, experimentos<br />e espaço
+            para o resto.
+          </p>
+        </section>
+        <div class="scraps">
+          <button id="notes" class="scrap typed" data-open="garry">
+            <span class="scrap-label">UMA PÁGINA DO ARQUIVO · 2020</span>
+            <h2>Ensinamentos do Garry sobre programação</h2>
+            <p>
+              “É basicamente um jogo comunitário em que todos podem ser
+              desenvolvedores e criar coisas novas, e isso é lindo.”
+            </p>
+            <span class="scrap-link">Ler a anotação <span>↗</span></span>
+          </button>
+          <div>
+            <button
+              id="outside"
+              class="scrap contact-sheet"
+              data-open="personal"
+            >
+              <canvas
+                class="scene"
+                width="800"
+                height="570"
+                aria-label="Ilustração abstrata de paisagem, não é uma foto de viagem"
+              ></canvas
+              ><span class="caption"
+                ><span>UM LUGAR PARA AS HISTÓRIAS</span
+                ><span>ILUSTRAÇÃO / DEMO</span></span
+              >
+            </button>
+            <p class="margin-note">O que acontece<br />quando a tela fecha?</p>
+          </div>
+        </div>
+        <div class="lower-scraps">
+          <button id="projects" class="scrap project-sheet" data-open="eleven">
+            <span class="scrap-label">COISAS QUE CONSTRUO</span>
+            <h2>Eleven ↗</h2>
+            <p>pi from anywhere.</p>
+            <span class="scrap-link">Abrir projeto <span>⌘</span></span>
+          </button>
+          <section id="shelf" class="shelf-sheet">
+            <p class="scrap-label">OUTRAS PÁGINAS</p>
+            <h2>Deixar anotado.</h2>
+            <button data-open="trap">A onda do trap ↗</button
+            ><button data-open="react">Uma carta de um svelter aflito ↗</button
+            ><button data-open="favorites">
+              Uma prateleira de favoritos ↗<br /><small>Seção proposta</small>
+            </button>
+          </section>
+          <div class="stamp">
+            <p>
+              SEM CATEGORIA<br /><b>também<br />vale.</b><br />RESERVAR
+              ESPAÇO<br />PARA O INESPERADO
+            </p>
+          </div>
+        </div>
+      </main>
+      <footer class="caderno-footer">
+        <p>
+          Textos e projetos reais.<br />Área pessoal e favoritos são propostas.
+        </p>
+        <a href="https://github.com/ceifa" target="_blank" rel="noopener"
+          >Encontrar no GitHub ↗</a
+        >
+      </footer>
+    </div>
+    <noscript
+      ><div class="no-js">
+        Esta exploração usa JavaScript para abrir conteúdo.
+        <a href="https://github.com/ceifa/website/tree/master/posts"
+          >Ler textos originais</a
+        ><a href="index.html">Galeria</a>
+      </div></noscript
+    >
+    <script src="assets/content.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+      const idx = document.getElementById("notebook-index"),
+        ib = document.getElementById("notebook-index-button");
+      ib.onclick = () => {
+        idx.hidden = !idx.hidden;
+        ib.setAttribute("aria-expanded", !idx.hidden);
+      };
+      idx.querySelectorAll("a").forEach(
+        (a) =>
+          (a.onclick = () => {
+            idx.hidden = true;
+            ib.setAttribute("aria-expanded", "false");
+            const el = document.querySelector(a.getAttribute("href"));
+            el.classList.add("mark");
+            setTimeout(() => el.classList.remove("mark"), 1200);
+          }),
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          idx.hidden = true;
+          ib.setAttribute("aria-expanded", "false");
+        }
+      });
+      const canvas = document.querySelector("canvas"),
+        c = canvas.getContext("2d");
+      c.fillStyle = "#b9d8e8";
+      c.fillRect(0, 0, 800, 570);
+      c.fillStyle = "#f1d347";
+      c.beginPath();
+      c.arc(615, 130, 65, 0, Math.PI * 2);
+      c.fill();
+      c.fillStyle = "#7199aa";
+      c.beginPath();
+      c.moveTo(0, 350);
+      c.lineTo(170, 160);
+      c.lineTo(420, 410);
+      c.lineTo(660, 230);
+      c.lineTo(800, 340);
+      c.lineTo(800, 570);
+      c.lineTo(0, 570);
+      c.fill();
+      c.fillStyle = "#345667";
+      c.beginPath();
+      c.moveTo(0, 460);
+      c.quadraticCurveTo(170, 270, 350, 430);
+      c.quadraticCurveTo(600, 570, 800, 380);
+      c.lineTo(800, 570);
+      c.lineTo(0, 570);
+      c.fill();
+      c.strokeStyle = "#dbeaf1";
+      c.lineWidth = 3;
+      for (let i = 0; i < 5; i++) {
+        c.beginPath();
+        c.moveTo(480 + i * 35, 495 + i * 9);
+        c.lineTo(700 + i * 8, 495 + i * 9);
+        c.stroke();
+      }
+    </script>
+  </body>
+</html>
