@@ -20,7 +20,13 @@ const horizontalKeys = {
   a: "left",
   d: "right",
 };
-const actionKeys = { " ": jump, w: jump, s: drop };
+const actionKeys = {
+  " ": jump,
+  ArrowUp: jump,
+  w: jump,
+  ArrowDown: drop,
+  s: drop,
+};
 const keyName = (e) => (e.key.length === 1 ? e.key.toLowerCase() : e.key);
 let discoveryPositions = [];
 let floors = [],
