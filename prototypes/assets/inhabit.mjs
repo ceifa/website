@@ -32,6 +32,7 @@ let discoveryPositions = [];
 let floors = [],
   bounds,
   active = false,
+  tamed = false,
   drag = null,
   frame = null;
 let lastTime = 0,
@@ -160,7 +161,11 @@ function tick(now) {
   const dt = lastTime ? Math.min(1 / 30, (now - lastTime) / 1000) : 1 / 60;
   lastTime = now;
   const autonomous =
-    !active && now >= manualUntil && !reducedMotion.matches && companion;
+    !active &&
+    !tamed &&
+    now >= manualUntil &&
+    !reducedMotion.matches &&
+    companion;
   const command = autonomous
     ? companion.decide(actor, floors, viewport(), now)
     : { mode: now < manualUntil ? "waiting" : "watching", direction: 0 };
@@ -232,7 +237,7 @@ resident.addEventListener("pointerdown", (e) => {
 resident.addEventListener("pointermove", (e) => {
   if (!drag) return;
   if (Math.hypot(e.pageX - drag.startX, e.pageY - drag.startY) > 4)
-    drag.moved = true;
+    drag.moved = tamed = true;
   if (!drag.moved) return;
   manualActivity();
   actor.x = Math.max(

@@ -170,7 +170,7 @@ export class Companion {
       };
     }
     if (this.transition?.airborne) {
-      if (actor.ground === this.transition.from)
+      if (actor.ground !== this.transition.to)
         this.failed.add(this.transition.from + ":" + this.transition.to);
       this.transition = null;
     }
