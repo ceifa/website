@@ -20,6 +20,8 @@ const horizontalKeys = {
   a: "left",
   d: "right",
 };
+const actionKeys = { " ": jump, w: jump, s: drop };
+const keyName = (e) => (e.key.length === 1 ? e.key.toLowerCase() : e.key);
 let discoveryPositions = [];
 let floors = [],
   bounds,
@@ -122,7 +124,7 @@ function manualActivity() {
     wake();
   }, 6500);
 }
-function select(value, hint = false, resume = false) {
+function select(value, resume = false) {
   active = value;
   keys.clear();
   if (value) manualActivity();
@@ -132,14 +134,6 @@ function select(value, hint = false, resume = false) {
     companion?.reset();
   }
   resident.setAttribute("aria-pressed", String(active));
-  if (active && hint)
-    say(
-      matchMedia("(pointer: coarse)").matches
-        ? "Me arrasta pela página."
-        : "← → andar · espaço pular · ↓ descer · Esc soltar",
-      null,
-      4500,
-    );
   wake();
 }
 function discover() {
@@ -216,6 +210,7 @@ function wake() {
 }
 resident.addEventListener("pointerdown", (e) => {
   if (!e.isPrimary || (e.pointerType === "mouse" && e.button !== 0)) return;
+  resident.dataset.pointer = "";
   select(false);
   manualActivity();
   drag = {
@@ -255,54 +250,47 @@ function release(cancelled = false) {
     actor.vy = 0;
     select(false);
   } else {
-    select(true, true);
+    select(true);
     resident.focus({ preventScroll: true });
   }
   render();
   wake();
 }
 resident.addEventListener("pointerup", () => release());
+resident.addEventListener("blur", () => delete resident.dataset.pointer);
 resident.addEventListener("pointercancel", () => release(true));
 resident.addEventListener("click", (e) => {
-  if (e.detail === 0) select(!active, !active);
+  if (e.detail === 0) select(!active);
 });
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    select(false, false, true);
+    select(false, true);
     whisper.hidden = true;
     return;
   }
+  const direction = horizontalKeys[keyName(e)];
+  const action = actionKeys[keyName(e)];
   if (
-    !active ||
+    (!direction && !action) ||
+    resident.hidden ||
+    e.ctrlKey ||
+    e.metaKey ||
+    e.altKey ||
+    e.target.isContentEditable ||
     (e.target !== resident &&
       e.target.closest("a,button,input,textarea,select,summary"))
   )
     return;
-  const direction = horizontalKeys[e.key];
-  if (direction) {
-    e.preventDefault();
-    keys.add(direction);
-    inputAt = performance.now();
-    manualActivity();
-    wake();
-  }
-  if (["ArrowDown", "s"].includes(e.key)) {
-    e.preventDefault();
-    if (!e.repeat) drop(actor);
-    inputAt = performance.now();
-    manualActivity();
-    wake();
-  }
-  if ([" ", "ArrowUp", "w"].includes(e.key)) {
-    e.preventDefault();
-    if (!e.repeat) jump(actor);
-    inputAt = performance.now();
-    manualActivity();
-    wake();
-  }
+  e.preventDefault();
+  if (!active) select(true);
+  if (direction) keys.add(direction);
+  else if (!e.repeat) action(actor);
+  inputAt = performance.now();
+  manualActivity();
+  wake();
 });
 window.addEventListener("keyup", (e) => {
-  const direction = horizontalKeys[e.key];
+  const direction = horizontalKeys[keyName(e)];
   if (direction) {
     keys.delete(direction);
     wake();
@@ -320,7 +308,7 @@ document.addEventListener("click", (e) => {
   const note = e.target.closest("[data-discovery]");
   if (note) return say(note.dataset.discovery, note, 8500);
   if (e.target.closest("a,summary")) {
-    select(false, false, true);
+    select(false, true);
     whisper.hidden = true;
   }
 });

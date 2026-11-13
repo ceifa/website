@@ -28,7 +28,7 @@
 .resident:focus {
   outline: none;
 }
-.resident:focus-visible:after {
+.resident:focus-visible:not([data-pointer]):after {
   content: "";
   position: absolute;
   inset: -5px;
