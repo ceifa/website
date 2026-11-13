@@ -94,32 +94,21 @@ const compact = new Intl.NumberFormat("en", { notation: "compact" });
     {
       projects.map((project) => (
         <a class="project-card" data-land="top" href={project.href}>
-          <img
-            class="project-image"
-            src={`/images/projects/${project.repo.split("/")[1]}.webp`}
-            alt=""
-            width="320"
-            height="320"
-            loading="lazy"
-            decoding="async"
-          />
-          <div class="project-body">
-            <div class="project-title">
-              <h2><span data-land="text">{project.name}</span></h2>
-              {stars.has(project.repo) && (
-                <span class="project-stars" aria-label={`${stars.get(project.repo)} stars on GitHub`}>
-                  <svg viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
-                  </svg>
-                  {compact.format(stars.get(project.repo)!)}
-                </span>
-              )}
-            </div>
-            <p>{project.description}</p>
-            <ul class="project-tags">
-              {project.tags.map((tag) => <li>{tag}</li>)}
-            </ul>
+          <div class="project-title">
+            <h2><span data-land="text">{project.name}</span></h2>
+            {stars.has(project.repo) && (
+              <span class="project-stars" aria-label={`${stars.get(project.repo)} stars on GitHub`}>
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
+                </svg>
+                {compact.format(stars.get(project.repo)!)}
+              </span>
+            )}
           </div>
+          <p>{project.description}</p>
+          <ul class="project-tags">
+            {project.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
         </a>
       ))
     }

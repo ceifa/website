@@ -787,9 +787,9 @@ main:focus {
 }
 .project-card {
   display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  padding: 18px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
   background: var(--plain);
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -798,20 +798,6 @@ main:focus {
 }
 .project-card:hover {
   border-color: var(--mint-strong);
-}
-.project-image {
-  flex-shrink: 0;
-  width: 88px;
-  height: 88px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: #fafbf8;
-}
-.project-body {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
 }
 .project-title {
   display: flex;
@@ -848,8 +834,8 @@ main:focus {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  margin: 4px 0 0;
-  padding: 0;
+  margin: auto 0 0;
+  padding: 4px 0 0;
   list-style: none;
 }
 .project-tags li {
@@ -865,12 +851,7 @@ main:focus {
     gap: 10px;
   }
   .project-card {
-    gap: 14px;
-    padding: 14px;
-  }
-  .project-image {
-    width: 64px;
-    height: 64px;
+    padding: 14px 16px;
   }
   .project-card h2 {
     font-size: 19px;
