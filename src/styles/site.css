@@ -788,8 +788,7 @@ main:focus {
 .project-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px 26px 22px;
+  overflow: hidden;
   background: var(--plain);
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -797,6 +796,21 @@ main:focus {
   transition:
     border-color 0.15s,
     transform 0.15s;
+}
+.project-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+}
+.project-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 12px;
+  padding: 22px 26px 22px;
 }
 .project-card:hover {
   border-color: var(--mint-strong);
@@ -863,8 +877,8 @@ main:focus {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  .project-card {
-    padding: 20px 20px 18px;
+  .project-body {
+    padding: 18px 20px;
   }
   .project-card h2 {
     font-size: 23px;
