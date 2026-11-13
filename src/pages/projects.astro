@@ -98,21 +98,14 @@ const compact = new Intl.NumberFormat("en", { notation: "compact" });
             class="project-image"
             src={`/images/projects/${project.repo.split("/")[1]}.webp`}
             alt=""
-            width="1200"
-            height="675"
+            width="320"
+            height="320"
             loading="lazy"
             decoding="async"
           />
           <div class="project-body">
-            <h2>
-              <span data-land="text">{project.name}</span>
-              <span class="project-arrow" aria-hidden="true">↗</span>
-            </h2>
-            <p>{project.description}</p>
-            <div class="project-meta-row">
-              <ul class="project-tags">
-                {project.tags.map((tag) => <li>{tag}</li>)}
-              </ul>
+            <div class="project-title">
+              <h2><span data-land="text">{project.name}</span></h2>
               {stars.has(project.repo) && (
                 <span class="project-stars" aria-label={`${stars.get(project.repo)} stars on GitHub`}>
                   <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -122,6 +115,10 @@ const compact = new Intl.NumberFormat("en", { notation: "compact" });
                 </span>
               )}
             </div>
+            <p>{project.description}</p>
+            <ul class="project-tags">
+              {project.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
           </div>
         </a>
       ))

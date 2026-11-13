@@ -782,92 +782,79 @@ main:focus {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
   padding-bottom: 20px;
 }
 .project-card {
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px;
   background: var(--plain);
   border: 1px solid var(--line);
   border-radius: 6px;
   text-decoration: none;
-  transition:
-    border-color 0.15s,
-    transform 0.15s;
+  transition: border-color 0.15s;
+}
+.project-card:hover {
+  border-color: var(--mint-strong);
 }
 .project-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fafbf8;
 }
 .project-body {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  gap: 12px;
-  padding: 22px 26px 22px;
+  gap: 6px;
+  min-width: 0;
 }
-.project-card:hover {
-  border-color: var(--mint-strong);
-  transform: translateY(-2px);
-}
-.project-card h2 {
+.project-title {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 16px;
-  font: 500 25px/1.2 var(--font-display);
-  letter-spacing: -0.6px;
+  gap: 12px;
 }
-.project-arrow {
-  font: 16px var(--font-site);
-  color: var(--muted);
+.project-card h2 {
+  font: 500 20px/1.25 var(--font-display);
+  letter-spacing: -0.4px;
 }
 .project-card:hover h2 {
   color: var(--accent);
 }
 .project-card p {
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--muted);
-  flex-grow: 1;
-}
-.project-meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-top: 4px;
 }
 .project-stars {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   font-size: 12px;
   color: var(--muted);
   white-space: nowrap;
 }
 .project-stars svg {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   fill: currentColor;
 }
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
+  gap: 5px;
+  margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
 .project-tags li {
-  font-size: 11px;
-  padding: 3px 9px;
+  font-size: 10.5px;
+  padding: 2px 8px;
   border-radius: 99px;
   background: var(--mint);
   color: var(--ink);
@@ -875,18 +862,18 @@ main:focus {
 @media (max-width: 700px) {
   .project-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
-  .project-body {
-    padding: 18px 20px;
+  .project-card {
+    gap: 14px;
+    padding: 14px;
+  }
+  .project-image {
+    width: 64px;
+    height: 64px;
   }
   .project-card h2 {
-    font-size: 23px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .project-card {
-    transition: none;
+    font-size: 19px;
   }
 }
 .section-heading h2 a {
