@@ -1,0 +1,15 @@
+---
+import PostList from "../components/PostList.astro";
+import Layout from "../layouts/Layout.astro";
+import { getPosts } from "../lib/posts";
+---
+
+<Layout
+  title="Writing · ceifa"
+  description="Posts by Gabriel Francisco about programming, the web and Garry's Mod."
+>
+  <section class="page-head">
+    <h1><span data-land="text" id="first-perch">Writing</span></h1>
+  </section>
+  <PostList posts={await getPosts()} />
+</Layout>

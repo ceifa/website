@@ -1,7 +1,7 @@
-{
-    "title": "Why you shouldn't use setTimeout",
-    "written": "2020-10-29"
-}
+---
+title: "Why you shouldn't use setTimeout"
+written: "2020-10-29"
+---
 
 I recently learned about the side effects of `setTimeout`, the hard way... I'll try to share a bit of my suffering so more people understand how evil this function is and can protect their families.
 

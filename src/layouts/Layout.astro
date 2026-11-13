@@ -1,0 +1,86 @@
+---
+import { Font } from "astro:assets";
+import "../styles/site.css";
+
+interface Props {
+  title: string;
+  description: string;
+  section?: string;
+}
+
+const { title, description, section = Astro.url.pathname } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  ["/projects", "Projects"],
+  ["/writing", "Writing"],
+  ["/about", "About"],
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="@_ceifa" />
+    <link rel="alternate" type="application/rss+xml" title="ceifa" href="/feed.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Font cssVariable="--font-site" preload />
+    <Font cssVariable="--font-display" preload />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="site" id="top">
+      <header class="header">
+        <a href="/" class="logo">ceifa<i>.</i></a>
+        <nav aria-label="Main">
+          {
+            nav.map(([href, label]) => (
+              <a href={href} aria-current={href === section ? "page" : undefined}>
+                {label}
+              </a>
+            ))
+          }
+        </nav>
+      </header>
+      <main id="main" tabindex="-1">
+        <slot />
+      </main>
+      <footer class="footer" data-land="top">
+        <p>Gabriel Francisco, ceifa.</p>
+        <span class="footer-links">
+          <a href="https://github.com/ceifa" rel="me">GitHub ↗</a>
+          <a href="https://x.com/_ceifa" rel="me">X ↗</a>
+          <a href="/feed.xml">RSS</a>
+        </span>
+      </footer>
+      <noscript>
+        <p>The site works without JavaScript. The little resident shows up when it can.</p>
+      </noscript>
+    </div>
+    <button
+      class="resident"
+      id="resident"
+      aria-label="The page's little resident. It follows your reading on its own. Drag it around, or use the arrow keys or WASD to walk, jump and drop, Space to jump and Escape to let go."
+      aria-pressed="false"
+      hidden
+    >
+      <span class="sprite"><span class="eyes"></span></span><span class="leg left"></span><span class="leg right"></span>
+    </button>
+    <div class="whisper" id="whisper" role="status" aria-live="polite" hidden></div>
+    <script>
+      import "../scripts/navigate.mjs";
+      import "../scripts/inhabit.mjs";
+    </script>
+  </body>
+</html>

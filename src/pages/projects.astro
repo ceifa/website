@@ -1,0 +1,39 @@
+---
+import Featured from "../components/Featured.astro";
+import Layout from "../layouts/Layout.astro";
+
+const projects = [
+  ["steamworks.js", "https://github.com/ceifa/steamworks.js", "The Steamworks SDK for Electron and NW.js games, with prebuilt binaries.", "Rust"],
+  ["agenthost", "https://agenthost.page", "Hosting for AI agents: publish a page, docs or files and get a private link back.", "TypeScript"],
+  ["papagaia", "https://github.com/ceifa/papagaia", "Voice typing and text rewriting with a shortcut, for Linux Wayland desktops.", "Rust"],
+  ["tiktoken-node", "https://github.com/ceifa/tiktoken-node", "OpenAI's tiktoken tokenizer with native Node bindings.", "Rust"],
+  ["demoon", "https://github.com/ceifa/demoon", "Run Lua files with Node underneath: require npm modules and await promises from Lua.", "JavaScript"],
+  ["monaco-liquid", "https://ceifa.github.io/monaco-liquid/", "Liquid templates in the Monaco editor: highlighting, validation and autocomplete.", "TypeScript"],
+  ["garrysmod-docker", "https://github.com/ceifa/garrysmod-docker", "A Docker image for running a Garry's Mod server.", "Docker"],
+  ["sqlier", "https://github.com/ceifa/sqlier", "One small database API for Garry's Mod addons, whatever driver sits behind it.", "Lua"],
+];
+---
+
+<Layout
+  title="Projects · ceifa"
+  description="Open source projects by Gabriel Francisco: Wasmoon, steamworks.js, Eleven, agenthost and more."
+>
+  <section class="page-head">
+    <h1><span data-land="text" id="first-perch">Projects</span></h1>
+  </section>
+  <Featured
+    eleven="A small gateway that connects chat channels to AI agents running in your own folders. Talk to your agent from your phone while the work stays on your machine."
+    wasmoon="Wasmoon compiles the real Lua VM to WebAssembly, with bindings that pass tables, functions and promises between Lua and JS without leaking memory. Runs in browsers, Node and Deno."
+  />
+  <div class="project-list">
+    {
+      projects.map(([name, href, description, language]) => (
+        <a class="project" data-land="bottom" href={href}>
+          <strong>{name}</strong>
+          <span>{description}</span>
+          <small>{language}</small>
+        </a>
+      ))
+    }
+  </div>
+</Layout>

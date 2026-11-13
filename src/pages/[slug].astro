@@ -1,0 +1,28 @@
+---
+import { render } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { describe, getPosts } from "../lib/posts";
+
+export async function getStaticPaths() {
+  return (await getPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const date = post.data.written;
+---
+
+<Layout title={`${post.data.title} · ceifa`} description={describe(post)} section="/writing">
+  <a class="back" href="/writing"><span data-land="text">← Writing</span></a>
+  <header class="article-head">
+    <h1><span data-land="text" id="first-perch">{post.data.title}</span></h1>
+    <p class="article-meta">
+      <time datetime={date.toISOString().slice(0, 10)}>
+        {date.toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}
+      </time>
+    </p>
+  </header>
+  <article class="article-body">
+    <Content />
+  </article>
+</Layout>

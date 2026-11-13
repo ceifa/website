@@ -1,7 +1,7 @@
-{
-    "title": "A short summary of WebRTC",
-    "written": "2021-05-05"
-}
+---
+title: "A short summary of WebRTC"
+written: "2021-05-05"
+---
 
 The WebRTC API (Web Real-Time Communications) is a technology conceived by Google in 2009 and standardized by the W3C and IETF in 2013, after a [demo of a video call between Mozilla's and Google's browsers](https://blog.chromium.org/2013/02/hello-firefox-this-is-chrome-calling.html). Despite being used mostly for media streaming, WebRTC isn't necessarily about that. It lets apps and websites capture and send arbitrary data between clients peer-to-peer, without a middleman.
 
@@ -25,7 +25,7 @@ You can't count on browsers managing a direct connection, because some networks 
 
 I hate these WebRTC handshake diagrams because they tend to be really confusing, but if you're a visual person, the flow looks more or less like this:
 
-![The WebRTC connection flow between two peers, a signaling server and STUN/TURN servers](/assets/webrtc-flow.png)
+![The WebRTC connection flow between two peers, a signaling server and STUN/TURN servers](/images/webrtc-flow.png)
 
 ## In practice
 

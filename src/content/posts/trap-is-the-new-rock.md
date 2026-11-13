@@ -1,7 +1,7 @@
-{
-    "title": "The trap wave",
-    "written": "2020-07-23"
-}
+---
+title: "The trap wave"
+written: "2020-07-23"
+---
 
 Just like there were times when everyone wanted to be a rock star or a football player, we're living in one where everyone wants to make trap. The number of people I know doing it is getting out of hand. The pattern is obvious: they mirror what they like and go after it to try to do the same. Kids from the outskirts, "rich" kids with stable jobs, it doesn't matter. Sooner or later they'll send you their new track and tell you their new name is lil X or yung Y.
 

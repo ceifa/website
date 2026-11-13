@@ -1,15 +1,3 @@
-@font-face {
-  font-family: Site;
-  src: url(sans.woff2) format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
-@font-face {
-  font-family: Display;
-  src: url(book.woff2) format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
 :root {
   --paper: #fafbf8;
   --ink: #253b37;
@@ -53,7 +41,7 @@ body {
   background: var(--paper);
   color: var(--ink);
   font:
-    15px/1.65 Site,
+    15px/1.65 var(--font-site),
     system-ui,
     sans-serif;
   overflow-x: clip;
@@ -102,12 +90,12 @@ summary:focus-visible {
   padding: 30px 0 26px;
 }
 .logo {
-  font: 700 23px Site;
+  font: 700 23px var(--font-site);
   letter-spacing: -1.3px;
   text-decoration: none;
 }
 .logo i {
-  font-family: Display;
+  font-family: var(--font-display);
   font-weight: 400;
   color: var(--accent);
 }
@@ -133,7 +121,7 @@ summary:focus-visible {
 }
 .hero h1 {
   font:
-    500 clamp(45px, 5.2vw, 67px) / 1.09 Display,
+    500 clamp(45px, 5.2vw, 67px) / 1.09 var(--font-display),
     Georgia,
     serif;
   letter-spacing: -2.9px;
@@ -159,7 +147,7 @@ summary:focus-visible {
 }
 .hero-label {
   display: block;
-  font: 11px Site;
+  font: 11px var(--font-site);
   letter-spacing: 0.03em;
   color: var(--muted);
   margin-bottom: 23px;
@@ -174,7 +162,7 @@ summary:focus-visible {
   margin-bottom: 25px;
 }
 .section-heading h2 {
-  font: 650 16px Site;
+  font: 650 16px var(--font-site);
   letter-spacing: -0.2px;
 }
 .section-heading > span {
@@ -182,7 +170,7 @@ summary:focus-visible {
   color: var(--muted);
 }
 .footnote {
-  font: 16px Display;
+  font: 16px var(--font-display);
   background: transparent;
   border: 0;
   padding: 0 7px;
@@ -216,7 +204,7 @@ summary:focus-visible {
   gap: 20px;
 }
 .project-top h3 {
-  font: 600 29px Display;
+  font: 600 29px var(--font-display);
   letter-spacing: -0.9px;
 }
 .project-top > a {
@@ -274,7 +262,7 @@ summary:focus-visible {
   padding: 25px 0 10px;
 }
 .side-project h3 {
-  font: 500 27px/1.2 Display;
+  font: 500 27px/1.2 var(--font-display);
   letter-spacing: -0.7px;
   max-width: 17ch;
 }
@@ -424,7 +412,7 @@ summary:focus-visible {
   border: 1px solid var(--line);
   border-radius: 5px;
   box-shadow: 0 4px 15px #253b3710;
-  font: 12px/1.6 Site;
+  font: 12px/1.6 var(--font-site);
   pointer-events: none;
   transform: translate(-50%, -100%);
 }
@@ -636,7 +624,7 @@ noscript p {
 }
 .about-teaser {
   display: block;
-  font: 500 38px/1.15 Display;
+  font: 500 38px/1.15 var(--font-display);
   letter-spacing: -1.3px;
   text-decoration: none;
   padding: 5px 0 20px;
@@ -655,7 +643,7 @@ noscript p {
 }
 .page-head h1 {
   font:
-    500 clamp(42px, 5vw, 58px) / 1.1 Display,
+    500 clamp(42px, 5vw, 58px) / 1.1 var(--font-display),
     Georgia,
     serif;
   letter-spacing: -2.2px;
@@ -676,7 +664,7 @@ noscript p {
 }
 .article-head h1 {
   font:
-    500 clamp(34px, 4.2vw, 48px) / 1.15 Display,
+    500 clamp(34px, 4.2vw, 48px) / 1.15 var(--font-display),
     Georgia,
     serif;
   letter-spacing: -1.6px;
@@ -696,7 +684,7 @@ noscript p {
   margin: 0 0 22px;
 }
 .article-body h2 {
-  font: 500 26px/1.3 Display;
+  font: 500 26px/1.3 var(--font-display);
   letter-spacing: -0.6px;
   margin: 42px 0 16px;
 }

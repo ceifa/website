@@ -1,7 +1,7 @@
-{
-    "title": "The real secret to getting started with programming",
-    "written": "2021-09-07"
-}
+---
+title: "The real secret to getting started with programming"
+written: "2021-09-07"
+---
 
 These days it's very common to see articles and courses like "The ultimate guide to getting into programming", or "The one simple trick that will teach you to code in 2 weeks", or even worse, "Take this course and walk out building an Uber clone".
 

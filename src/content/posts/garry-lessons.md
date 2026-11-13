@@ -1,7 +1,7 @@
-{
-    "title": "What Garry taught me about programming",
-    "written": "2020-08-21"
-}
+---
+title: "What Garry taught me about programming"
+written: "2020-08-21"
+---
 
 [Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/) is a game that [became a big hit](https://www.pcgamer.com/garrys-mod-interview/), and believe it or not, the credit doesn't go to its sandbox mode but to its community. It's basically a community game where anyone can be a developer and make new things, and that's beautiful. As I write this there are *more than 3,600 game modes* and *more than 25,000* maps on the [workshop](https://steamcommunity.com/app/4000/workshop/), and the most interesting part is that the game came out on Steam in 2006 and still has a big, active community today.
 
