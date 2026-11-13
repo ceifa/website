@@ -2,11 +2,9 @@ import { SIZE, jump, drop, step } from "./walker.mjs";
 import { Companion, findRoute } from "./companion.mjs";
 
 const resident = document.getElementById("resident");
-const whisper = document.getElementById("whisper");
 const site = document.querySelector(".site");
 const actor = { x: 0, y: 0, vx: 0, vy: 0, ground: null };
 const keys = new Set();
-const found = new Set();
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const viewport = () => ({ top: scrollY, height: innerHeight });
 let companion = null,
@@ -28,7 +26,6 @@ const actionKeys = {
   s: drop,
 };
 const keyName = (e) => (e.key.length === 1 ? e.key.toLowerCase() : e.key);
-let discoveryPositions = [];
 let floors = [],
   bounds,
   active = false,
@@ -36,8 +33,6 @@ let floors = [],
   drag = null,
   frame = null;
 let lastTime = 0,
-  bubbleTimer,
-  bubbleAnchor,
   inputAt = 0;
 
 function measure() {
@@ -64,16 +59,6 @@ function measure() {
             : r.top + (el.dataset.land === "text" ? font * 0.17 : 0)),
       }));
   });
-  discoveryPositions = [...document.querySelectorAll("[data-discovery]")].map(
-    (el) => {
-      const r = el.getBoundingClientRect();
-      return {
-        el,
-        x: r.left + scrollX + r.width / 2,
-        y: r.top + scrollY + r.height / 2,
-      };
-    },
-  );
   bounds = {
     width: document.documentElement.clientWidth,
     bottom:
@@ -92,31 +77,6 @@ function render() {
   resident.classList.toggle("dragging", !!drag?.moved);
   if (Math.abs(actor.vx) > 10)
     resident.style.setProperty("--facing", actor.vx > 0 ? 1 : -1);
-  if (!whisper.hidden && !bubbleAnchor) positionBubble();
-}
-function positionBubble() {
-  const r = bubbleAnchor?.getBoundingClientRect();
-  const x = r ? r.left + r.width / 2 : actor.x + SIZE.width / 2 - scrollX;
-  const y = r ? r.top - 8 : actor.y - scrollY - 12;
-  const w = whisper.offsetWidth;
-  whisper.style.left =
-    Math.max(w / 2 + 14, Math.min(innerWidth - w / 2 - 14, x)) + "px";
-  const below = y < whisper.offsetHeight + 15;
-  whisper.style.top =
-    (below ? Math.max(15, y + 65) : Math.min(innerHeight - 15, y)) + "px";
-  whisper.style.transform = below
-    ? "translateX(-50%)"
-    : "translate(-50%, -100%)";
-}
-function say(text, anchor = null, duration = 6000) {
-  clearTimeout(bubbleTimer);
-  bubbleAnchor = anchor;
-  whisper.textContent = text;
-  whisper.hidden = false;
-  positionBubble();
-  bubbleTimer = setTimeout(() => {
-    whisper.hidden = true;
-  }, duration);
 }
 function manualActivity() {
   manualUntil = performance.now() + 6500;
@@ -142,18 +102,6 @@ function select(value, resume = false) {
   }
   resident.setAttribute("aria-pressed", String(active));
   wake();
-}
-function discover() {
-  for (const { el, x, y } of discoveryPositions) {
-    if (found.has(el)) continue;
-    const dx = actor.x + SIZE.width / 2 - x;
-    const dy = actor.y + SIZE.height - y;
-    if (Math.hypot(dx, dy) < 43) {
-      found.add(el);
-      say(el.dataset.discovery, el, 8500);
-      break;
-    }
-  }
 }
 function tick(now) {
   frame = null;
@@ -189,7 +137,6 @@ function tick(now) {
   step(actor, floors, bounds, dt, direction);
   const landed = autonomous && wasAirborne && actor.ground !== null;
   render();
-  discover();
   if (active && now - inputAt < 1800) {
     const screenY = actor.y - scrollY;
     const delta =
@@ -232,7 +179,6 @@ resident.addEventListener("pointerdown", (e) => {
     moved: false,
   };
   resident.setPointerCapture(e.pointerId);
-  whisper.hidden = true;
 });
 resident.addEventListener("pointermove", (e) => {
   if (!drag) return;
@@ -251,7 +197,6 @@ resident.addEventListener("pointermove", (e) => {
   actor.ground = null;
   actor.vx = actor.vy = 0;
   render();
-  discover();
 });
 function release(cancelled = false) {
   if (!drag) return;
@@ -276,7 +221,6 @@ resident.addEventListener("click", (e) => {
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     select(false, true);
-    whisper.hidden = true;
     return;
   }
   const direction = horizontalKeys[keyName(e)];
@@ -316,12 +260,7 @@ document.addEventListener("focusin", (e) => {
   if (active && e.target !== resident) select(false);
 });
 document.addEventListener("click", (e) => {
-  const note = e.target.closest("[data-discovery]");
-  if (note) return say(note.dataset.discovery, note, 8500);
-  if (e.target.closest("a,summary")) {
-    select(false, true);
-    whisper.hidden = true;
-  }
+  if (e.target.closest("a,summary")) select(false, true);
 });
 let screenY = 0;
 document.addEventListener("page:leave", () => {
@@ -339,7 +278,6 @@ document.addEventListener("page:enter", () => {
 window.addEventListener(
   "scroll",
   () => {
-    if (!whisper.hidden) positionBubble();
     companion?.scrolled(performance.now());
     wake();
   },

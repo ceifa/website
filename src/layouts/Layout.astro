@@ -1,5 +1,6 @@
 ---
 import { Font } from "astro:assets";
+import Social from "../components/Social.astro";
 import "../styles/site.css";
 
 interface Props {
@@ -58,11 +59,7 @@ const nav = [
       </main>
       <footer class="footer" data-land="top">
         <p>Gabriel Francisco, ceifa.</p>
-        <span class="footer-links">
-          <a href="https://github.com/ceifa" rel="me">GitHub ↗</a>
-          <a href="https://x.com/_ceifa" rel="me">X ↗</a>
-          <a href="/feed.xml">RSS</a>
-        </span>
+        <Social class="social footer-links" />
       </footer>
       <noscript>
         <p>The site works without JavaScript. The little resident shows up when it can.</p>
@@ -77,7 +74,6 @@ const nav = [
     >
       <span class="sprite"><span class="eyes"></span></span><span class="leg left"></span><span class="leg right"></span>
     </button>
-    <div class="whisper" id="whisper" role="status" aria-live="polite" hidden></div>
     <script>
       import "../scripts/navigate.mjs";
       import "../scripts/inhabit.mjs";

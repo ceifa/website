@@ -1,4 +1,5 @@
 ---
+import Social from "../components/Social.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -32,11 +33,6 @@ import Layout from "../layouts/Layout.astro";
     <p>
       <span data-land="text">I write here every now and then, mostly about programming.</span>
     </p>
-    <div class="about-links" data-land="top">
-      <a href="https://github.com/ceifa" rel="me">GitHub ↗</a>
-      <a href="https://x.com/_ceifa" rel="me">X ↗</a>
-      <a href="https://discord.com/users/226142915770974208">Discord ↗</a>
-      <a href="/feed.xml">RSS</a>
-    </div>
+    <Social class="social about-links" data-land="top" discord />
   </div>
 </Layout>

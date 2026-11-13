@@ -1,16 +1,72 @@
 ---
-import Featured from "../components/Featured.astro";
 import Layout from "../layouts/Layout.astro";
 
 const projects = [
-  ["steamworks.js", "https://github.com/ceifa/steamworks.js", "The Steamworks SDK for Electron and NW.js games, with prebuilt binaries.", "Rust"],
-  ["agenthost", "https://agenthost.page", "Hosting for AI agents: publish a page, docs or files and get a private link back.", "TypeScript"],
-  ["papagaia", "https://github.com/ceifa/papagaia", "Voice typing and text rewriting with a shortcut, for Linux Wayland desktops.", "Rust"],
-  ["tiktoken-node", "https://github.com/ceifa/tiktoken-node", "OpenAI's tiktoken tokenizer with native Node bindings.", "Rust"],
-  ["demoon", "https://github.com/ceifa/demoon", "Run Lua files with Node underneath: require npm modules and await promises from Lua.", "JavaScript"],
-  ["monaco-liquid", "https://ceifa.github.io/monaco-liquid/", "Liquid templates in the Monaco editor: highlighting, validation and autocomplete.", "TypeScript"],
-  ["garrysmod-docker", "https://github.com/ceifa/garrysmod-docker", "A Docker image for running a Garry's Mod server.", "Docker"],
-  ["sqlier", "https://github.com/ceifa/sqlier", "One small database API for Garry's Mod addons, whatever driver sits behind it.", "Lua"],
+  {
+    name: "Wasmoon",
+    href: "https://github.com/ceifa/wasmoon",
+    description:
+      "The real Lua 5.4 VM compiled to WebAssembly, with bindings that pass tables, functions and promises between Lua and JS. Runs in browsers, Node and Deno.",
+    tags: ["TypeScript", "Lua"],
+  },
+  {
+    name: "steamworks.js",
+    href: "https://github.com/ceifa/steamworks.js",
+    description: "The Steamworks SDK for Electron and NW.js games, with prebuilt binaries.",
+    tags: ["Rust", "Games"],
+  },
+  {
+    name: "Eleven",
+    href: "https://github.com/ceifa/eleven",
+    description:
+      "A small gateway that connects Discord and Telegram to AI agents running in your own folders, with a dashboard for every conversation.",
+    tags: ["TypeScript", "AI agents"],
+  },
+  {
+    name: "agenthost",
+    href: "https://agenthost.page",
+    description:
+      "Hosting for AI agents. An agent publishes a page, docs or any files and gets back a private link.",
+    tags: ["TypeScript", "AI agents"],
+  },
+  {
+    name: "papagaia",
+    href: "https://github.com/ceifa/papagaia",
+    description: "Dictate into any app and rewrite selected text with a shortcut, on Linux Wayland desktops.",
+    tags: ["Rust", "Desktop"],
+  },
+  {
+    name: "tiktoken-node",
+    href: "https://github.com/ceifa/tiktoken-node",
+    description: "OpenAI's tiktoken tokenizer for Node, with native bindings written in Rust.",
+    tags: ["Rust", "AI"],
+  },
+  {
+    name: "demoon",
+    href: "https://github.com/ceifa/demoon",
+    description: "Run Lua files on top of Node: require npm modules and await promises from Lua.",
+    tags: ["JavaScript", "Lua"],
+  },
+  {
+    name: "monaco-liquid",
+    href: "https://ceifa.github.io/monaco-liquid/",
+    description:
+      "Liquid templates in the Monaco editor, with highlighting, validation, hover types and autocomplete.",
+    tags: ["TypeScript", "Editor"],
+  },
+  {
+    name: "garrysmod-docker",
+    href: "https://github.com/ceifa/garrysmod-docker",
+    description: "A Docker image that runs a Garry's Mod server.",
+    tags: ["Docker", "Games"],
+  },
+  {
+    name: "sqlier",
+    href: "https://github.com/ceifa/sqlier",
+    description:
+      "A small database layer for Garry's Mod addons that works the same over different drivers.",
+    tags: ["Lua", "Games"],
+  },
 ];
 ---
 
@@ -21,17 +77,18 @@ const projects = [
   <section class="page-head">
     <h1><span data-land="text" id="first-perch">Projects</span></h1>
   </section>
-  <Featured
-    eleven="A small gateway that connects chat channels to AI agents running in your own folders. Talk to your agent from your phone while the work stays on your machine."
-    wasmoon="Wasmoon compiles the real Lua VM to WebAssembly, with bindings that pass tables, functions and promises between Lua and JS without leaking memory. Runs in browsers, Node and Deno."
-  />
-  <div class="project-list">
+  <div class="project-grid">
     {
-      projects.map(([name, href, description, language]) => (
-        <a class="project" data-land="bottom" href={href}>
-          <strong>{name}</strong>
-          <span>{description}</span>
-          <small>{language}</small>
+      projects.map((project) => (
+        <a class="project-card" data-land="top" href={project.href}>
+          <h2>
+            <span data-land="text">{project.name}</span>
+            <span class="project-arrow" aria-hidden="true">↗</span>
+          </h2>
+          <p>{project.description}</p>
+          <ul class="project-tags">
+            {project.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
         </a>
       ))
     }
