@@ -6,7 +6,7 @@ export async function GET(context: APIContext) {
   const posts = await getPosts();
   return rss({
     title: "ceifa",
-    description: "Writing by Gabriel Francisco.",
+    description: "Posts by Gabriel Francisco.",
     site: context.site!,
     trailingSlash: false,
     items: posts.map((post) => ({

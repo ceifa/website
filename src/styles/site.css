@@ -270,7 +270,7 @@ summary:focus-visible {
   display: block;
   margin-bottom: 17px;
 }
-.writing {
+.posts {
   padding-top: 35px;
 }
 .footer {
@@ -508,7 +508,7 @@ noscript p {
     font-size: 9px;
     margin-bottom: 12px;
   }
-  .writing {
+  .posts {
     padding-top: 19px;
   }
   .footer {
@@ -547,7 +547,7 @@ noscript p {
   grid-template-columns: 1fr;
   padding-bottom: 46px;
 }
-.writing-list .post {
+.post-list .post {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -556,23 +556,23 @@ noscript p {
   border-bottom: 1px solid var(--line);
   text-decoration: none;
 }
-.writing-list .post strong {
+.post-list .post strong {
   font-size: 14px;
   font-weight: 500;
 }
-.writing-list .post small {
+.post-list .post small {
   font-size: 11px;
   flex-shrink: 0;
   color: var(--muted);
 }
-.writing-list .post:hover strong {
+.post-list .post:hover strong {
   color: var(--accent);
 }
 @media (max-width: 700px) {
-  .writing-list .post {
+  .post-list .post {
     gap: 15px;
   }
-  .writing-list .post strong {
+  .post-list .post strong {
     font-size: 13px;
   }
   .hero {
@@ -823,11 +823,31 @@ main:focus {
   color: var(--muted);
   flex-grow: 1;
 }
+.project-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+.project-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.project-stars svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
 .project-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 4px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -854,4 +874,10 @@ main:focus {
   .project-card {
     transition: none;
   }
+}
+.section-heading h2 a {
+  text-decoration: none;
+}
+.section-heading h2 a:hover {
+  color: var(--accent);
 }

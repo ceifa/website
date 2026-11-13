@@ -9,11 +9,13 @@ interface Props {
   section?: string;
 }
 
-const { title, description, section = Astro.url.pathname } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// With build.format "file" pages render as /projects.html; their public URL is /projects.
+const path = Astro.url.pathname.replace(/(index)?\.html$/, "");
+const { title, description, section = path } = Astro.props;
+const canonical = new URL(path, Astro.site);
 const nav = [
   ["/projects", "Projects"],
-  ["/writing", "Writing"],
+  ["/posts", "Posts"],
   ["/about", "About"],
 ];
 ---

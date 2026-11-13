@@ -8,7 +8,7 @@ interface Props {
 const { posts } = Astro.props;
 ---
 
-<div class="writing-list">
+<div class="post-list">
   {
     posts.map((post) => (
       <a class="post" data-land="bottom" href={`/${post.id}`}>

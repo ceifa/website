@@ -12,8 +12,8 @@ const { Content } = await render(post);
 const date = post.data.written;
 ---
 
-<Layout title={`${post.data.title} · ceifa`} description={describe(post)} section="/writing">
-  <a class="back" href="/writing"><span data-land="text">← Writing</span></a>
+<Layout title={`${post.data.title} · ceifa`} description={describe(post)} section="/posts">
+  <a class="back" href="/posts"><span data-land="text">← Posts</span></a>
   <header class="article-head">
     <h1><span data-land="text" id="first-perch">{post.data.title}</span></h1>
     <p class="article-meta">
