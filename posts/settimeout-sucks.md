@@ -1,37 +1,37 @@
 {
-    "title": "Porque não utilizar setTimeouts",
+    "title": "Why you shouldn't use setTimeout",
     "written": "2020-10-29"
 }
 
-Recentemente eu aprendi sobre os efeitos colaterais do `setTimeout`, isso da pior forma... Vou tentar compartilhar um pouco do meu sofrimento para que mais pessoas entendam o quão maldoso é esta função e possam proteger suas famílias. 
+I recently learned about the side effects of `setTimeout`, the hard way... I'll try to share a bit of my suffering so more people understand how evil this function is and can protect their families.
 
-## Não use como eval
+## Don't use it as eval
 
-Este caso é um pouco mais obvio, você provavelmente já sabe que usar eval é também uma má pratica, a não ser que você esteja criando uma DRM é muito dificil encontrar um caso legítimo e que faça sentido o seu uso.
+This one is a bit more obvious. You probably already know that using eval is bad practice too, and unless you're building a DRM it's really hard to find a legitimate case where it makes sense.
 
-A questão que poucas pessoas sabem é que o `setTimeout` não aceita somente uma função como primeiro argumento, ele também aceita strings, e ela será executada no seu navegador com o mesmo comportamento do eval.
+What few people know is that `setTimeout` doesn't only take a function as its first argument. It also takes strings, which your browser will run exactly like eval.
 
 ```js
 setTimeout('DoEvilMaybeXSS()', 1000)
 ```
 
-O aprendizado aqui é nunca confiar nos inputs de suas funções, se você estiver utilizando Typescript é um pouco mais fácil de confiar*, caso utilize javascript sempre faça checagens utilizando o `typeof`.
+The lesson here is to never trust your functions' inputs. If you're using TypeScript it's a little easier to trust them*, and if you're using JavaScript, always check with `typeof`.
 
-## Não use para animações
+## Don't use it for animations
 
-Criar animações com javascript é muito fácil, se você já tentou provavelmente usou o `setTimeout` ou `setInterval`, um exemplo básico seria:
+Creating animations with JavaScript is really easy. If you've ever tried, you probably used `setTimeout` or `setInterval`. A basic example would be:
 
 ```js
 (function draw() {
     setTimeout(draw, 50);
-    // Produz os desenhos da animação
+    // Draws the animation
 })()
 ```
 
-A função `draw` seria chamada a cada 50ms, esta frequência não é o ideal para animações tendo em vista que a suavidade da mesma depende também do "frame rate"(fps). A maioria das telas possuem uma taxa de atualização de 60Hz, ou seja, para a melhor suavidade possível nós devemos calcular em cima de 60fps:
+The `draw` function would be called every 50ms. That frequency isn't ideal for animations, since smoothness also depends on the frame rate (fps). Most screens refresh at 60Hz, so for the smoothest result we should aim for 60fps:
 
 <details>
-<summary>Código utilizado para a animação</summary>
+<summary>Code used for the animation</summary>
 <p>
 
 ```js
@@ -48,7 +48,7 @@ function doAnimation(canvas, advance){
 ```
 
 </p>
-</details>  
+</details>
 
 
 ```js
@@ -61,7 +61,7 @@ function doAnimation(canvas, advance){
 })();
 ```
 
-Isso produzirá o seguinte resultado:
+This produces the following result:
 
 <canvas id="timeout" style="width:100%;height:100px"></canvas>
 <script>
@@ -74,17 +74,18 @@ Isso produzirá o seguinte resultado:
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
         ctx.fillRect(tick, 0, 10, canvas.height)
     }
-    let lastTime = 0
+    const canvas = document.querySelector("#timeout")
     ;(function drawWithTimeout() {
+        if (!canvas.isConnected) return
         setTimeout(drawWithTimeout, 1000 / 60)
-        doAnimation(document.querySelector("#timeout"), 1)
+        doAnimation(canvas, 1)
     })()
 }
 </script>
 
-O problema é que o `setTimeout` não considera as renderizações do browser, ele simplesmente irá renderizar sempre que quiser, não quando/enquanto o browser puder, isso significa que o navegador precisará se preocupar em renderizar a animação enquanto desenha partes mais importantes da tela, e caso a taxa de quadros estiver em dessincronização com o redesenho da tela, pode ocupar mais CPU.
+The problem is that `setTimeout` doesn't care about the browser's rendering. It will draw whenever it wants, not when or while the browser can. That means the browser has to deal with rendering the animation while it paints more important parts of the screen, and if the frame rate is out of sync with the screen's repaints, it can use more CPU.
 
-A solução para este caso é utilizar o [requestAnimationFrame](https://developer.mozilla.org/pt-BR/docs/Web/API/Window/requestAnimationFrame), ele sempre está em sincronia(a não ser que você tenha desligado o VSync) e te dá certeza que será chamado exatamente antes de cada renderização de quadro. O mesmo exemplo ficaria assim:
+The fix for this case is [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame). It's always in sync (unless you turned VSync off) and guarantees it will be called right before each frame is rendered. The same example would look like this:
 
 ```js
 (function drawWithRaf() {
@@ -93,7 +94,7 @@ A solução para este caso é utilizar o [requestAnimationFrame](https://develop
 })();
 ```
 
-E produzirá o seguinte resultado, que é muito mais suave:
+And it produces the following result, which is much smoother:
 
 <canvas id="raf" style="width:100%;height:100px"></canvas>
 <script>
@@ -106,32 +107,34 @@ E produzirá o seguinte resultado, que é muito mais suave:
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
         ctx.fillRect(tick, 0, 10, canvas.height)
     }
+    const canvas = document.querySelector("#raf")
     ;(function drawWithRaf() {
+        if (!canvas.isConnected) return
         requestAnimationFrame(drawWithRaf)
-        doAnimation(document.querySelector("#raf"), 1)
+        doAnimation(canvas, 1)
     })()
 }
 </script>
 
-> Obs: Caso a velocidade esteja muito diferente saiba que você é um privilegiado por ter um monitor muito bom
+> Note: if the speeds look very different, know that you're privileged to own a really good monitor
 
-## Desafogamento do event loop
+## Freeing up the event loop
 
-É comum o uso de `setTimeout` para diminuir a quantidade de trabalho a ser feito durante a primeira renderização de um website:
+It's common to use `setTimeout` to reduce the amount of work done during a website's first render:
 
 ```js
-// ... um monte de js importante ...
+// ... a bunch of important js ...
 
 setTimeout(function() {
-    // ... alguma lógica bastante custosa e não trivial ...
+    // ... some expensive, non-trivial logic ...
 }, 10)
 ```
 
-No caso acima eu escolhi um intervalo de 10ms, mas será mesmo que o browser estará tranquilo para processar daqui 10ms? Sempre questione estes números mágicos, se você não tem certeza do valor utilizado provavelmente está fazendo errado. Com [requestIdleCallback](https://developer.mozilla.org/pt-BR/docs/Web/API/Window/requestIdleCallback) você sempre pegará um bom momento para executar o código, o objetivo dele é enfileirar uma função para ser chamada em um momento mais oportuno, que impacte menos os outros componentes.
+In the case above I picked a 10ms delay, but will the browser really be free to process it 10ms from now? Always question these magic numbers. If you're not sure about the value you're using, you're probably doing it wrong. With [requestIdleCallback](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback) you'll always get a good moment to run the code. Its purpose is to queue a function to be called at a more convenient time, when it affects other components less.
 
-## Seja preditivo
+## Be predictable
 
-O uso do setTimeout é um caminho sem volta, quanto mais você usa, mais precisará usar, veja este exemplo:
+Using setTimeout is a one-way street: the more you use it, the more you'll need it. Look at this example:
 
 ```js
 function changeFoo() {
@@ -141,7 +144,7 @@ function changeFoo() {
 }
 ```
 
-Aqui já criamos um problema, pois os consumidores agora precisarão também de um timeout para funcionar bem:
+We've already created a problem, because now callers also need a timeout to work properly:
 
 ```js
 foo = 5
@@ -154,7 +157,7 @@ setTimeout(function() {
 }, 1)
 ```
 
-E isso também impacta os testes unitários, que inclusive são ótimos para pegar estes casos de possivel caos:
+And it also affects unit tests, which by the way are great at catching these cases of potential chaos:
 
 ```js
 test('variable foo should change to 10', function() {
@@ -171,24 +174,24 @@ test('variable foo should change to 10', function() {
 })
 ```
 
-Já sabemos onde isso acaba, em algum momento seu código vai estar lotado de `setTimeouts` sem sentido que você não sabe porque existem, você vai tentar retirá-los mas não conseguirá pois eles foram minimamente pensados e qualquer mudança é totalmente imprevisível do que pode acontecer.
+We already know where this ends: at some point your code will be full of pointless `setTimeout`s that you don't know why they exist. You'll try to remove them but you won't be able to, because they were barely thought through and there's no predicting what any change will do.
 
-Os exemplos utilizados apesar de ilustrarem bem, são fracos, é muito mais comum ver timeouts para esperar algo assíncrono ou para algo que você não possui muito controle do fluxo, nestes casos use callbacks, async-await, e eventos, eles trarão muito mais confiança.
+The examples I used illustrate the point but they're weak. It's much more common to see timeouts used to wait for something asynchronous or for something whose flow you don't really control. In those cases use callbacks, async/await and events. They'll give you much more confidence.
 
-## Casos legítimos
+## Legitimate cases
 
-Então você possui um caso real de uma função trivial que não dependa do tempo do mundo real e pode ser atrasada?
+So you have a real case of a trivial function that doesn't depend on real-world time and can be delayed?
 
-Como ultima solução, se possível utilize um delay assincrono:
+As a last resort, if you can, use an async delay:
 
 ```js
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 ;(async () => {
     console.log('foo')
-    await sleep(1000) // Espera 1 segundo
+    await sleep(1000) // Waits 1 second
     console.log('bar')
 })()
 ```
 
-Isto fará os testes e consumidores fiquem muito mais seguros do que acontece. :)
+This makes it much clearer to tests and callers what happens. :)

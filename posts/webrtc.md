@@ -1,36 +1,34 @@
 {
-    "title": "Um pequeno resumo sobre WebRTC", 
+    "title": "A short summary of WebRTC",
     "written": "2021-05-05"
 }
 
-WebRTC API (Web Real-Time Communications) é uma tecnologia idealizada pela Google em 2009 e padronizada pela W3C e IETF em 2013, após uma [demonstração de uma video chamada entre a Mozilla e a Google em seus browsers](https://blog.chromium.org/2013/02/hello-firefox-this-is-chrome-calling.html). Apesar de seu amplo uso com transmissão de mídia, WebRTC não necessariamente é sobre isso, a tecnologia permite que aplicativos e sites capturem e transmitam informações arbitrárias entre os clientes via p2p(peer-to-peer), sem a necessidade de um intermediador.
+The WebRTC API (Web Real-Time Communications) is a technology conceived by Google in 2009 and standardized by the W3C and IETF in 2013, after a [demo of a video call between Mozilla's and Google's browsers](https://blog.chromium.org/2013/02/hello-firefox-this-is-chrome-calling.html). Despite being used mostly for media streaming, WebRTC isn't necessarily about that. It lets apps and websites capture and send arbitrary data between clients peer-to-peer, without a middleman.
 
-## Como funciona?
+## How does it work?
 
-### Servidor STUN e ICE
+### STUN server and ICE
 
-Para conectar pares, primeiramente você precisará de um servidor STUN(Session Traversal Utilities for NAT), este é um protocolo que serve como ferramenta para outros protocolos no tratamento do NAT(Network Address Translator). No nosso caso precisamos dele para gerar os [ICE candidates](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity#ice_candidates), que consiste em uma lista de IPs, portas e protocolos disponíveis naquele cliente.
+To connect peers, first you'll need a STUN (Session Traversal Utilities for NAT) server. STUN is a protocol that other protocols use as a tool for dealing with NAT (Network Address Translation). In our case we need it to generate the [ICE candidates](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity#ice_candidates), a list of the IPs, ports and protocols available on that client.
 
-### Servidor de Sinais
+### Signaling server
 
-Os pares não tem conhecimento da existencia dos outros pares antes de fazer a conexão, sendo assim, após cada um dos clientes terem seus ICE candidates, eles precisarão negociar uma conexão, para isso cada um dos pares precisa mandar um [SDP](https://developer.mozilla.org/en-US/docs/Glossary/SDP)(Session Description Protocol) para os outros pares, e a tarefa de fazer o SDP de cada um chegar na outra ponta é do desenvolvedor.
+Peers don't know the others exist before connecting. So once each client has its ICE candidates, they need to negotiate a connection. For that, each peer has to send an [SDP](https://developer.mozilla.org/en-US/docs/Glossary/SDP) (Session Description Protocol) to the other peers, and getting each SDP to the other side is the developer's job.
 
-O fluxo de troca de sinais é este: O primeiro par cria uma oferta e a envia para o segundo par, este a recebe e envia uma resposta de volta, quando o primeiro par recebe-la, eles estarão aptos a se conectarem.
+The signaling flow goes like this: the first peer creates an offer and sends it to the second peer, which receives it and sends an answer back. Once the first peer receives the answer, they're ready to connect.
 
-### Servidor TURN
+### TURN server
 
-Não é seguro confiar que os navegadores conseguirão fazer uma conexão direta, isto porque algumas redes podem ser mais rigidas e terem um firewall mais estrito, neste caso você precisaria de um servidor TURN(Traversal Using Relays around NAT), este servirá para intermediar o trafego de dados entre os pares.
+You can't count on browsers managing a direct connection, because some networks are more locked down and have stricter firewalls. In that case you'd need a TURN (Traversal Using Relays around NAT) server to relay the traffic between the peers.
 
-### Fluxo final
+### The whole flow
 
-Odeio estas imagens mostrando o handshake do WebRTC porque costumam ser bem confusas, mas se você é uma pessoa visual, o fluxo fica mais ou menos assim:
+I hate these WebRTC handshake diagrams because they tend to be really confusing, but if you're a visual person, the flow looks more or less like this:
 
-<div style="text-align:center">
-<img src="https://i.imgur.com/2S7ARGc.png">
-</div>
+![The WebRTC connection flow between two peers, a signaling server and STUN/TURN servers](/assets/webrtc-flow.png)
 
-## Na pratica
+## In practice
 
-Apesar de todos estes servidores necessários para ter uma comunicação confiavel sob WebRTC, na prática você não precisa tudo isso para projetos pequenos, por serem tarefas baratas, um [servidor STUN](https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b) e um servidor para trocar sinais podem ser facilmente encontrados na internet. Já os servidores TURN são mais complicados por terem altos consumos de rede, mas também nem sempre precisamos de um, e caso precise, existem [boas soluções open source](https://github.com/coturn/coturn).
+Despite all the servers needed for reliable communication over WebRTC, in practice you don't need all of it for small projects. They're cheap to run, so a [STUN server](https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b) and a signaling server are easy to find on the internet. TURN servers are trickier because they use a lot of bandwidth, but you don't always need one, and if you do, there are [good open source options](https://github.com/coturn/coturn).
 
-Para teste, fiz um [chat](https://chat.ceifa.tv) em 100 linhas utilizando WebRTC sem nenhuma necessidade de um servidor privado, utilizando somente ferramentas públicas, [código disponivel aqui](https://github.com/ceifa/serverless-webrtc-chat/blob/master/src/index.js).
+To try it out, I wrote a chat in 100 lines using WebRTC with no private server at all, only public tools. [The code is here](https://github.com/ceifa/serverless-webrtc-chat/blob/master/src/index.js).

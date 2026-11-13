@@ -1,35 +1,35 @@
 {
-    "title": "Ensinamentos do Garry sobre programação",
+    "title": "What Garry taught me about programming",
     "written": "2020-08-21"
 }
 
-[Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/) é um jogo que [fez bastante sucesso](https://www.pcgamer.com/garrys-mod-interview/), e por incrivel que pareça essa medalha não vai para o seu modo sandbox, e sim para a comunidade, é basicamente um jogo comunitário em que todos podem ser desenvolvedores e criar coisas novas, e isso é lindo. No momento que escrevo temos *mais de 3.600 modos de jogo* e *mais de 25.000* mapas na [workshop](https://steamcommunity.com/app/4000/workshop/), e o mais interessante é que o jogo foi lançado na steam em 2006 e possui uma grande comunidade ativa até hoje.
+[Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/) is a game that [became a big hit](https://www.pcgamer.com/garrys-mod-interview/), and believe it or not, the credit doesn't go to its sandbox mode but to its community. It's basically a community game where anyone can be a developer and make new things, and that's beautiful. As I write this there are *more than 3,600 game modes* and *more than 25,000* maps on the [workshop](https://steamcommunity.com/app/4000/workshop/), and the most interesting part is that the game came out on Steam in 2006 and still has a big, active community today.
 
-Eu mesmo sou um membro ativo desde 2014, e desde 2015 tenho servidores dentro do jogo, com isso adquiri muita experiência e nem todas elas 100% específicas para jogos digitais. O intuito desta postagem é compartilhar um pouco desta experiência.
+I've been an active member since 2014, and I've run servers in the game since 2015. Along the way I picked up a lot of experience, and not all of it is specific to video games. The point of this post is to share some of it.
 
 ## Lua
 
-[Lua](http://www.lua.org/) é sem duvida a linguagem mais simples que já conheci, na versão 5.1(atual do gmod) ela possui somente 8 tipos e 21 palavras chaves, é uma linguagem de script que não necessita de quase nada para fazer funcionar, é fácil de prototipar e ver as coisas rodando, e mesmo sendo interpretada tem uma performance incrivel(e o [LuaJIT](https://luajit.org/) existe pra deixar essa afirmação ainda mais verdadeira).
+[Lua](http://www.lua.org/) is without a doubt the simplest language I've ever used. Version 5.1 (the one gmod uses) has only 8 types and 21 keywords. It's a scripting language that needs almost nothing to run, it's easy to prototype with and see things working, and even though it's interpreted the performance is great (and [LuaJIT](https://luajit.org/) exists to make that even more true).
 
-### Não é uma linguagem imperativa comum
+### It's not your usual imperative language
 
-Lua toma poucas decisões por você, ela te permite programar de diversas maneiras: programação funcional, POO, etc. Mas deve tomar cuidado pois a mesma difere muito de outras linguagens, e se deseja programar em lua recomendo estudar antes de começar a escrever código importante, visto que é uma linguagem muito aberta e que deixará você tomar pessimas decisões sem te avisar sobre isso.
+Lua makes very few decisions for you. It lets you program in lots of ways: functional, OOP, and so on. But be careful, because it's very different from other languages. If you want to write Lua, I recommend studying it before writing anything important, since it's a very open language that will let you make terrible decisions without warning you.
 
-Em Lua não possuímos *objetos* ou vetores, é tudo tabela, e a mesma pode se comportar como um vetor ordenado, um grafo, uma árvore, um array associativo, etc. é um tipo unico que pode guardar vários valores alocados de forma dinâmica, criado a partir de um `{}`.
+In Lua there are no *objects* or arrays, everything is a table, and a table can behave like an ordered array, a graph, a tree, an associative array, etc. It's a single type that can hold many dynamically allocated values, created with `{}`.
 
-Como pode imaginar, também não temos classes em Lua, se quer fazer algo do tipo, o máximo que terá são as metatables, na verdade existem vários projetos que tentam trazer esses conceitos para o mundo Lua, o único que recomendo é o [Moonscript](https://moonscript.org/), já o resto, até onde vi, acabam só trazendo mais lixo para o seu código e aumentando a complexidade.
+As you can imagine, there are no classes in Lua either. If you want something like that, the most you get are metatables. There are actually several projects that try to bring these concepts into the Lua world. The only one I recommend is [MoonScript](https://moonscript.org/). The rest, as far as I've seen, just add more junk to your code and more complexity.
 
-### Você não deve aprender Lua
+### You shouldn't learn Lua
 
-Apesar disso tudo, eu não recomendo lua para ninguém, principalmente para novatos, é uma linguagem que dificilmente servirá para o futuro, ela possui um comportamento e um padrão muito divergente do que utilizamos em outras linguagens mais populares, entre eles: não existe o operador de incremento `++` ou atribuição por `+=`, para fazer condições de *"diferente de"*, utilizamos `~=`, e não `!=`, não possui `&&` e `||`, e sim `and` e `or`, não possui a keyword `continue` para ser usada em repetições, o que acaba cascatando varios `ifs`, arrays começam no indice `1`, e não no `0`.
+Despite all that, I don't recommend Lua to anyone, especially beginners. It's a language that will hardly be useful for your future, and its behavior and conventions are very different from what we use in more popular languages. A few examples: there's no `++` increment operator or `+=` assignment, for *"not equal"* conditions you use `~=` instead of `!=`, there's no `&&` and `||` but `and` and `or`, there's no `continue` keyword for loops, which ends up cascading lots of `if`s, and arrays start at index `1`, not `0`.
 
-## Separação de conceitos
+## Separation of concerns
 
-Se você jogou GMOD, provavelmente já se viu com falta de espaço no disco, a cada servidor que entramos baixamos vários arquivos e modelos customizados e rapidamente temos quase 100GBs sendo utilizados por somente um jogo, e o mais interessante é que apesar de termos baixado mais de 1000 modificações elas ainda funcionam bem, e se interoperam de forma transparente. Eu sempre achei isso impressionante, e levando para o mundo real, sinceramente é muito complicado escrever código independente, claro que temos design patterns para isso, mas uma hora ou outra acabamos amarrando certas partes.
+If you've played GMOD, you've probably run out of disk space. Every server you join downloads lots of custom files and models, and soon you have almost 100GB used by a single game. The most interesting part is that even after downloading more than 1,000 mods, they still work fine and interoperate transparently. I've always found that impressive. Back in the real world, honestly, writing independent code is really hard. Sure, we have design patterns for it, but sooner or later we end up tying some parts together.
 
-O maior aprendizado disso tudo é que você deve sempre escrever código componentizado, substituível, e extensivel, vamos criar um exemplo em cima disso: supomos que você possui um mod de loja, e neste os usuários que doaram para o seu servidor recebem um desconto de 10% em toda a loja, a lógica mais simples que pensaríamos seria essa(código escrito em lua):
+The biggest lesson from all this is that you should always write code that is componentized, replaceable and extensible. Let's build an example: say you have a shop mod, and in it the users who donated to your server get a 10% discount on the whole shop. The simplest logic we'd think of is this (code in Lua):
 
-- Um arquivo qualquer do mod de loja:
+- Some file in the shop mod:
 ```lua
 function Shop:GetPrice(player, item_id)
     local price = Database:GetItemPrice(item_id)
@@ -42,9 +42,9 @@ function Shop:GetPrice(player, item_id)
 end
 ```
 
-A primeira vista parece correto, mas não é legal misturar lógica de uma loja com lógica de desconto por doação, são coisas completamente distintas, o ideal seria deixar isso extensível e criar a lógica direto no mod de doações, para isso temos a [API de hooks](https://wiki.facepunch.com/gmod/Hook_Library_Usage) do Garry's Mod:
+At first glance it looks right, but it's not great to mix shop logic with donation discount logic. They're completely different things. Ideally you'd make it extensible and put that logic straight into the donation mod, and for that Garry's Mod has the [hook API](https://wiki.facepunch.com/gmod/Hook_Library_Usage):
 
-- Um arquivo qualquer do mod de loja:
+- Some file in the shop mod:
 ```lua
 function Shop:GetPrice(player, item_id)
     local plain_price = Database:GetItemPrice(item_id)
@@ -54,14 +54,14 @@ function Shop:GetPrice(player, item_id)
 end
 ```
 
-- Um arquivo qualquer do mod de doações:
+- Some file in the donation mod:
 ```lua
 if _G.Shop and _G.Shop:IsEnabled() then
     local donatorDiscount = 0.1
 
     hook.Add("SHOP_PlayerItemPrice", "CheckDonatorDiscount",
         function(player, item_id, plain_price)
-            -- Sempre checar se os argumentos são válidos quando vindo de código publico
+            -- Always check that the arguments are valid when they come from public code
             if IsValid(player) and item_id and isnumber(plain_price) then
                 if player:IsDonator() then
                     return plain_price * (1 - donatorDiscount)
@@ -71,28 +71,28 @@ if _G.Shop and _G.Shop:IsEnabled() then
 end
 ```
 
-Claro que o código não está 100% utilizando a separação de conceitos, temos lógica de item dentro da lógica da loja, lógica de eventos dentro de uma função para pegar preço, quase não tem camadas, etc. mas acho que ilustra bem a situação de código extensível, que é o importante por agora.
+Of course this code isn't 100% separating concerns: there's item logic inside the shop logic, event logic inside a function that gets a price, there are barely any layers, etc. But I think it illustrates extensible code well, which is what matters right now.
 
-Foque na criação de pequenos módulos e que sejam extensíveis, no mundo real a arquitetura de eventos da forma que representei é bem mais julgada, ficar trafegando dados em eventos é praticamente um crime, mas sinceramente existem muitos casos que isso funciona bem. Hoje em JavaScript tentamos ao máximo utilizar o conceito de monadas, código puro e imutabilidade, a forma mais facil de alcançar esse tipo de coisa seria criando [pequenos modulos independentes](https://twitter.com/Rich_Harris/status/1139908960520220677) e a extensabilidade fica na passagem de parâmetros.
+Focus on building small, extensible modules. In the real world, event architecture the way I showed it gets judged a lot, and passing data around in events is practically a crime, but honestly there are many cases where it works well. In JavaScript today we try hard to use monads, pure code and immutability, and the easiest way to get there is by writing [small independent modules](https://twitter.com/Rich_Harris/status/1139908960520220677) where extensibility lives in the parameters you pass.
 
-Lógico que separação de conceitos envolve muito mais coisas, falando de sistemas maiores talvez envolva separação de serviços/aplicações, aqui mostrei exemplos simples e que na verdade são questionaveis se estão mesmo aplicando o [SRP](https://en.wikipedia.org/wiki/Single-responsibility_principle), não tome-os como verdade, mas sim como um ponto de partida.
+Separation of concerns obviously involves a lot more. In bigger systems it might mean separating services or applications. The examples here are simple, and it's actually debatable whether they apply the [SRP](https://en.wikipedia.org/wiki/Single-responsibility_principle) at all, so don't take them as truth, take them as a starting point.
 
 ## Performance
 
-Desenvolvimento de jogos(ou mod de jogos) é algo delicado, milhares de operações são feitas por milissegundo, e se não orquestrado corretamente, facilmente terá problemas de performance, e quando tentamos otimizar podemos na verdade estar piorando as coisas.
+Game development (or game modding) is delicate. Thousands of operations happen every millisecond, and if they're not orchestrated properly you'll easily run into performance problems, and when you try to optimize you might actually make things worse.
 
-### Foque nos grandes gargalos
+### Focus on the big bottlenecks
 
-Quando temos problemas de performance, os desenvolvedores tendem a entrar no código para fazer micro-otimizações: guardando variáveis localmente para reusar, trocando operações aritméticas por constantes, etc. esse tipo de abordagem é no mínimo ingênuo e não vai te levar a lugar nenhum.
+When there are performance problems, developers tend to dive into the code to micro-optimize: caching variables locally to reuse them, swapping arithmetic for constants, etc. That approach is naive at best and won't get you anywhere.
 
-O que você deve fazer é focar nos grandes problemas, fazer as macro-otimizações, elas sim trarão benefício. Em Garry's Mod dobrar o FPS com algumas otimizações não é algo incomum, e isso vale também para aplicações web, já teve um caso onde trabalho atualmente em que um simples menu de contexto aumentou em quase 80% o tempo de carregamento da pagina, o que é no minimo bizarro.
+What you should do is focus on the big problems and make macro-optimizations. Those are the ones that pay off. In Garry's Mod, doubling FPS with a few optimizations isn't unusual, and the same goes for web apps: at the place I work now, a simple context menu once increased page load time by almost 80%, which is bizarre to say the least.
 
-Quais são as macro-otimizações? Reduzir a complexidade de algoritmos complexos, utilizar estruturas de dados mais eficientes, cachear cálculos caros, diminuir operações dentro do contexto de renderização, e assim vai. Use um [profiler](https://developers.google.com/web/tools/chrome-devtools/rendering-tools) se possivel, ele é seu amigo e ajudará a encontra-los.
+What are macro-optimizations? Reducing the complexity of heavy algorithms, using more efficient data structures, caching expensive calculations, doing less work inside the rendering context, and so on. Use a [profiler](https://developer.chrome.com/docs/devtools/performance) if you can. It's your friend and will help you find them.
 
-É fato que o processamento disponível hoje é gigantesco, e apesar disso ser algo muito bom, também é preocupante. Em Garry's Mod temos o hook Think, onde podemos adicionar processamento a cada frame processado, e nisso estamos falando de cerca de 300 interações por segundo, não é incomum ver mods fazendo vários laços de repetição desnecessários em cima disso, o problema é que esses gargalos não aparecem de cara, você só começa a notar quando se lembra que rodava o jogo a 400 FPS e agora está em 200.
+The processing power available today is huge, and while that's great, it's also worrying. Garry's Mod has the Think hook, where you can run code on every frame, which means around 300 iterations per second, and it's not unusual to see mods running a bunch of unnecessary loops in there. The problem is that these bottlenecks don't show up right away. You only notice when you remember you used to run the game at 400 FPS and now you're at 200.
 
 ---
 
-Garry's Mod é uma faculdade e tanta, são coisas complexas feitas de maneira simples, e vez ou outra você se vê aprendendo um pouco mais sobre bitwise, renderização 3D, networking, etc.
+Garry's Mod is quite the school. Complex things done in simple ways, and every now and then you find yourself learning a bit more about bitwise operations, 3D rendering, networking, etc.
 
-Se você também é um entusiasta de mods de Garry's Mod, não hesite em entrar na nossa [comunidade de Devs BRs no discord](https://discord.gg/ytkXGNU).
+If you're into Garry's Mod modding too, don't hesitate to join our [Brazilian devs community on Discord](https://discord.gg/ytkXGNU).

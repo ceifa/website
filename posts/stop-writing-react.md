@@ -1,44 +1,44 @@
 {
-    "title": "Pare de escrever React (carta de um svelter aflito)",
+    "title": "Stop writing React (a letter from a distressed svelter)",
     "written": "2020-08-08",
-    "description": "React é bom, mas nem em todos os casos ele se aplica, vamos dar uma olhada no Svelte e seus comparativos"
+    "description": "React is good, but it doesn't fit every case. A look at Svelte and how the two compare."
 }
 
-Ahhh, o [React](https://pt-br.reactjs.org/), algumas pessoas dizem que é difícil de configurar, aprender, etc. mas eu não acho, para mim sempre foi muito simples, um `create-react-app` e você já tem um boilerplate pronto, agora só começar a escrever código JavaScript. Parece tudo funcionar tão bem, você escreve alguns "uses" e as coisas começam a ser reativas, a se comportarem da forma esperada, não poderia ser melhor.
+Ahhh, [React](https://react.dev/). Some people say it's hard to set up, to learn, etc., but I don't think so. For me it was always really simple: one `create-react-app` and you have a boilerplate ready, now just start writing JavaScript. Everything seems to work so well. You write a few "uses" and things become reactive and behave the way you expect. It couldn't be better.
 
-Eu pensei assim por muito tempo, até que vi a palestra do Rich Harris, sobre [Repensando a reatividade](https://www.youtube.com/watch?v=AdNJ3fydeao), **e depois de testar o svelte, eu simplesmente não consigo voltar para o React**.
+I thought that for a long time, until I watched Rich Harris's talk [Rethinking reactivity](https://www.youtube.com/watch?v=AdNJ3fydeao), **and after trying Svelte, I just can't go back to React**.
 
-Só para deixar claro de antemão, React é bom e tem boas aplicações, é bem performático por conta de suas técnicas com virtual DOM, memoização, imutabilidade, eficiência na renderização, etc. E de fato ainda vai melhorar bastante, principalmente pois possui uma grande comunidade por trás e o Facebook assume o compromisso de continuar nisso, inclusive alocando funcionários exclusivamente para a biblioteca. Um exemplo da sua constante melhora é o atual e ainda experimental [modo concorrente](https://pt-br.reactjs.org/docs/concurrent-mode-intro.html).
+Just to be clear up front: React is good and has good use cases. It performs well thanks to its techniques around the virtual DOM, memoization, immutability, efficient rendering, etc. And it will still get a lot better, especially because it has a big community behind it and Facebook is committed to it, even assigning employees exclusively to the library. One example of how it keeps improving is the current, still experimental, concurrent mode.
 
 ## Performance
 
-### Tamanho do bundle
+### Bundle size
 
-No momento em que escrevo, de acordo com [esse gist](https://gist.github.com/Restuta/cda69e50a853aa64912d)(fácil de testar e reproduzir) React embarca em uma aplicação, com minificação e compressão GZip, obrigatóriamente, **31.8kB**. Já o Svelte por si só, com minificação e compressão GZip, leva consigo um enorme valor de **0kB**. Isso porque Svelte não é um framework ou uma biblioteca, **Svelte é uma linguagem**, e ele não tem nenhum *runtime* ou algo do tipo, ele simplesmente compila seu código da forma que ele é.
+As I write this, according to [this gist](https://gist.github.com/Restuta/cda69e50a853aa64912d) (easy to test and reproduce), React necessarily ships **31.8kB** into an application, minified and gzipped. Svelte on its own, minified and gzipped, brings along a whopping **0kB**. That's because Svelte isn't a framework or a library, **Svelte is a language**, and it has no *runtime* or anything like that. It just compiles your code as it is.
 
-### DOM vs DOM Virtual
+### DOM vs virtual DOM
 
-Em [Repensando Melhores Práticas](https://www.youtube.com/watch?v=x7cQ3mrcKaY), uma palestra dada em 2013 pelo Pete Hunt, membro do time de React do facebook, ele diz:
+In [Rethinking Best Practices](https://www.youtube.com/watch?v=x7cQ3mrcKaY), a 2013 talk by Pete Hunt from Facebook's React team, he says:
 
 > This is actually extremely fast, primarily because most DOM operations tend to be slow. There's been a lot of performance work on the DOM, but most DOM operations tend to drop frames.
 
-E infelizmente é uma verdade, operações do DOM não são tão baratas, isto porque a cada modificação ele tenta pintar a tela novamente, e se feito muitas vezes em um curto período, pode começar a gargalar sua aplicação, visto que ele usa a mesma thread de execução JavaScript.
+And sadly that's true. DOM operations aren't that cheap, because on every change the browser tries to repaint the screen, and if that happens many times in a short period it can start to bottleneck your application, since it uses the same thread as your JavaScript.
 
-O problema é, utilizando DOM Virtual não necessariamente resolve isso, pois ele trabalha em *adição* ao DOM real, e nós sabemos que a [tarefa de *diffing* não é assim tão gratuita](https://twitter.com/pcwalton/status/1015694528857047040).
+The problem is that using a virtual DOM doesn't necessarily solve this, because it works *on top of* the real DOM, and we know [diffing isn't exactly free](https://twitter.com/pcwalton/status/1015694528857047040).
 
-Não estou dizendo que o DOM Virtual é lento, os frameworks de hoje tem muitas otimizações para resolver isso. Mas e se nós simplesmente não precisássemos de um?
+I'm not saying the virtual DOM is slow. Today's frameworks have lots of optimizations for that. But what if we simply didn't need one?
 
-Isso é exatamente o que Svelte faz, diferente dos frameworks tradicionais, ele trabalha como um compilador e joga todo esse trabalho para o tempo de build, ao invés de resoluções em tempo de execução, deixando tudo bem mais simples para só fazer o necessário, utilizando o DOM real diretamente.
+That's exactly what Svelte does. Unlike traditional frameworks, it works as a compiler and moves all that work to build time instead of resolving it at runtime, which keeps things much simpler and does only what's needed, using the real DOM directly.
 
-## Código
+## Code
 
-### Curva de aprendizado
+### Learning curve
 
-Lembro-me de quando estava fazendo meu primeiro projeto do zero com react, eu basicamente comecei com quase 0 conhecimento na ferramenta e consegui ir descobrindo as coisas só vendo a documentação oficial(que é muito boa e simples) e exemplos de código. React é fácil, basicamente você só precisa aprender JavaScript, e com isso já consegue sair criando um monte de coisas com `JSX`. Para exemplificar, este é um código React:
+I remember doing my first project from scratch with React. I started with almost zero knowledge of the tool and figured things out just by reading the official docs (which are really good and simple) and code examples. React is easy: you basically only need to learn JavaScript, and with that you can start building a bunch of stuff with `JSX`. For example, this is React code:
 
 ```js
 class TodoApp extends React.Component {
-    // ... um monte de logica js ...
+    // ... a bunch of js logic ...
 
     render() {
         return (
@@ -52,14 +52,13 @@ class TodoApp extends React.Component {
 }
 ```
 
-E para um desenvolvedor **JavaScript**(não necessariamente web designer) é muito claro o que está acontecendo, quando precisar da exibição do componente ele irá chamar o `render`, que em sua essência fará o map dos `todos` transformando cada um em um novo elemento HTML. 
+For a **JavaScript** developer (not necessarily a web designer) it's very clear what's happening: when the component needs to be displayed it calls `render`, which essentially maps the `todos`, turning each one into a new HTML element.
 
-
-Svelte já não é assim, apesar de focar em deixar as coisas o mais próximas do puro HTML, incluindo ter que especificar as tags `script` e `style`, o mesmo ainda tem o problema de ter o seu próprio *template engine*, que não necessariamente segue convenções do JavaScript:
+Svelte isn't like that. Even though it focuses on staying as close as possible to plain HTML, including having to write the `script` and `style` tags, it still has the problem of having its own *template engine*, which doesn't necessarily follow JavaScript conventions:
 
 ```html
 <script>
-    // ... um monte de lógica js ...
+    // ... a bunch of js logic ...
 </script>
 
 <ul>
@@ -69,14 +68,14 @@ Svelte já não é assim, apesar de focar em deixar as coisas o mais próximas d
 </ul>
 ```
 
-### React não é reativo
+### React isn't reactive
 
-React depende que você utilize de algumas funções em sua API para que a reatividade de fato aconteça(`this.setState()`, `useState()`, `useEffect()`), Svelte sendo uma linguagem não precisa fazer isso, ele por definição utiliza de declarações da linguagem como o [label](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/label) para tratar a reatividade e embute tudo já no momento da compilação. Veja este [exemplo](https://svelte.dev/repl/3341b89218734139abe75ac1bc8aa530?version=3.24.1):
+React depends on you calling some functions from its API for reactivity to actually happen (`this.setState()`, `useState()`, `useEffect()`). Svelte, being a language, doesn't need that. By design it uses language statements like the [label](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label) to handle reactivity and bakes everything in at compile time. Look at this [example](https://svelte.dev/repl/3341b89218734139abe75ac1bc8aa530?version=3.24.1):
 
 ```html
 <script>
     let counter = 0;
-    $: doubleCounter = counter * 2; // "$" significa que ele deve reagir às alterações das variáveis
+    $: doubleCounter = counter * 2; // "$" means it should react to changes in the variables
 </script>
 
 <button on:click={() => counter++}>
@@ -84,26 +83,26 @@ React depende que você utilize de algumas funções em sua API para que a reati
 </button>
 ```
 
-Estas são partes do código compilado:
+These are parts of the compiled code:
 
 ```js
 // ...
 function c() {
     button = element("button");
-    t0 = text(ctx[0]); // Ele atrelou o índice  0 à variável "counter"
+    t0 = text(ctx[0]); // It bound index 0 to the "counter" variable
     t1 = text(" ~ ");
-    t2 = text(ctx[1]); // Ele atrelou o índice  1 à variável "doubleCounter"
+    t2 = text(ctx[1]); // It bound index 1 to the "doubleCounter" variable
 }
 
 // ...
 function instance($$self, $$props, $$invalidate) {
     let counter = 0;
-    const click_handler = () => $$invalidate(0, counter++, counter); // Ao clicar no botão, incrementa ao counter e o invalida
+    const click_handler = () => $$invalidate(0, counter++, counter); // On click, increments counter and invalidates it
     let doubleCounter;
 
     $$self.$$.update = () => {
-        if ($$self.$$.dirty & 1) { // Se o counter foi modificado
-            $: $$invalidate(1, doubleCounter = counter * 2); // Troca o valor do doubleCounter e o invalida
+        if ($$self.$$.dirty & 1) { // If counter changed
+            $: $$invalidate(1, doubleCounter = counter * 2); // Updates doubleCounter and invalidates it
         }
     };
 
@@ -112,13 +111,13 @@ function instance($$self, $$props, $$invalidate) {
 
 ```
 
-### Lócus de controle
+### Locus of control
 
-Renderizar um componente a cada modificação é uma estrategia muito boa, mas precisamos ter cuidado pois alguns componentes que parecem fazer um trabalho simples podem começar a trazer problemas de performance:
+Re-rendering a component on every change is a really good strategy, but we need to be careful, because some components that seem to do simple work can start causing performance problems:
 
 ```js
 class TodoApp extends React.Component {
-    // ... um monte de logica js ...
+    // ... a bunch of js logic ...
 
     render() {
         return (
@@ -132,14 +131,14 @@ class TodoApp extends React.Component {
 }
 ```
 
-Nesse caso ele está criando um novo array de elementos `li` e cada um com uma função anônima sempre que o estado é atualizado, independentemente se a propriedade `todos` foi alterada. Claro que um componente desses não vai trazer problemas para sua aplicação, até porque com o processamento de hoje, criar 10 ou 1000 funções são tarefas baratas, mas pensando em escalabilidade, a medida que sua aplicação vai crescendo este problema começa a ser cada vez mais perceptível.
+Here it creates a new array of `li` elements, each with an anonymous function, every time the state updates, whether or not the `todos` property changed. Of course a component like this won't hurt your application, since with today's hardware creating 10 or 1,000 functions is cheap, but thinking about scale, as your application grows this problem becomes more and more noticeable.
 
-## Casos de uso
+## Use cases
 
-**React vale a pena.** Apesar de optar por Svelte em projetos pessoais(inclusive este blog), eu preferiria utilizar React em aplicações empresariais, isto porque react possui uma vasta comunidade engajada, com várias bibliotecas e ferramentas que ajudam no desenvolvimento, e com certeza não seria deixada de lado fácil, em vista que é utilizado por várias empresas de nível astronômico. Mas é preciso saber pesar caso a caso, se você possui um legado que já tem problemas de performance, colocar mais uma biblioteca pesada pode piorar as coisas, eu optaria por suportar micro-frontends e começar a passar partes criticas para o Svelte.
+**React is worth it.** Even though I choose Svelte for personal projects (including this blog), I'd rather use React for business applications, because React has a huge engaged community, with lots of libraries and tools that help development, and it surely won't be abandoned easily, given it's used by companies of astronomical size. But you have to weigh it case by case. If you have a legacy app that already has performance problems, adding another heavy library might make things worse. I'd go with micro-frontends and start moving critical parts to Svelte.
 
-Importante lembrar que o React por si só [nem é sobre paginas web](https://pt-br.reactjs.org/docs/react-dom.html), e sim sobre criação de interfaces. E em casos de aplicativos mobile eu com certeza optaria por utilizar React Native.
+It's worth remembering that React by itself [isn't even about web pages](https://react.dev/reference/react-dom), it's about building interfaces. And for mobile apps I'd definitely go with React Native.
 
-O maior problema do React não é o React, e sim as pessoas que o desenvolvem, me irrito bastante com a *gangue do hook*, a falácia dos componentes puros e o [uso excessivo de gerenciadores de estado](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)(que algumas vezes só acabam trazendo mais complexidade). Mas isso vou deixar para outra postagem.
+React's biggest problem isn't React, it's the people who write it. The *hook gang*, the pure components fallacy and the [overuse of state managers](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367) (which sometimes just add more complexity) really get on my nerves. But I'll leave that for another post.
 
-[DM aberta para xingamentos.](https://twitter.com/_ceifa)
+[DMs open for insults.](https://x.com/_ceifa)

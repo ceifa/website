@@ -1,39 +1,36 @@
 {
-    "title": "O verdadeiro segredo para começar a programar",
+    "title": "The real secret to getting started with programming",
     "written": "2021-09-07"
 }
 
-Hoje em dia é muito comum ver artigos e cursos como "Guia definitivo para iniciar na programação", ou "A simples dica que vai ter fazer aprender programação em 2 semanas", ou ainda pior "Veja este curso e saia fazendo um aplicativo de uber".
+These days it's very common to see articles and courses like "The ultimate guide to getting into programming", or "The one simple trick that will teach you to code in 2 weeks", or even worse, "Take this course and walk out building an Uber clone".
 
-Desculpe acabar com a sua ilusão, mas isso tudo é mentira.
+Sorry to burst your bubble, but it's all a lie.
 
-Geralmente estes artigos estão cheios de frases inúteis e conselhos sem sentido, e os cursos que irão te fazer construir o uber, não vão te ensinar programação, e sim como construir um uber a base de copiar códigos.
+These articles are usually full of useless phrases and meaningless advice, and the courses that promise you'll build Uber won't teach you programming. They'll teach you how to build an Uber by copying code.
 
-Mesmo com essa profunda aversão sobre este tipo de conteúdo, resolvi criar o meu pois recebo muita destas perguntas por conta das comunidades que estou inserido. Eu ainda acho que esta pergunta é horrível, mas pelo menos agora vou ter um link para mandar e não vou precisar ficar conversando no um a um sobre isso.
+Even with my deep dislike for this kind of content, I decided to write my own, because I get this question a lot from the communities I'm part of. I still think it's a terrible question, but at least now I'll have a link to send and won't have to talk it through one-on-one every time.
 
-## Minta para si mesmo
+## Lie to yourself
 
-Algumas vezes no mês é muito comum de eu me juntar com alguns amigos em uma comunidade de discord e começarmos a programar juntos. Em algumas dessas ocasiões pessoas entram e saem o tempo todo no canal de voz e facilmente escutamos "nossa, queria saber programar para fazer algo de legal". E sério, essa de longe é a pior frase que você pode falar para si mesmo quando está querendo aprender algo.
+A few times a month I hang out with some friends in a Discord community and we start coding together. On some of those nights people keep joining and leaving the voice channel, and it's easy to hear "man, I wish I knew how to code so I could make something cool". Seriously, that is by far the worst thing you can tell yourself when you want to learn something.
 
-## Faça
+## Do it
 
-Hoje em dia quase toda semana vejo cursos novos de programação ou code camps sendo lançados, e eles podem ser um grande pontapé para você conseguir construir algo do zero, mas raramente vão te ensinar como resolver problemas reais. Os cursos mais sólidos e práticos, como por exemplo o da Trybe podem te expor ótimos conceitos que você *ocasionalmente* usará na vida real, em um curto período de tempo, mas se é sua única real qualificação, talvez não seja suficiente. 
+Almost every week I see new programming courses or code camps launching, and they can be a great kick-start for building something from scratch, but they'll rarely teach you how to solve real problems. The more solid and practical courses, like Trybe's for example, can expose you to great concepts you'll *occasionally* use in real life, in a short time, but if that's your only real qualification, it may not be enough.
 
-O grande segredo para realmente aprender é mais simples do que parece, é só **fazer**, da mesma forma que você não precisa ser o Leonardo DiCaprio e saber todos os conceitos e técnicas de atuação para recitar o monólogo **ser ou não ser** de hamlet, você não precisa saber nem o básico de programação para começar a fazer algo.
+The big secret to actually learning is simpler than it looks: just **do it**. The same way you don't need to be Leonardo DiCaprio and know every acting concept and technique to recite Hamlet's **to be or not to be** monologue, you don't need to know even the basics of programming to start making something.
 
-Primeiro estabeleça um objetivo simples, algo que você possa construir e que não seja muito complexo, por exemplo um bot de discord, ou um mod do jogo que você tanto ama, após isso, torne o Google seu melhor amigo e comece a juntar o quebra-cabeça: "Como fazer um bot de discord?", "Como somar números em javascript?", e *voila*! Você já tem um bot que soma números.
+First set a simple goal, something you can build that isn't too complex, like a Discord bot or a mod for that game you love. Then make Google your best friend and start putting the puzzle together: "How do I make a Discord bot?", "How do I add numbers in JavaScript?", and *voilà*! You have a bot that adds numbers.
 
-Use e abuse da comunidade. Existem milhares de comunidades no discord, e para o que for que você esteja fazendo, terá uma.
+Use and abuse the community. There are thousands of communities on Discord, and whatever you're building, there will be one for it.
 
-**Escrever bons códigos não é simples.** A vantagem é que ninguem disse que seus códigos precisam ser bons, quando se está aprendendo foque na funcionalidade e não na legibilidade, acredite em mim, técnica é muito mais fácil de se adquirir com o tempo do que auto-confiança.
+**Writing good code isn't easy.** The upside is that nobody said your code has to be good. While you're learning, focus on making it work, not on making it readable. Trust me, technique is much easier to pick up over time than self-confidence.
 
-## Escreva código
+## Write code
 
-Você aprendeu o básico e ainda não consegue um emprego? A resposta é simples: **escreva mais código!** Vejo muitas pessoas iniciantes com medo de simplesmente programarem de graça em seu tempo livre. Se você é uma destas pessoas, primeiramente você precisa ser honesto com si mesmo e entender se você realmente quer ser um programador. Da mesma forma que um ator pode atuar e treinar sem precisar estar na globo, você pode programar sem precisar ter um emprego.
+You learned the basics and still can't land a job? The answer is simple: **write more code!** I see a lot of beginners who are afraid of simply programming for free in their spare time. If you're one of them, first you need to be honest with yourself and figure out whether you really want to be a programmer. The same way an actor can act and rehearse without being on a TV network, you can program without having a job.
 
-## Recomendações
+## Recommendations
 
-Esse video do Uncle Bob tem uma visão/perspectiva bem interessante sobre a barreira de entrada na indústria:
-
-<iframe width="100%" height="250px" src="https://www.youtube.com/embed/ecIWPzGEbFc" frameborder="0">
-</iframe>
+[This video from Uncle Bob](https://www.youtube.com/watch?v=ecIWPzGEbFc) has a really interesting take on the barrier to entry in the industry.
