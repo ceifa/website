@@ -6,54 +6,60 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
   title="About · ceifa"
-  description="Gabriel Francisco, ceifa on the internet. Software developer from Belo Horizonte, Brazil."
+  description="Gabriel Francisco, ceifa on the internet. Software developer from Belo Horizonte, Brazil, and CTO at Wiv."
 >
-  <div class="about-page">
-    <section class="page-head">
-      <h1><span data-land="text" id="first-perch">Hi, I'm Gabriel.</span></h1>
-    </section>
-    <figure class="portrait">
-      <Image
-        src={photo}
-        alt="Gabriel smiling, in a red t-shirt."
-        width={200}
-        height={200}
-        densities={[1, 2]}
-        loading="eager"
-        data-land="top"
-      />
-      <figcaption>Me, not the duck.</figcaption>
-    </figure>
-    <div class="about-body">
-      <p>
-        <span data-land="text"
-          >I'm a software developer in Belo Horizonte, Brazil, and these days a CTO. I'm 1.92 m tall,
-          my desktop runs CachyOS (so yes, technically I use Arch) and I'll take a regular Coke over a
-          Zero every single time.</span
-        >
-      </p>
-      <p>
-        <span data-land="text"
-          >Most of my life lives in a git repository. Bills, trips, doctor's appointments, the people
-          I know: it's all markdown, kept up to date by an AI agent called Mortar. Mortar books my
-          appointments, plans our trips and, with my blessing, answers satisfaction surveys for me. If
-          you ever sent me an NPS survey, there's a good chance Mortar is the one who answered.</span
-        >
-      </p>
-      <p>
-        <span data-land="text"
-          >Away from the keyboard I'm usually on the road with my girlfriend. So far that's been the
-          dunes of Jalapão, Iguaçu Falls, Porto Seguro and Florianópolis, and the US is next. Back
-          home I host a modded Minecraft server for us and our friends, and a script claims my free
-          Brawl Stars gift every day before I can forget.</span
-        >
-      </p>
-      <p>
-        <span data-land="text"
-          >One more thing you'd find out eventually: I don't wear plastic. No polyester, no nylon, no
-          elastane, not even 5% of it. I read the label of every shirt before it gets near me.</span
-        >
-      </p>
-    </div>
+  <section class="page-head">
+    <h1><span data-land="text" id="first-perch">About me</span></h1>
+  </section>
+  <div class="about-body">
+    <Image
+      class="portrait"
+      src={photo}
+      alt="Gabriel smiling, in a red t-shirt."
+      width={180}
+      height={180}
+      densities={[1, 2]}
+      loading="eager"
+      data-land="top"
+    />
+    <p>
+      <span data-land="text"
+        >Hi, my name is Gabriel Francisco! I'm a software developer from Belo Horizonte, Brazil, and I
+        spend a good part of my free time on open source. A few of my projects found a real audience,
+        like <a href="https://github.com/ceifa/wasmoon">Wasmoon</a> and <a
+          href="https://github.com/ceifa/steamworks.js">steamworks.js</a
+        >, and there are <a href="/projects">plenty of smaller things</a> too.</span
+      >
+    </p>
+    <p>
+      <span data-land="text"
+        >I'm the CTO and one of the partners at <a href="https://wiv.com.br">Wiv</a>, a Brazilian
+        company that builds conversational AI for businesses, mostly on WhatsApp. Every now and then I
+        also <a href="/posts">write here</a>, mostly about programming.</span
+      >
+    </p>
+    <p>
+      <span data-land="text">My usual nickname is <code>ceifa</code>.</span>
+    </p>
+
+    <h2><span data-land="text">Like my work?</span></h2>
+    <p>
+      <span data-land="text"
+        >Pretty much everything I publish is MIT licensed, so you can do whatever you want with it. If
+        something of mine saved you some time, you can <a href="https://github.com/sponsors/ceifa"
+          >sponsor me on GitHub</a
+        >.</span
+      >
+    </p>
+
+    <h2><span data-land="text">About this website</span></h2>
+    <p>
+      <span data-land="text"
+        >This site started in 2020 as a blog in Portuguese, built with Sapper. In 2026 I rebuilt it
+        with Astro and translated the posts to English. The little creature walking around is the
+        page's resident: it follows what you're reading, and you can drag it around or walk it with
+        the arrow keys. The source is <a href="https://github.com/ceifa/website">on GitHub</a>.</span
+      >
+    </p>
   </div>
 </Layout>

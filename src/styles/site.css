@@ -864,43 +864,35 @@ main:focus {
   border: 1px solid var(--line);
   border-radius: 5px;
 }
-.about-page {
-  display: grid;
-  grid-template-columns: minmax(0, 62ch) 214px;
-  justify-content: space-between;
-  column-gap: 60px;
-}
-.about-page .page-head {
-  grid-column: 1;
-}
-.portrait {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  margin: 80px 7px 0;
-}
-.portrait img {
-  display: block;
-  width: 200px;
-  height: 200px;
-  border-radius: 6px;
-  outline: 1px solid var(--line);
-  outline-offset: 6px;
-}
-.portrait figcaption {
-  margin-top: 19px;
-  font-size: 11px;
-  letter-spacing: 0.03em;
-  color: var(--muted);
-}
 .about-body {
-  grid-column: 1;
   font-size: 16px;
   line-height: 1.9;
-  max-width: 62ch;
+  max-width: 760px;
   padding-bottom: 20px;
 }
 .about-body p + p {
   margin-top: 18px;
+}
+.about-body h2 {
+  font: 500 26px/1.3 var(--font-display);
+  letter-spacing: -0.6px;
+  margin: 42px 0 12px;
+}
+.about-body code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.86em;
+  background: var(--code);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.portrait {
+  float: right;
+  width: 180px;
+  height: 180px;
+  margin: 8px 7px 20px 36px;
+  border-radius: 6px;
+  outline: 1px solid var(--line);
+  outline-offset: 6px;
 }
 .about {
   padding-top: 42px;
@@ -911,27 +903,13 @@ main:focus {
   padding-bottom: 30px;
 }
 @media (max-width: 700px) {
-  .about-page {
-    grid-template-columns: minmax(0, 1fr);
+  .about-body h2 {
+    font-size: 23px;
   }
   .portrait {
-    grid-column: 1;
-    grid-row: auto;
-    display: flex;
-    align-items: end;
-    gap: 22px;
-    margin: 44px 7px 0;
-  }
-  .portrait img {
     width: 112px;
     height: 112px;
-  }
-  .portrait figcaption {
-    margin: 0;
-  }
-  .about-page .page-head {
-    grid-row: 2;
-    padding-top: 30px;
+    margin-left: 22px;
   }
 }
 .social a {
