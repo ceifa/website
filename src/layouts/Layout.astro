@@ -33,6 +33,19 @@ const nav = [
   ["/posts", "Posts"],
   ["/about", "About"],
 ];
+// The night sky: the same few stars on every page, scattered at build time
+// and thinning out towards the text.
+let seed = 11;
+const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const stars = Array.from({ length: 30 }, (_, i) => ({
+  class: i % 3 ? undefined : "twinkle",
+  style: [
+    `left:${(random() * 100).toFixed(1)}%`,
+    `top:${(random() ** 1.7 * 100).toFixed(1)}%`,
+    `scale:${(0.5 + random() * 0.7).toFixed(2)}`,
+    `animation-delay:-${(random() * 6).toFixed(1)}s`,
+  ].join(";"),
+}));
 ---
 
 <!doctype html>
@@ -67,6 +80,16 @@ const nav = [
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <div class="sky" aria-hidden="true">
+      <div class="sky-night">
+        {stars.map((star) => <i class={star.class} style={star.style} />)}
+        <span class="shooting-star" id="shooting-star"></span>
+      </div>
+      <div class="sky-day">
+        <span class="cloud"></span>
+        <span class="cloud"></span>
+      </div>
+    </div>
     <div class="site" id="top">
       <header class="header">
         <a href="/" class="logo">ceifa<i>.</i></a>
@@ -81,9 +104,14 @@ const nav = [
             }
           </nav>
           <button class="theme-toggle" id="theme-toggle" type="button" hidden>
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
-              <path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"></path>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <g class="sun">
+                <circle cx="12" cy="12" r="4.5"></circle>
+                <path
+                  d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"
+                ></path>
+              </g>
+              <path class="moon" d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"></path>
             </svg>
           </button>
         </div>
@@ -110,6 +138,7 @@ const nav = [
     </button>
     <script>
       import "../scripts/theme.mjs";
+      import "../scripts/sky.mjs";
       import "../scripts/navigate.mjs";
       import "../scripts/inhabit.mjs";
     </script>

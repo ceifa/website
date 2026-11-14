@@ -11,7 +11,10 @@
   --focus: #a64a19;
   --chat: #f1f6ef;
   --code: #f1f6ef;
-  --theme-turn: 0deg;
+  /* The sky: 0 by day, 1 at night, and which half of it is moving. */
+  --night: 0;
+  --day-motion: running;
+  --night-motion: paused;
   --astro-code-foreground: var(--ink);
   --astro-code-background: var(--code);
   --astro-code-token-keyword: #ab4057;
@@ -41,7 +44,9 @@
     --focus: #ffbf94;
     --chat: #354c3c;
     --code: #22322b;
-    --theme-turn: 180deg;
+    --night: 1;
+    --day-motion: paused;
+    --night-motion: running;
     --astro-code-token-keyword: #f09bb1;
     --astro-code-token-string: #a9d6a5;
     --astro-code-token-string-expression: #a9d6a5;
@@ -64,7 +69,9 @@
   --focus: #ffbf94;
   --chat: #354c3c;
   --code: #22322b;
-  --theme-turn: 180deg;
+  --night: 1;
+  --day-motion: paused;
+  --night-motion: running;
   --astro-code-token-keyword: #f09bb1;
   --astro-code-token-string: #a9d6a5;
   --astro-code-token-string-expression: #a9d6a5;
@@ -184,10 +191,125 @@ summary:focus-visible {
   outline-offset: 0;
 }
 .theme-toggle svg {
-  width: 15px;
-  height: 15px;
-  transform: rotate(var(--theme-turn));
-  transition: transform 0.35s;
+  width: 17px;
+  height: 17px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* One sets as the other rises. */
+.theme-toggle .sun,
+.theme-toggle .moon {
+  transform-origin: center;
+  transition:
+    transform 0.45s,
+    opacity 0.3s;
+}
+.theme-toggle .sun {
+  opacity: calc(1 - var(--night));
+  transform: rotate(calc(var(--night) * 90deg)) scale(calc(1 - var(--night) * 0.6));
+}
+.theme-toggle .moon {
+  opacity: var(--night);
+  transform: rotate(calc((var(--night) - 1) * 90deg)) scale(calc(0.4 + var(--night) * 0.6));
+}
+/* A strip of sky behind the top of the page. It scrolls away with the header
+   and fades out before the text gets going. */
+.sky {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 430px;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 25%, transparent);
+  mask-image: linear-gradient(#000 25%, transparent);
+}
+.sky-night,
+.sky-day {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.6s;
+}
+.sky-night {
+  opacity: var(--night);
+}
+.sky-day {
+  opacity: calc(1 - var(--night));
+}
+.sky-night i {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.4;
+}
+.sky-night .twinkle {
+  animation: twinkle 3.7s ease-in-out infinite alternate;
+  animation-play-state: var(--night-motion);
+}
+/* sky.mjs places it and sends it across, now and then. */
+.shooting-star {
+  position: absolute;
+  width: 90px;
+  height: 1px;
+  border-radius: 1px;
+  background: linear-gradient(to right, transparent, var(--ink));
+  transform-origin: right;
+  opacity: 0;
+}
+.cloud {
+  position: absolute;
+  left: 0;
+  top: 100px;
+  width: 84px;
+  height: 20px;
+  border-radius: 99px;
+  background: var(--mint);
+  animation: drift 170s -50s linear infinite;
+  animation-play-state: var(--day-motion);
+}
+.cloud + .cloud {
+  top: 190px;
+  scale: 0.65;
+  animation-duration: 240s;
+  animation-delay: -175s;
+}
+.cloud:before,
+.cloud:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+.cloud:before {
+  width: 34px;
+  height: 34px;
+  left: 13px;
+  top: -15px;
+}
+.cloud:after {
+  width: 25px;
+  height: 25px;
+  left: 41px;
+  top: -8px;
+}
+@keyframes twinkle {
+  to {
+    opacity: 0.08;
+  }
+}
+@keyframes drift {
+  from {
+    translate: -130px;
+  }
+  to {
+    translate: 100vw;
+  }
 }
 .hero {
   padding: 66px 0 54px;
@@ -1060,6 +1182,13 @@ main:focus {
   .header-end {
     gap: 12px;
   }
+  .cloud {
+    top: 92px;
+    scale: 0.75;
+  }
+  .cloud + .cloud {
+    scale: 0.5;
+  }
   /* Code runs edge to edge on a phone; the text inside stays on the margin. */
   .article-body pre {
     width: auto;
@@ -1094,7 +1223,21 @@ main:focus {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .theme-toggle svg {
+  .theme-toggle .sun,
+  .theme-toggle .moon,
+  .sky-night,
+  .sky-day {
     transition: none;
+  }
+  .sky-night .twinkle {
+    animation: none;
+  }
+  /* The clouds stay where they are. */
+  .cloud {
+    animation: none;
+    translate: 24vw;
+  }
+  .cloud + .cloud {
+    translate: 71vw;
   }
 }
