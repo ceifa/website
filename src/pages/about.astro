@@ -32,14 +32,15 @@ import Layout from "../layouts/Layout.astro";
         <span data-land="text">My usual nickname is <code>ceifa</code>.</span>
       </p>
     </div>
-    <div class="portrait">
-      <Image
-        src={photo}
-        alt="Gabriel smiling, in a red t-shirt."
-        loading="eager"
-        data-land="top"
-      />
-    </div>
+    <Image
+      class="portrait"
+      src={photo}
+      alt="Illustration of Gabriel waving, in a grey t-shirt."
+      widths={[400, 800]}
+      sizes="(max-width: 700px) 320px, 400px"
+      loading="eager"
+      data-land="top"
+    />
   </section>
   <div class="about-body">
     <h2><span data-land="text">Like my work?</span></h2>
