@@ -10,10 +10,25 @@
   --note: #f5efcd;
   --focus: #a64a19;
   --chat: #f1f6ef;
+  --code: #f1f6ef;
+  --theme-turn: 0deg;
+  --astro-code-foreground: var(--ink);
+  --astro-code-background: var(--code);
+  --astro-code-token-keyword: #ab4057;
+  --astro-code-token-string: #2f6b4f;
+  --astro-code-token-string-expression: #2f6b4f;
+  --astro-code-token-constant: #8f5412;
+  --astro-code-token-function: #1f6480;
+  --astro-code-token-parameter: var(--ink);
+  --astro-code-token-comment: var(--muted);
+  --astro-code-token-punctuation: #54665f;
+  --astro-code-token-link: var(--accent);
   color-scheme: light;
 }
+/* The dark theme, twice: once for the system preference and once for the
+   header toggle's explicit choice. Keep the two blocks identical. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #1c2926;
     --ink: #e6eee6;
     --muted: #aabdb0;
@@ -25,8 +40,38 @@
     --note: #4c492c;
     --focus: #ffbf94;
     --chat: #354c3c;
+    --code: #22322b;
+    --theme-turn: 180deg;
+    --astro-code-token-keyword: #f09bb1;
+    --astro-code-token-string: #a9d6a5;
+    --astro-code-token-string-expression: #a9d6a5;
+    --astro-code-token-constant: #f3bf8f;
+    --astro-code-token-function: #9ccfe3;
+    --astro-code-token-punctuation: #aabdb0;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --paper: #1c2926;
+  --ink: #e6eee6;
+  --muted: #aabdb0;
+  --line: #3b4d43;
+  --mint: #2b4235;
+  --mint-strong: #6c8e72;
+  --plain: #22322b;
+  --accent: #f09bb1;
+  --note: #4c492c;
+  --focus: #ffbf94;
+  --chat: #354c3c;
+  --code: #22322b;
+  --theme-turn: 180deg;
+  --astro-code-token-keyword: #f09bb1;
+  --astro-code-token-string: #a9d6a5;
+  --astro-code-token-string-expression: #a9d6a5;
+  --astro-code-token-constant: #f3bf8f;
+  --astro-code-token-function: #9ccfe3;
+  --astro-code-token-punctuation: #aabdb0;
+  color-scheme: dark;
 }
 * {
   box-sizing: border-box;
@@ -111,6 +156,38 @@ summary:focus-visible {
 }
 .header nav a:hover {
   color: var(--ink);
+}
+.header-end {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-right: -9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+}
+.theme-toggle[hidden] {
+  display: none;
+}
+.theme-toggle:hover {
+  color: var(--ink);
+}
+.theme-toggle:focus-visible {
+  outline-offset: 0;
+}
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+  transform: rotate(var(--theme-turn));
+  transition: transform 0.35s;
 }
 .hero {
   padding: 66px 0 54px;
@@ -672,18 +749,26 @@ noscript p {
 }
 .article-body pre {
   overflow: auto;
-  background: var(--chat);
+  /* A wide block grows into the empty right margin before it scrolls. */
+  width: max-content;
+  min-width: 100%;
+  max-width: min(880px, calc(100vw - 84px));
+  background: var(--code);
   border: 1px solid var(--line);
   padding: 18px;
-  font-size: 12.5px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
   margin: 22px 0 28px;
   border-radius: 5px;
+}
+.article-body pre:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 .article-body code {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.86em;
-  background: var(--chat);
+  background: var(--code);
   padding: 2px 4px;
   border-radius: 3px;
 }
@@ -701,12 +786,47 @@ noscript p {
 .article-body a {
   overflow-wrap: anywhere;
 }
+.article-body figure {
+  margin: 4px 0 26px;
+}
+/* The demos paint with the canvas's own text colour, so they follow the theme. */
 .article-body canvas {
-  max-width: 100%;
+  display: block;
+  width: 100%;
+  height: 100px;
+  color: var(--ink);
   background: var(--plain);
   border: 1px solid var(--line);
   border-radius: 5px;
-  margin: 4px 0 22px;
+}
+.article-body details {
+  margin: 22px 0 28px;
+  padding: 10px 14px;
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.article-body summary {
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.article-body summary:hover {
+  color: var(--ink);
+}
+.article-body details[open] summary {
+  margin-bottom: 12px;
+}
+.article-body details pre {
+  --astro-code-background: transparent;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 4px;
+  background: none;
+  border: 0;
+  border-radius: 0;
 }
 main:focus {
   outline: none;
@@ -862,4 +982,45 @@ main:focus {
 }
 .section-heading h2 a:hover {
   color: var(--accent);
+}
+@media (max-width: 700px) {
+  .header-end {
+    gap: 12px;
+  }
+  /* Code runs edge to edge on a phone; the text inside stays on the margin. */
+  .article-body pre {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin-inline: -25px;
+    padding-inline: 25px;
+    border-inline: 0;
+    border-radius: 0;
+    font-size: 13px;
+  }
+  .article-body details pre {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+  .article-body img {
+    padding: 6px;
+  }
+}
+@media (max-width: 370px) {
+  .header-end {
+    gap: 6px;
+  }
+  .article-body pre {
+    margin-inline: -21px;
+    padding-inline: 21px;
+  }
+  .article-body details pre {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle svg {
+    transition: none;
+  }
 }

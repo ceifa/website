@@ -12,17 +12,24 @@ const { Content } = await render(post);
 const date = post.data.written;
 ---
 
-<Layout title={`${post.data.title} · ceifa`} description={describe(post)} section="/posts">
+<Layout
+  title={`${post.data.title} · ceifa`}
+  description={describe(post)}
+  section="/posts"
+  article={{ headline: post.data.title, published: date }}
+>
   <a class="back" href="/posts"><span data-land="text">← Posts</span></a>
-  <header class="article-head">
-    <h1><span data-land="text" id="first-perch">{post.data.title}</span></h1>
-    <p class="article-meta">
-      <time datetime={date.toISOString().slice(0, 10)}>
-        {date.toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}
-      </time>
-    </p>
-  </header>
-  <article class="article-body">
-    <Content />
+  <article>
+    <header class="article-head">
+      <h1><span data-land="text" id="first-perch">{post.data.title}</span></h1>
+      <p class="article-meta">
+        <time datetime={date.toISOString().slice(0, 10)}>
+          {date.toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}
+        </time>
+      </p>
+    </header>
+    <div class="article-body">
+      <Content />
+    </div>
   </article>
 </Layout>

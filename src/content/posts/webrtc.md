@@ -25,7 +25,7 @@ You can't count on browsers managing a direct connection, because some networks 
 
 I hate these WebRTC handshake diagrams because they tend to be really confusing, but if you're a visual person, the flow looks more or less like this:
 
-![The WebRTC connection flow between two peers, a signaling server and STUN/TURN servers](/images/webrtc-flow.png)
+<a href="/images/webrtc-flow.png"><img src="/images/webrtc-flow.png" alt="The WebRTC connection flow between two peers, a signaling server and STUN/TURN servers" width="641" height="559" loading="lazy" decoding="async"></a>
 
 ## In practice
 

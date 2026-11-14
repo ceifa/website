@@ -7,12 +7,27 @@ interface Props {
   title: string;
   description: string;
   section?: string;
+  // Set on post pages: marks the page up as an article for crawlers and link previews.
+  article?: { headline: string; published: Date };
 }
 
 // With build.format "file" pages render as /projects.html; their public URL is /projects.
 const path = Astro.url.pathname.replace(/(index)?\.html$/, "");
-const { title, description, section = path } = Astro.props;
+const { title, description, section = path, article } = Astro.props;
 const canonical = new URL(path, Astro.site);
+const author = { "@type": "Person", name: "Gabriel Francisco", url: new URL("/about", Astro.site) };
+const jsonLd =
+  article &&
+  JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.headline,
+    description,
+    datePublished: article.published.toISOString(),
+    url: canonical,
+    mainEntityOfPage: canonical,
+    author,
+  }).replaceAll("<", "\\u003c");
 const nav = [
   ["/projects", "Projects"],
   ["/posts", "Posts"],
@@ -29,7 +44,8 @@ const nav = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={article ? "article" : "website"} />
+    {article && <meta property="article:published_time" content={article.published.toISOString()} />}
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -40,21 +56,37 @@ const nav = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--font-site" preload />
     <Font cssVariable="--font-display" preload />
+    {jsonLd && <script type="application/ld+json" is:inline set:html={jsonLd} />}
+    <script is:inline>
+      // Apply a theme chosen with the header toggle before the first paint.
+      try {
+        const theme = localStorage.getItem("theme");
+        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <div class="site" id="top">
       <header class="header">
         <a href="/" class="logo">ceifa<i>.</i></a>
-        <nav aria-label="Main">
-          {
-            nav.map(([href, label]) => (
-              <a href={href} aria-current={href === section ? "page" : undefined}>
-                {label}
-              </a>
-            ))
-          }
-        </nav>
+        <div class="header-end">
+          <nav aria-label="Main">
+            {
+              nav.map(([href, label]) => (
+                <a href={href} aria-current={href === section ? "page" : undefined}>
+                  {label}
+                </a>
+              ))
+            }
+          </nav>
+          <button class="theme-toggle" id="theme-toggle" type="button" hidden>
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+              <path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"></path>
+            </svg>
+          </button>
+        </div>
       </header>
       <main id="main" tabindex="-1">
         <slot />
@@ -77,6 +109,7 @@ const nav = [
       <span class="sprite"><span class="eyes"></span></span><span class="leg left"></span><span class="leg right"></span>
     </button>
     <script>
+      import "../scripts/theme.mjs";
       import "../scripts/navigate.mjs";
       import "../scripts/inhabit.mjs";
     </script>

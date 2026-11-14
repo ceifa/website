@@ -1,5 +1,5 @@
 ---
-title: "Why you shouldn't use setTimeout"
+title: "Why you shouldn’t use setTimeout"
 written: "2020-10-29"
 ---
 
@@ -32,11 +32,10 @@ The `draw` function would be called every 50ms. That frequency isn't ideal for a
 
 <details>
 <summary>Code used for the animation</summary>
-<p>
 
 ```js
 let tick = 0;
-function doAnimation(canvas, advance){
+function doAnimation(canvas, advance = 1){
     const ctx = canvas.getContext("2d")
 
     tick += advance;
@@ -47,7 +46,6 @@ function doAnimation(canvas, advance){
 }
 ```
 
-</p>
 </details>
 
 
@@ -63,25 +61,9 @@ function doAnimation(canvas, advance){
 
 This produces the following result:
 
-<canvas id="timeout" style="width:100%;height:100px"></canvas>
-<script>
-{
-    let tick = 0;
-    function doAnimation(canvas, advance){
-        const ctx = canvas.getContext("2d")
-        tick += advance;
-        tick %= canvas.width
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        ctx.fillRect(tick, 0, 10, canvas.height)
-    }
-    const canvas = document.querySelector("#timeout")
-    ;(function drawWithTimeout() {
-        if (!canvas.isConnected) return
-        setTimeout(drawWithTimeout, 1000 / 60)
-        doAnimation(canvas, 1)
-    })()
-}
-</script>
+<figure>
+<canvas id="timeout" role="img" aria-label="A bar sliding from left to right, redrawn by setTimeout 60 times a second"></canvas>
+</figure>
 
 The problem is that `setTimeout` doesn't care about the browser's rendering. It will draw whenever it wants, not when or while the browser can. That means the browser has to deal with rendering the animation while it paints more important parts of the screen, and if the frame rate is out of sync with the screen's repaints, it can use more CPU.
 
@@ -96,24 +78,47 @@ The fix for this case is [requestAnimationFrame](https://developer.mozilla.org/e
 
 And it produces the following result, which is much smoother:
 
-<canvas id="raf" style="width:100%;height:100px"></canvas>
+<figure>
+<canvas id="raf" role="img" aria-label="The same bar, redrawn by requestAnimationFrame"></canvas>
+</figure>
 <script>
-{
-    let tick = 0;
-    function doAnimation(canvas, advance){
+(() => {
+    const still = matchMedia("(prefers-reduced-motion: reduce)")
+    // Draws in CSS pixels on a canvas sized for the screen's pixel density,
+    // and only while the canvas is on screen.
+    function demo(canvas, schedule) {
         const ctx = canvas.getContext("2d")
-        tick += advance;
-        tick %= canvas.width
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        ctx.fillRect(tick, 0, 10, canvas.height)
+        let tick = 0, visible = false, running = false
+        function draw() {
+            const width = canvas.clientWidth, height = canvas.clientHeight
+            const ratio = devicePixelRatio || 1
+            if (canvas.width !== Math.round(width * ratio)) {
+                canvas.width = Math.round(width * ratio)
+                canvas.height = Math.round(height * ratio)
+            }
+            // With reduced motion the bar is drawn but stays put.
+            tick = still.matches ? (width - 10) / 2 : (tick + 1) % width
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0)
+            ctx.clearRect(0, 0, width, height)
+            ctx.fillStyle = getComputedStyle(canvas).color
+            ctx.fillRect(tick, 0, 10, height)
+        }
+        function loop() {
+            if (!visible || !canvas.isConnected) return running = false
+            schedule(loop)
+            draw()
+        }
+        new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting
+            if (visible && !running) {
+                running = true
+                loop()
+            }
+        }).observe(canvas)
     }
-    const canvas = document.querySelector("#raf")
-    ;(function drawWithRaf() {
-        if (!canvas.isConnected) return
-        requestAnimationFrame(drawWithRaf)
-        doAnimation(canvas, 1)
-    })()
-}
+    demo(document.querySelector("#timeout"), (next) => setTimeout(next, 1000 / 60))
+    demo(document.querySelector("#raf"), (next) => requestAnimationFrame(next))
+})()
 </script>
 
 > Note: if the speeds look very different, know that you're privileged to own a really good monitor

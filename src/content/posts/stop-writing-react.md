@@ -1,8 +1,10 @@
 ---
 title: "Stop writing React (a letter from a distressed svelter)"
 written: "2020-08-08"
-description: "React is good, but it doesn't fit every case. A look at Svelte and how the two compare."
+description: "React is good, but it doesn’t fit every case. A look at Svelte and how the two compare."
 ---
+
+> Note: I wrote this in 2020, when this blog was built with Svelte. It runs on Astro now.
 
 Ahhh, [React](https://react.dev/). Some people say it's hard to set up, to learn, etc., but I don't think so. For me it was always really simple: one `create-react-app` and you have a boilerplate ready, now just start writing JavaScript. Everything seems to work so well. You write a few "uses" and things become reactive and behave the way you expect. It couldn't be better.
 

@@ -18,7 +18,8 @@ export default defineConfig({
   build: { format: "file" },
   integrations: [sitemap()],
   markdown: {
-    syntaxHighlight: false,
+    // Tokens take their colours from the --astro-code-* variables in site.css.
+    shikiConfig: { theme: "css-variables" },
     processor: satteri({ hastPlugins: [land] }),
   },
   fonts: [
