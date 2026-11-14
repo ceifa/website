@@ -1,0 +1,50 @@
+---
+import Featured from "../components/Featured.astro";
+import PostList from "../components/PostList.astro";
+import Layout from "../layouts/Layout.astro";
+import { getPosts } from "../lib/posts";
+
+const posts = (await getPosts()).slice(0, 3);
+---
+
+<Layout
+  title="ceifa · code, games and other stories"
+  description="Gabriel Francisco's corner of the internet. Open source projects, posts and other stories."
+>
+  <section class="hero">
+    <div>
+      <span class="hero-label">GABRIEL FRANCISCO / CEIFA</span>
+      <h1>
+        <span data-land="text">Code, games</span><span data-land="text" id="first-perch"
+          >and other <em>stories.</em></span
+        >
+      </h1>
+    </div>
+  </section>
+  <section id="projects">
+    <div class="section-heading" data-land="bottom">
+      <h2><a href="/projects">Projects</a></h2>
+      <a href="/projects">All projects</a>
+    </div>
+    <Featured
+      eleven="Your local AI agent, reachable from Discord and Telegram."
+      wasmoon="Wasmoon compiles the real Lua VM to WebAssembly. Hundreds of thousands of downloads a month on npm."
+    />
+  </section>
+  <section class="posts">
+    <div class="section-heading" data-land="bottom">
+      <h2><a href="/posts">Posts</a></h2>
+      <a href="/posts">All posts</a>
+    </div>
+    <PostList posts={posts} />
+  </section>
+  <section class="about">
+    <div class="section-heading" data-land="bottom">
+      <h2><a href="/about">About</a></h2>
+      <a href="/about">More</a>
+    </div>
+    <a class="about-teaser" href="/about"
+      ><span data-land="text">A wild duck that will probably <em>break your code.</em></span></a
+    >
+  </section>
+</Layout>

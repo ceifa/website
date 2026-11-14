@@ -1,0 +1,116 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getStars } from "../lib/github";
+
+const projects = [
+  {
+    name: "Wasmoon",
+    repo: "ceifa/wasmoon",
+    href: "https://github.com/ceifa/wasmoon",
+    description:
+      "The real Lua 5.4 VM compiled to WebAssembly, with bindings that pass tables, functions and promises between Lua and JS. Runs in browsers, Node and Deno.",
+    tags: ["TypeScript", "Lua"],
+  },
+  {
+    name: "steamworks.js",
+    repo: "ceifa/steamworks.js",
+    href: "https://github.com/ceifa/steamworks.js",
+    description: "The Steamworks SDK for Electron and NW.js games, with prebuilt binaries.",
+    tags: ["Rust", "Games"],
+  },
+  {
+    name: "Eleven",
+    repo: "ceifa/eleven",
+    href: "https://github.com/ceifa/eleven",
+    description:
+      "A small gateway that connects Discord and Telegram to AI agents running in your own folders, with a dashboard for every conversation.",
+    tags: ["TypeScript", "AI agents"],
+  },
+  {
+    name: "agenthost",
+    repo: "ceifa/agenthost",
+    href: "https://agenthost.page",
+    description:
+      "Hosting for AI agents. An agent publishes a page, docs or any files and gets back a private link.",
+    tags: ["TypeScript", "AI agents"],
+  },
+  {
+    name: "papagaia",
+    repo: "ceifa/papagaia",
+    href: "https://github.com/ceifa/papagaia",
+    description: "Dictate into any app and rewrite selected text with a shortcut, on Linux Wayland desktops.",
+    tags: ["Rust", "Desktop"],
+  },
+  {
+    name: "tiktoken-node",
+    repo: "ceifa/tiktoken-node",
+    href: "https://github.com/ceifa/tiktoken-node",
+    description: "OpenAI's tiktoken tokenizer for Node, with native bindings written in Rust.",
+    tags: ["Rust", "AI"],
+  },
+  {
+    name: "demoon",
+    repo: "ceifa/demoon",
+    href: "https://github.com/ceifa/demoon",
+    description: "Run Lua files on top of Node: require npm modules and await promises from Lua.",
+    tags: ["JavaScript", "Lua"],
+  },
+  {
+    name: "monaco-liquid",
+    repo: "ceifa/monaco-liquid",
+    href: "https://ceifa.github.io/monaco-liquid/",
+    description:
+      "Liquid templates in the Monaco editor, with highlighting, validation, hover types and autocomplete.",
+    tags: ["TypeScript", "Editor"],
+  },
+  {
+    name: "garrysmod-docker",
+    repo: "ceifa/garrysmod-docker",
+    href: "https://github.com/ceifa/garrysmod-docker",
+    description: "A Docker image that runs a Garry's Mod server.",
+    tags: ["Docker", "Games"],
+  },
+  {
+    name: "sqlier",
+    repo: "ceifa/sqlier",
+    href: "https://github.com/ceifa/sqlier",
+    description:
+      "A small database layer for Garry's Mod addons that works the same over different drivers.",
+    tags: ["Lua", "Games"],
+  },
+];
+const stars = await getStars();
+const compact = new Intl.NumberFormat("en", { notation: "compact" });
+---
+
+<Layout
+  title="Projects · ceifa"
+  description="Open source projects by Gabriel Francisco: Wasmoon, steamworks.js, Eleven, agenthost and more."
+>
+  <section class="page-head">
+    <h1><span data-land="text" id="first-perch">Projects</span></h1>
+  </section>
+  <div class="project-grid">
+    {
+      projects.map((project) => (
+        <a class="project-card" data-land="top" href={project.href}>
+          <div class="project-title">
+            <h2><span data-land="text">{project.name}</span></h2>
+            {stars.has(project.repo) && (
+              <span class="project-stars" aria-label={`${stars.get(project.repo)} stars on GitHub`}>
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
+                </svg>
+                {compact.format(stars.get(project.repo)!)}
+              </span>
+            )}
+          </div>
+          <p>{project.description}</p>
+          <ul class="project-tags">
+            {project.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
+        </a>
+      ))
+    }
+  </div>
+</Layout>

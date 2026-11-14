@@ -1,0 +1,35 @@
+---
+interface Props {
+  eleven: string;
+  wasmoon: string;
+}
+
+const { eleven, wasmoon } = Astro.props;
+---
+
+<div class="projects-grid">
+  <article class="feature-project" data-land="top">
+    <div class="project-top">
+      <h3><span data-land="text">Eleven</span></h3>
+      <a href="https://github.com/ceifa/eleven" aria-label="Eleven on GitHub">↗</a>
+    </div>
+    <p><span data-land="text">{eleven}</span></p>
+    <div class="conversation" data-land="top">
+      <div class="conversation-top" data-land="bottom"><span>eleven</span></div>
+      <div class="conversation-body">
+        <div class="message you" data-land="top">
+          <span class="message-label">you</span>Can we pick this up from here?
+        </div>
+        <div class="message" data-land="top">
+          <span class="message-label">agent</span>Sure. The project is still on your computer.
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="side-project">
+    <span class="project-meta" data-land="text">MOST USED</span>
+    <h3><span data-land="text">Lua 5.4 anywhere JavaScript runs.</span></h3>
+    <p>{wasmoon}</p>
+    <a class="project-link" href="https://github.com/ceifa/wasmoon" data-land="text">Wasmoon on GitHub ↗</a>
+  </article>
+</div>

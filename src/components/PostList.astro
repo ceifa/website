@@ -1,0 +1,20 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="post-list">
+  {
+    posts.map((post) => (
+      <a class="post" data-land="bottom" href={`/${post.id}`}>
+        <strong>{post.data.title}</strong>
+        <small>{post.data.written.getUTCFullYear()}</small>
+      </a>
+    ))
+  }
+</div>
