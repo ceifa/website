@@ -1,7 +1,7 @@
 // The footer radio plays while the resident sits in the armchair beside it.
 const SRC = "/audio/adore.mp3";
 // Quiet and muffled, like a radio left on in the background of the room.
-const VOLUME = 0.2;
+const VOLUME = 0.12;
 const lounge = document.getElementById("lounge");
 const button = document.getElementById("radio");
 let audio = null,
