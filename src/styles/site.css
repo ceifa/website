@@ -367,7 +367,8 @@ summary:focus-visible {
 .footer a {
   white-space: nowrap;
 }
-.footer-links {
+/* Not "social": ad blockers' annoyance lists hide .social.footer-links. */
+.footer-elsewhere {
   display: flex;
   gap: 18px;
 }
@@ -939,16 +940,16 @@ main:focus {
     width: min(100%, 320px);
   }
 }
-.social a {
+.elsewhere a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   text-decoration: none;
 }
-.social a:hover {
+.elsewhere a:hover {
   color: var(--accent);
 }
-.social svg {
+.elsewhere svg {
   width: 1.15em;
   height: 1.15em;
   fill: currentColor;
