@@ -147,9 +147,15 @@ summary:focus-visible {
   text-decoration: none;
 }
 .logo i {
+  display: inline-block;
   font-family: var(--font-display);
   font-weight: 400;
   color: var(--accent);
+  transition: transform 0.4s;
+}
+/* On the underside of the page (underside.mjs) the full stop hangs from the top. */
+:root[data-underside] .logo i {
+  transform: translateY(-0.62em);
 }
 .header nav {
   display: flex;
@@ -1808,5 +1814,54 @@ main:focus {
   }
   .cloud + .cloud {
     translate: 71vw;
+  }
+}
+/* The words of an element that gave way (collapse.mjs): copies laid over the
+   page, under the resident. A click on them, or on the place they fell from,
+   puts the element back. */
+.rubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 35;
+  pointer-events: none;
+}
+.rubble span,
+.rubble-place {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.rubble span {
+  white-space: pre;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* A change of theme soaks in (ink.mjs): both snapshots stay opaque, and the
+   new one shows only inside the outline the script draws. */
+:root.soaking::view-transition-image-pair(root) {
+  isolation: auto;
+}
+:root.soaking::view-transition-old(root),
+:root.soaking::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root.soaking::view-transition-new(root) {
+  clip-path: var(--soak);
+  /* Changes nothing; it keeps the transition alive while the ink spreads. */
+  animation: soak-hold 1.3s linear;
+}
+@keyframes soak-hold {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo i {
+    transition: none;
   }
 }

@@ -13,6 +13,7 @@ let moodTimer,
   quietAt = 0,
   pointer = null,
   face = { x: 0, y: 0 },
+  upsideDown = false,
   gaze = "";
 
 function play(element, frames, duration, easing = "ease-in-out") {
@@ -112,16 +113,19 @@ function turnEyes() {
       dy = pointer.y - face.y,
       reach = Math.max(40, Math.hypot(dx, dy));
     x = Math.round((dx / reach) * 4) / 2;
-    y = Math.round((dy / reach) * 3) / 2;
+    // Turned over, its own "down" is up the screen.
+    y = (Math.round((dy / reach) * 3) / 2) * (upsideDown ? -1 : 1);
   }
   if (gaze === x + " " + y) return;
   gaze = x + " " + y;
   resident.style.setProperty("--look-x", x);
   resident.style.setProperty("--look-y", y);
 }
-// Called with where the resident's face is on screen whenever it moves.
-export function look(x, y) {
+// Called with where the resident's face is on screen whenever it moves, and
+// whether it is hanging upside down.
+export function look(x, y, turned = false) {
   face = { x, y };
+  upsideDown = turned;
   turnEyes();
 }
 addEventListener(

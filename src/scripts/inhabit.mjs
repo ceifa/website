@@ -8,7 +8,22 @@ const site = document.querySelector(".site");
 const actor = { x: 0, y: 0, vx: 0, vy: 0, ground: null };
 const keys = new Set();
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-const viewport = () => ({ top: scrollY, height: innerHeight });
+// On the underside of the page the whole simulation runs mirrored top to
+// bottom: gravity still pulls towards larger y, which is up on the screen.
+let flipped = false;
+const pageHeight = () => bounds.bottom + 5;
+// A height on the page, as the simulation sees it.
+const level = (y) => (flipped ? pageHeight() - y : y);
+// The sprite's top edge, between simulation and page coordinates (its own inverse).
+const pageY = (y) => (flipped ? pageHeight() - y - SIZE.height : y);
+const viewport = () => ({
+  top: flipped ? pageHeight() - scrollY - innerHeight : scrollY,
+  height: innerHeight,
+});
+const listeners = {};
+// True when a listener claimed the event.
+const emit = (type, detail) =>
+  (listeners[type] || []).map((fn) => fn(detail)).includes(true);
 const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
 // How a throw turns the pointer's speed into the resident's, in px/s.
 const THROW = { gain: 0.65, min: 40, across: 860, up: 830, down: 660 };
@@ -44,13 +59,34 @@ let lastTime = 0,
   strokedAt = 0;
 
 function measure() {
+  bounds = {
+    width: document.documentElement.clientWidth,
+    bottom:
+      Math.max(innerHeight, site.getBoundingClientRect().bottom + scrollY) - 5,
+  };
+  // An element's surface: its top edge, or from the underside its bottom one.
+  const surface = (top, bottom) => level(scrollY + (flipped ? bottom : top));
   floors = [...document.querySelectorAll("[data-land]")].flatMap((el, i) => {
+    // Nobody sits under an armchair.
+    if (flipped && el.hasAttribute("data-seat")) return [];
     if (el.closest("details:not([open])") && !el.closest("summary")) return [];
     if (el.dataset.contour) {
       // A cut-out image is a solid body: one floor per column of its silhouette,
       // each solid down to the image's bottom edge.
       const box = el.getBoundingClientRect();
       if (!box.width) return [];
+      if (flipped)
+        return [
+          {
+            id: `land-${i}-0`,
+            element: el,
+            interest: 0,
+            left: box.left + scrollX,
+            right: box.right + scrollX,
+            y: surface(box.top, box.bottom),
+            solid: level(scrollY + box.top),
+          },
+        ];
       const columns = JSON.parse(el.dataset.contour);
       const width = box.width / columns.length;
       return columns.map((top, j) => ({
@@ -79,23 +115,25 @@ function measure() {
         left: r.left + scrollX,
         right: r.right + scrollX,
         y:
-          scrollY +
-          (el.dataset.land === "bottom"
-            ? r.bottom
-            : r.top + (el.dataset.land === "text" ? font * 0.17 : 0)),
+          el.dataset.land === "bottom"
+            ? surface(r.bottom, r.bottom)
+            : el.dataset.land === "line"
+              ? // A rule along the top of something with no body to hang under.
+                surface(r.top, r.top)
+              : el.dataset.land === "text"
+                ? surface(r.top + font * 0.17, r.bottom - font * 0.2)
+                : surface(r.top, r.bottom),
       }));
   });
-  bounds = {
-    width: document.documentElement.clientWidth,
-    bottom:
-      Math.max(innerHeight, site.getBoundingClientRect().bottom + scrollY) - 5,
-  };
+  // Mirrored, a surface too close to the page's edge leaves no room to stand.
+  if (flipped) floors = floors.filter((floor) => floor.y > SIZE.height + 4);
+  if (world.terrain) floors = world.terrain(floors);
   floors.push({ id: "bottom", left: 0, right: bounds.width, y: bounds.bottom });
   wake();
 }
 function render() {
   resident.dataset.behavior = drag ? "held" : active ? "playing" : behavior;
-  resident.style.transform = `translate(${actor.x}px, ${actor.y}px)`;
+  resident.style.transform = `translate(${actor.x}px, ${pageY(actor.y)}px)${flipped ? " scaleY(-1)" : ""}`;
   resident.classList.toggle(
     "walking",
     Math.abs(actor.vx) > 20 && actor.ground !== null && !drag,
@@ -112,7 +150,13 @@ function render() {
   sit(seated);
   if (Math.abs(actor.vx) > 10)
     resident.style.setProperty("--facing", actor.vx > 0 ? 1 : -1);
-  look(actor.x + SIZE.width / 2 - scrollX, actor.y + 12 - scrollY);
+  // Upside down, its face is as far from the bottom of the sprite.
+  look(
+    actor.x + SIZE.width / 2 - scrollX,
+    pageY(actor.y) + (flipped ? SIZE.height - 12 : 12) - scrollY,
+    flipped,
+  );
+  emit("frame");
 }
 function manualActivity() {
   manualUntil = performance.now() + 6500;
@@ -160,7 +204,7 @@ function tick(now) {
     actor.vy = 100;
     actor.ground = null;
   }
-  if (command.jump) jump(actor);
+  if (command.jump && jump(actor)) emit("jump");
   if (command.drop) drop(actor);
   const direction = active
     ? Number(keys.has("right")) - Number(keys.has("left"))
@@ -174,8 +218,9 @@ function tick(now) {
   }
   const landed = autonomous && touchedDown;
   render();
+  if (touchedDown) emit("land", { ground: actor.ground, driven: !autonomous });
   if (active && now - inputAt < 1800) {
-    const screenY = actor.y - scrollY;
+    const screenY = pageY(actor.y) - scrollY;
     const delta =
       screenY < 95
         ? screenY - 95
@@ -218,8 +263,9 @@ resident.addEventListener("pointerdown", (e) => {
     startX: e.pageX,
     startY: e.pageY,
     offsetX: e.pageX - actor.x,
-    offsetY: e.pageY - actor.y,
+    offsetY: e.pageY - pageY(actor.y),
     moved: false,
+    pushed: 0,
     // The last few places the pointer was, and how far it has gone in all.
     trail: [{ t: e.timeStamp, x: e.pageX, y: e.pageY }],
     travel: 0,
@@ -264,10 +310,10 @@ resident.addEventListener("pointermove", (e) => {
     4,
     Math.min(bounds.width - SIZE.width - 4, e.pageX - drag.offsetX),
   );
-  actor.y = Math.max(
-    5,
-    Math.min(bounds.bottom - SIZE.height, e.pageY - drag.offsetY),
-  );
+  const top = e.pageY - drag.offsetY;
+  // How far the visitor is pressing it into the bottom edge of the page.
+  drag.pushed = top - (bounds.bottom - SIZE.height);
+  actor.y = pageY(Math.max(5, Math.min(bounds.bottom - SIZE.height, top)));
   actor.ground = null;
   actor.vx = actor.vy = 0;
   render();
@@ -275,7 +321,7 @@ resident.addEventListener("pointermove", (e) => {
 // Called with the time of the pointerup, or with nothing when the drag is cancelled.
 function release(at) {
   if (!drag) return;
-  const { moved, trail, travel, still } = drag;
+  const { moved, pushed, trail, travel, still } = drag;
   drag = null;
   clearTimeout(still);
   resident.style.removeProperty("--swing");
@@ -292,19 +338,23 @@ function release(at) {
         vy = (to.y - from.y) * gain;
       if (Math.hypot(vx, vy) > THROW.min) {
         actor.vx = clamp(vx, -THROW.across, THROW.across);
-        actor.vy = clamp(vy, -THROW.up, THROW.down);
+        // Mirrored, up the screen is down for the simulation.
+        actor.vy = (flipped ? -1 : 1) * clamp(vy, -THROW.up, THROW.down);
         actor.thrown = true;
       }
     }
     // Shaken about for long enough, it comes out dizzy.
     if (travel > 2400) feel("dizzy", 2800);
     select(false);
+    if (at !== undefined && pushed > 8) emit("push");
   } else {
     // A second tap right after the first is a somersault.
     const flip = at - tapAt < 350 && jump(actor);
     tapAt = flip ? -1000 : at;
-    if (flip) spin();
-    else pop();
+    if (flip) {
+      spin();
+      emit("jump");
+    } else pop();
     select(true);
     resident.focus({ preventScroll: true });
   }
@@ -326,7 +376,9 @@ window.addEventListener("keydown", (e) => {
     return;
   }
   const direction = horizontalKeys[keyName(e)];
-  const action = actionKeys[keyName(e)];
+  let action = actionKeys[keyName(e)];
+  // Mirrored, "away from the ground" is down the screen.
+  if (flipped && action && e.key !== " ") action = action === jump ? drop : jump;
   if (
     (!direction && !action) ||
     resident.hidden ||
@@ -341,7 +393,8 @@ window.addEventListener("keydown", (e) => {
   e.preventDefault();
   if (!active) select(true);
   if (direction) keys.add(direction);
-  else if (!e.repeat) action(actor);
+  else if (!e.repeat && !(action === drop && emit("drop", actor.ground)))
+    if (action(actor) && action === jump) emit("jump");
   inputAt = performance.now();
   manualActivity();
   wake();
@@ -366,16 +419,16 @@ document.addEventListener("click", (e) => {
 });
 let screenY = 0;
 document.addEventListener("page:leave", () => {
-  screenY = actor.y - scrollY;
+  screenY = pageY(actor.y) - scrollY;
 });
 // The resident keeps its place on screen and falls onto the new page.
 document.addEventListener("page:enter", () => {
   drag = null;
-  actor.y = scrollY + Math.max(40, Math.min(innerHeight - 120, screenY));
+  measure();
+  actor.y = pageY(scrollY + Math.max(40, Math.min(innerHeight - 120, screenY)));
   actor.vy = 0;
   actor.ground = null;
   if (companion) companion.goal = null;
-  measure();
 });
 window.addEventListener(
   "scroll",
@@ -385,8 +438,51 @@ window.addEventListener(
   },
   { passive: true },
 );
+// The view follows a resident on the keys, until the visitor scrolls it themselves.
+for (const type of ["wheel", "touchmove"])
+  window.addEventListener(type, () => (inputAt = 0), { passive: true });
 window.addEventListener("resize", measure);
 document.addEventListener("toggle", measure, true);
+// What the page's other scripts may read and steer. They hear about the
+// resident through `on`: "frame" after each render, "jump", "land" with the
+// ground and whether the visitor was driving, "drop" with the ground it was
+// asked to drop through (claimed by returning true), and "push" when it is
+// let go while pressed into the bottom of the page.
+export const world = {
+  actor,
+  // Set to a function that takes the measured floors and returns the ground.
+  terrain: null,
+  measure,
+  wake,
+  level,
+  get floors() {
+    return floors;
+  },
+  get bounds() {
+    return bounds;
+  },
+  get flipped() {
+    return flipped;
+  },
+  // The sprite's top edge on the page, whichever side it walks on.
+  top: () => pageY(actor.y),
+  on(type, fn) {
+    (listeners[type] ||= []).push(fn);
+  },
+  // Sends the resident to the other side of the page, keeping its place.
+  flip(value) {
+    if (value === flipped) return;
+    const top = pageY(actor.y);
+    flipped = value;
+    actor.y = pageY(top);
+    actor.vy = 0;
+    actor.ground = null;
+    if (companion) companion.goal = null;
+    companion?.reset();
+    measure();
+    render();
+  },
+};
 await document.fonts.ready;
 measure();
 const perch = floors.find((f) => f.element?.id === "first-perch");

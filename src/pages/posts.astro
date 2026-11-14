@@ -16,13 +16,13 @@ const day = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", t
   </section>
   {
     [...years].map(([year, posts]) => (
-      <section class="archive-year" data-land="top">
+      <section class="archive-year" data-land="line">
         {/* The year sticks on wide screens, so it's no place for the resident to stand. */}
         <h2>{year}</h2>
         {/* Safari forgets a list is a list once its markers are gone. */}
         <ul role="list">
           {posts.map((post, i) => (
-            <li class="entry" data-land={i ? "top" : undefined}>
+            <li class="entry" data-land={i ? "line" : undefined}>
               <h3>
                 <a href={`/${post.id}`}>
                   <span data-land="text">{post.data.title}</span>
