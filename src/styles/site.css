@@ -704,9 +704,14 @@ noscript p {
 .back:hover {
   color: var(--ink);
 }
+/* One centred reading column holds the back link, the title and the text. */
+.reading {
+  font-size: 16px;
+  max-width: 66ch;
+  margin-inline: auto;
+}
 .article-head {
   padding: 58px 0 10px;
-  max-width: 680px;
 }
 .article-head h1 {
   font:
@@ -721,7 +726,6 @@ noscript p {
   margin-top: 14px;
 }
 .article-body {
-  max-width: 66ch;
   padding: 26px 0 10px;
   font-size: 16px;
   line-height: 1.9;
@@ -749,16 +753,17 @@ noscript p {
 }
 .article-body pre {
   overflow: auto;
-  /* A wide block grows into the empty right margin before it scrolls. */
+  /* A wide block grows past both edges of the column, evenly, before it scrolls. */
   width: max-content;
   min-width: 100%;
   max-width: min(880px, calc(100vw - 84px));
+  translate: -50%;
   background: var(--code);
   border: 1px solid var(--line);
   padding: 18px;
   font-size: 14px;
   line-height: 1.6;
-  margin: 22px 0 28px;
+  margin: 22px 0 28px 50%;
   border-radius: 5px;
 }
 .article-body pre:focus-visible {
@@ -822,6 +827,7 @@ noscript p {
   width: auto;
   min-width: 0;
   max-width: none;
+  translate: none;
   margin: 0;
   padding: 0 0 4px;
   background: none;
@@ -992,6 +998,7 @@ main:focus {
     width: auto;
     min-width: 0;
     max-width: none;
+    translate: none;
     margin-inline: -25px;
     padding-inline: 25px;
     border-inline: 0;

@@ -18,18 +18,20 @@ const date = post.data.written;
   section="/posts"
   article={{ headline: post.data.title, published: date }}
 >
-  <a class="back" href="/posts"><span data-land="text">← Posts</span></a>
-  <article>
-    <header class="article-head">
-      <h1><span data-land="text" id="first-perch">{post.data.title}</span></h1>
-      <p class="article-meta">
-        <time datetime={date.toISOString().slice(0, 10)}>
-          {date.toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}
-        </time>
-      </p>
-    </header>
-    <div class="article-body">
-      <Content />
-    </div>
-  </article>
+  <div class="reading">
+    <a class="back" href="/posts"><span data-land="text">← Posts</span></a>
+    <article>
+      <header class="article-head">
+        <h1><span data-land="text" id="first-perch">{post.data.title}</span></h1>
+        <p class="article-meta">
+          <time datetime={date.toISOString().slice(0, 10)}>
+            {date.toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}
+          </time>
+        </p>
+      </header>
+      <div class="article-body">
+        <Content />
+      </div>
+    </article>
+  </div>
 </Layout>
