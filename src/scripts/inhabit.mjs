@@ -38,6 +38,23 @@ let lastTime = 0,
 function measure() {
   floors = [...document.querySelectorAll("[data-land]")].flatMap((el, i) => {
     if (el.closest("details:not([open])") && !el.closest("summary")) return [];
+    if (el.dataset.contour) {
+      // A cut-out image is a solid body: one floor per column of its silhouette,
+      // each solid down to the image's bottom edge.
+      const box = el.getBoundingClientRect();
+      if (!box.width) return [];
+      const columns = JSON.parse(el.dataset.contour);
+      const width = box.width / columns.length;
+      return columns.map((top, j) => ({
+        id: `land-${i}-${j}`,
+        element: el,
+        interest: 0,
+        left: box.left + scrollX + j * width,
+        right: box.left + scrollX + (j + 1) * width,
+        y: box.top + scrollY + top * box.height,
+        solid: box.bottom + scrollY,
+      }));
+    }
     const font = parseFloat(getComputedStyle(el).fontSize);
     return [...el.getClientRects()]
       .filter((r) => r.width > 0 && r.height > 0)
