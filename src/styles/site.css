@@ -899,18 +899,8 @@ main:focus {
   max-width: 62ch;
   padding-bottom: 20px;
 }
-.about-body p a:hover {
-  color: var(--accent);
-}
 .about-body p + p {
   margin-top: 18px;
-}
-.about-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 22px;
-  margin-top: 28px;
-  font-size: 13px;
 }
 .about {
   padding-top: 42px;
