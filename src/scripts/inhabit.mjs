@@ -1,5 +1,6 @@
 import { SIZE, jump, drop, step } from "./walker.mjs";
 import { Companion, findRoute } from "./companion.mjs";
+import { sit } from "./radio.mjs";
 
 const resident = document.getElementById("resident");
 const site = document.querySelector(".site");
@@ -61,6 +62,7 @@ function measure() {
       .map((r, j) => ({
         id: `land-${i}-${j}`,
         element: el,
+        seat: el.hasAttribute("data-seat"),
         interest:
           el.closest("h1,h2,h3") || el.classList.contains("section-heading")
             ? 2
@@ -92,6 +94,12 @@ function render() {
     Math.abs(actor.vx) > 20 && actor.ground !== null && !drag,
   );
   resident.classList.toggle("dragging", !!drag?.moved);
+  const seated =
+    !drag &&
+    Math.abs(actor.vx) < 10 &&
+    !!floors.find((floor) => floor.id === actor.ground)?.seat;
+  resident.classList.toggle("sitting", seated);
+  sit(seated);
   if (Math.abs(actor.vx) > 10)
     resident.style.setProperty("--facing", actor.vx > 0 ? 1 : -1);
 }
@@ -126,13 +134,9 @@ function tick(now) {
   const dt = lastTime ? Math.min(1 / 30, (now - lastTime) / 1000) : 1 / 60;
   lastTime = now;
   const autonomous =
-    !active &&
-    !tamed &&
-    now >= manualUntil &&
-    !reducedMotion.matches &&
-    companion;
+    !active && now >= manualUntil && !reducedMotion.matches && companion;
   const command = autonomous
-    ? companion.decide(actor, floors, viewport(), now)
+    ? companion.decide(actor, floors, viewport(), now, tamed)
     : { mode: now < manualUntil ? "waiting" : "watching", direction: 0 };
   behavior = command.mode;
   if (command.reenter) {

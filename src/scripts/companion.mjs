@@ -17,6 +17,7 @@ export function choosePerch(floors, view, previousId) {
   const candidates = floors.filter(
     (floor) =>
       floor.id !== "bottom" &&
+      !floor.seat &&
       floor.right - floor.left >= 50 &&
       floor.y > view.top + 95 &&
       floor.y < view.top + view.height - 65,
@@ -116,7 +117,30 @@ export class Companion {
     this.transition = null;
     this.failed.clear();
   }
-  decide(actor, floors, view, now) {
+  // A tamed resident (dragged by the visitor) stops following the reading,
+  // but still takes the armchair when it is close by.
+  decide(actor, floors, view, now, tamed = false) {
+    const seat = floors.find((floor) => floor.seat);
+    const seatVisible =
+      seat &&
+      seat.y > view.top + 75 &&
+      seat.y < view.top + view.height - 35;
+    const nearSeat =
+      seatVisible &&
+      Math.abs(actor.x + SIZE.width / 2 - center(seat)) < 240 &&
+      Math.abs(actor.y + SIZE.height - seat.y) < 160;
+    const takeSeat = () => {
+      this.goal = { id: seat.id, x: center(seat) };
+      this.reset();
+    };
+    if (tamed) {
+      if (!seatVisible) this.goal = null;
+      else if (nearSeat && this.goal?.id !== seat.id) takeSeat();
+      if (!seat || this.goal?.id !== seat.id)
+        return { mode: "watching", direction: 0 };
+      this.startAt = 0;
+      return this.travel(actor, floors);
+    }
     const shifted = Math.abs(view.top - this.viewTop) > 65;
     const currentGoal = floors.find((floor) => floor.id === this.goal?.id);
     const goalVisible =
@@ -132,10 +156,7 @@ export class Companion {
       this.viewTop = view.top;
       this.startAt = 0;
     }
-    if (this.floors !== floors) {
-      this.floors = floors;
-      this.reset();
-    }
+    if (nearSeat && this.goal?.id !== seat.id) takeSeat();
     const outside =
       actor.y + SIZE.height < view.top - 145 ||
       actor.y > view.top + view.height + 145;
@@ -161,6 +182,13 @@ export class Companion {
     }
     if (now < this.startAt)
       return { mode: "watching", direction: 0, wakeAt: this.startAt };
+    return this.travel(actor, floors);
+  }
+  travel(actor, floors) {
+    if (this.floors !== floors) {
+      this.floors = floors;
+      this.reset();
+    }
     if (!this.goal) return { mode: "resting", direction: 0 };
     if (actor.ground === null) {
       if (this.transition) this.transition.airborne = true;

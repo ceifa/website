@@ -122,6 +122,25 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
       <footer class="footer" data-land="top">
         <p>Gabriel Francisco, ceifa.</p>
         <Social class="elsewhere footer-elsewhere" />
+        <div class="lounge" id="lounge">
+          <span class="armchair" aria-hidden="true">
+            <span class="armchair-back"></span>
+            <span class="armchair-arm left"></span>
+            <span class="armchair-arm right"></span>
+            <span class="armchair-seat" data-land="top" data-seat></span>
+          </span>
+          <button
+            class="radio"
+            id="radio"
+            type="button"
+            aria-label="Radio. It plays while the little resident sits in the armchair. Press to turn the sound on or off."
+            aria-pressed="true"
+            hidden
+          >
+            <span class="radio-grille"></span><span class="radio-dial"></span>
+            <span class="radio-notes"><i>♪</i><i>♫</i><i>♪</i></span>
+          </button>
+        </div>
       </footer>
       <noscript>
         <p>The site works without JavaScript. The little resident shows up when it can.</p>

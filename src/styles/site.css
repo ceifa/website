@@ -473,6 +473,7 @@ summary:focus-visible {
   padding-top: 35px;
 }
 .footer {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: start;
@@ -493,6 +494,236 @@ summary:focus-visible {
 .footer-elsewhere {
   display: flex;
   gap: 18px;
+}
+/* An armchair and a radio standing on the footer's top line. */
+.lounge {
+  position: absolute;
+  right: 4px;
+  bottom: calc(100% + 1px);
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+}
+.armchair {
+  position: relative;
+  display: block;
+  width: 56px;
+  height: 34px;
+}
+.armchair:before,
+.armchair:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  background: var(--muted);
+  border-radius: 0 0 1px 1px;
+  left: 5px;
+}
+.armchair:after {
+  left: auto;
+  right: 5px;
+}
+.armchair span {
+  position: absolute;
+  display: block;
+  background: var(--mint-strong);
+  box-shadow: inset -3px -2px 0 #00000013;
+}
+.armchair-back {
+  left: 7px;
+  right: 7px;
+  top: 0;
+  height: 26px;
+  border-radius: 11px 11px 3px 3px;
+}
+.armchair-arm {
+  bottom: 4px;
+  width: 11px;
+  height: 18px;
+  border-radius: 6px 6px 2px 2px;
+}
+.armchair-arm.left {
+  left: 0;
+}
+.armchair-arm.right {
+  right: 0;
+}
+.armchair .armchair-seat {
+  left: 11px;
+  right: 11px;
+  bottom: 4px;
+  height: 10px;
+  border-radius: 4px 4px 2px 2px;
+  background: var(--mint);
+}
+.radio {
+  position: relative;
+  width: 32px;
+  height: 21px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px 4px 3px 3px;
+  background: var(--ink);
+  cursor: pointer;
+}
+.radio[hidden] {
+  display: block;
+  cursor: default;
+}
+/* The antenna. */
+.radio:before {
+  content: "";
+  position: absolute;
+  width: 1.5px;
+  height: 15px;
+  right: 7px;
+  bottom: 100%;
+  background: var(--muted);
+  transform: rotate(28deg);
+  transform-origin: bottom;
+}
+.radio:focus-visible {
+  outline: 1px dashed var(--accent);
+  outline-offset: 3px;
+}
+.radio-grille {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(var(--paper) 0.8px, transparent 1.1px) 0 0 / 3.25px 3.25px;
+  opacity: 0.55;
+}
+.radio-dial {
+  position: absolute;
+  right: 4px;
+  top: 5px;
+  width: 8px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--muted);
+  transition: background 0.3s;
+}
+.lounge.playing .radio-dial {
+  background: var(--accent);
+}
+.radio-notes i {
+  position: absolute;
+  left: 8px;
+  bottom: 100%;
+  font: normal 11px/1 var(--font-site), sans-serif;
+  color: var(--accent);
+  opacity: 0;
+}
+.lounge.playing .radio-notes i {
+  animation: note 2.7s ease-out infinite;
+}
+.lounge.playing .radio-notes i:nth-child(2) {
+  animation-delay: 0.9s;
+  left: 14px;
+}
+.lounge.playing .radio-notes i:nth-child(3) {
+  animation-delay: 1.8s;
+  left: 4px;
+}
+@keyframes note {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(-8deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(9px, -24px) rotate(12deg);
+  }
+}
+/* A seated dance on a 1.2s beat: two sways with a bounce on every
+   half beat, then a little hop with both feet kicking out. */
+@keyframes groove {
+  0%,
+  33.33%,
+  100% {
+    transform: scaleX(var(--facing, 1)) translate(-0.5px, 0) rotate(-4deg);
+  }
+  8.33%,
+  25%,
+  41.67%,
+  58.33% {
+    transform: scaleX(var(--facing, 1)) translate(0, 1px) scale(1.04, 0.95);
+  }
+  16.67%,
+  50% {
+    transform: scaleX(var(--facing, 1)) translate(0.5px, 0) rotate(4deg);
+  }
+  66.67% {
+    transform: scaleX(var(--facing, 1)) translate(0, 1.5px) scale(1.06, 0.92);
+  }
+  75% {
+    transform: scaleX(var(--facing, 1)) translate(0, -3px) scale(0.96, 1.05);
+  }
+  83.33% {
+    transform: scaleX(var(--facing, 1)) translate(0, 1px) scale(1.05, 0.94);
+  }
+  91.67% {
+    transform: scaleX(var(--facing, 1));
+  }
+}
+@keyframes kick-left {
+  0%,
+  33.33%,
+  100% {
+    transform: rotate(16deg);
+  }
+  16.67%,
+  50% {
+    transform: rotate(-6deg);
+  }
+  66.67%,
+  83.33% {
+    transform: rotate(6deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(32deg);
+  }
+}
+@keyframes kick-right {
+  0%,
+  33.33%,
+  100% {
+    transform: rotate(6deg);
+  }
+  16.67%,
+  50% {
+    transform: rotate(-16deg);
+  }
+  66.67%,
+  83.33% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(-32deg);
+  }
+}
+/* Eyes shut in the groove, wide open for the hop. */
+@keyframes vibe {
+  0%,
+  64%,
+  90%,
+  100% {
+    height: 1.5px;
+    top: 9px;
+  }
+  70%,
+  84% {
+    height: 4px;
+    top: 7px;
+  }
 }
 .resident {
   position: absolute;
@@ -581,6 +812,36 @@ summary:focus-visible {
   height: 3px;
   width: 6px;
   top: 25px;
+}
+.resident.sitting .sprite {
+  top: 7px;
+}
+.resident.sitting .eyes {
+  height: 2px;
+  top: 8px;
+}
+.resident.sitting .leg {
+  height: 5px;
+  top: 28px;
+}
+.resident.sitting .leg.left {
+  transform: rotate(18deg);
+}
+.resident.sitting .leg.right {
+  transform: rotate(-18deg);
+}
+body:has(.lounge.playing) .resident.sitting .sprite {
+  transform-origin: 50% 100%;
+  animation: groove 7.2s ease-in-out infinite;
+}
+body:has(.lounge.playing) .resident.sitting .eyes {
+  animation: vibe 7.2s ease-in-out infinite;
+}
+body:has(.lounge.playing) .resident.sitting .leg.left {
+  animation: kick-left 7.2s ease-in-out infinite;
+}
+body:has(.lounge.playing) .resident.sitting .leg.right {
+  animation: kick-right 7.2s ease-in-out infinite;
 }
 .resident.dragging .sprite {
   transform: rotate(-7deg);
@@ -739,8 +1000,14 @@ noscript p {
     scroll-behavior: auto;
   }
   .eyes,
-  .resident.walking .leg {
+  .resident.walking .leg,
+  body:has(.lounge.playing) .resident.sitting .sprite,
+  body:has(.lounge.playing) .resident.sitting .eyes,
+  body:has(.lounge.playing) .resident.sitting .leg {
     animation: none;
+  }
+  .lounge.playing .radio-notes i {
+    display: none;
   }
 }
 .hero {
