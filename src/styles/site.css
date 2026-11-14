@@ -864,12 +864,36 @@ main:focus {
   border: 1px solid var(--line);
   border-radius: 5px;
 }
+.about-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 62ch) 320px;
+  justify-content: space-between;
+  align-items: end;
+  column-gap: 48px;
+  padding-top: 66px;
+  border-bottom: 1px solid var(--line);
+}
+.about-hero h1 {
+  font:
+    500 clamp(42px, 5vw, 58px) / 1.1 var(--font-display),
+    Georgia,
+    serif;
+  letter-spacing: -2.2px;
+  margin-bottom: 30px;
+}
+.about-intro,
 .about-body {
   font-size: 16px;
   line-height: 1.9;
-  max-width: 760px;
-  padding-bottom: 20px;
 }
+.about-intro {
+  padding-bottom: 56px;
+}
+.about-body {
+  max-width: 62ch;
+  padding: 8px 0 20px;
+}
+.about-intro p + p,
 .about-body p + p {
   margin-top: 18px;
 }
@@ -878,21 +902,35 @@ main:focus {
   letter-spacing: -0.6px;
   margin: 42px 0 12px;
 }
-.about-body code {
+.about-intro code {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.86em;
   background: var(--code);
   padding: 2px 4px;
   border-radius: 3px;
 }
+/* The cut-out photo sits in a disc on the hero's bottom rule, and the hair breaks
+   out of the top of it. The mask stops being a circle at the disc's centre line,
+   which the photo's 400x478 ratio puts at 58.2% of its height. */
 .portrait {
-  float: right;
-  width: 180px;
-  height: 180px;
-  margin: 8px 7px 20px 36px;
-  border-radius: 6px;
-  outline: 1px solid var(--line);
-  outline-offset: 6px;
+  position: relative;
+}
+.portrait::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--mint);
+}
+.portrait img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  mask:
+    linear-gradient(#000 0 0) top / 100% 58.2% no-repeat,
+    radial-gradient(closest-side, #000 99%, transparent) bottom / 100% 83.7% no-repeat;
 }
 .about {
   padding-top: 42px;
@@ -903,13 +941,19 @@ main:focus {
   padding-bottom: 30px;
 }
 @media (max-width: 700px) {
+  .about-hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 44px;
+  }
+  .about-intro {
+    padding-bottom: 20px;
+  }
   .about-body h2 {
     font-size: 23px;
   }
   .portrait {
-    width: 112px;
-    height: 112px;
-    margin-left: 22px;
+    justify-self: center;
+    width: 260px;
   }
 }
 .social a {

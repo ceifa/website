@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import photo from "../assets/gabriel.jpg";
+import photo from "../assets/gabriel.png";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -8,40 +8,40 @@ import Layout from "../layouts/Layout.astro";
   title="About · ceifa"
   description="Gabriel Francisco, ceifa on the internet. Software developer from Belo Horizonte, Brazil, and CTO at Wiv."
 >
-  <section class="page-head">
-    <h1><span data-land="text" id="first-perch">About me</span></h1>
+  <section class="about-hero">
+    <div class="about-intro">
+      <h1><span data-land="text" id="first-perch">Hi, I'm Gabriel.</span></h1>
+      <p>
+        <span data-land="text"
+          >I'm a software developer from Belo Horizonte, Brazil, and I spend a good part of my free time
+          on open source. A few of my projects found a real audience, like <a
+            href="https://github.com/ceifa/wasmoon">Wasmoon</a
+          > and <a href="https://github.com/ceifa/steamworks.js">steamworks.js</a>, and there are <a
+            href="/projects">plenty of smaller things</a
+          > too.</span
+        >
+      </p>
+      <p>
+        <span data-land="text"
+          >I'm the CTO and one of the partners at <a href="https://wiv.com.br">Wiv</a>, a Brazilian
+          company that builds conversational AI for businesses, mostly on WhatsApp. Every now and then
+          I also <a href="/posts">write here</a>, mostly about programming.</span
+        >
+      </p>
+      <p>
+        <span data-land="text">My usual nickname is <code>ceifa</code>.</span>
+      </p>
+    </div>
+    <div class="portrait">
+      <Image
+        src={photo}
+        alt="Gabriel smiling, in a red t-shirt."
+        loading="eager"
+        data-land="top"
+      />
+    </div>
   </section>
   <div class="about-body">
-    <Image
-      class="portrait"
-      src={photo}
-      alt="Gabriel smiling, in a red t-shirt."
-      width={180}
-      height={180}
-      densities={[1, 2]}
-      loading="eager"
-      data-land="top"
-    />
-    <p>
-      <span data-land="text"
-        >Hi, my name is Gabriel Francisco! I'm a software developer from Belo Horizonte, Brazil, and I
-        spend a good part of my free time on open source. A few of my projects found a real audience,
-        like <a href="https://github.com/ceifa/wasmoon">Wasmoon</a> and <a
-          href="https://github.com/ceifa/steamworks.js">steamworks.js</a
-        >, and there are <a href="/projects">plenty of smaller things</a> too.</span
-      >
-    </p>
-    <p>
-      <span data-land="text"
-        >I'm the CTO and one of the partners at <a href="https://wiv.com.br">Wiv</a>, a Brazilian
-        company that builds conversational AI for businesses, mostly on WhatsApp. Every now and then I
-        also <a href="/posts">write here</a>, mostly about programming.</span
-      >
-    </p>
-    <p>
-      <span data-land="text">My usual nickname is <code>ceifa</code>.</span>
-    </p>
-
     <h2><span data-land="text">Like my work?</span></h2>
     <p>
       <span data-land="text"
