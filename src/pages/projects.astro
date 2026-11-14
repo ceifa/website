@@ -93,7 +93,7 @@ const compact = new Intl.NumberFormat("en", { notation: "compact" });
   <div class="project-grid">
     {
       projects.map((project) => (
-        <a class="project-card" data-land="top" href={project.href}>
+        <a class="project-card" data-land="top" href={project.href} target="_blank" rel="noopener noreferrer">
           <div class="project-title">
             <h2><span data-land="text">{project.name}</span></h2>
             {stars.has(project.repo) && (
