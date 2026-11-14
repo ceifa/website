@@ -916,6 +916,23 @@ main:focus {
   width: 100%;
   height: auto;
 }
+.portrait-dark {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .portrait-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .portrait-dark {
+    display: block;
+  }
+}
+:root[data-theme="dark"] .portrait-light {
+  display: none;
+}
+:root[data-theme="dark"] .portrait-dark {
+  display: block;
+}
 .about {
   padding-top: 42px;
 }

@@ -1,7 +1,18 @@
 ---
 import { Image } from "astro:assets";
-import photo from "../assets/gabriel.png";
+import dark from "../assets/gabriel-dark.png";
+import light from "../assets/gabriel-light.png";
 import Layout from "../layouts/Layout.astro";
+
+// Where the resident can stand on the portrait: [left, right, top] as fractions of the
+// image box, traced from its silhouette (fingertips, head, right shoulder).
+const floors = JSON.stringify([
+  [0.12, 0.2, 0.36],
+  [0.37, 0.54, 0.012],
+  [0.66, 0.72, 0.445],
+  [0.72, 0.79, 0.475],
+  [0.79, 0.86, 0.51],
+]);
 ---
 
 <Layout
@@ -23,7 +34,7 @@ import Layout from "../layouts/Layout.astro";
       </p>
       <p>
         <span data-land="text"
-          >I'm the CTO and one of the partners at <a href="https://wiv.com.br">Wiv</a>, a Brazilian
+          >I'm the CTO at <a href="https://wiv.com.br">Wiv</a>, a Brazilian
           company that builds conversational AI for businesses, mostly on WhatsApp. Every now and then
           I also <a href="/posts">write here</a>, mostly about programming.</span
         >
@@ -32,15 +43,20 @@ import Layout from "../layouts/Layout.astro";
         <span data-land="text">My usual nickname is <code>ceifa</code>.</span>
       </p>
     </div>
-    <Image
-      class="portrait"
-      src={photo}
-      alt="Illustration of Gabriel waving, in a grey t-shirt."
-      widths={[400, 800]}
-      sizes="(max-width: 700px) 320px, 400px"
-      loading="eager"
-      data-land="top"
-    />
+    {
+      [light, dark].map((photo) => (
+        <Image
+          class:list={["portrait", photo === dark ? "portrait-dark" : "portrait-light"]}
+          src={photo}
+          alt="Illustration of Gabriel waving, in a grey t-shirt."
+          widths={[400, 800]}
+          sizes="(max-width: 700px) 320px, 400px"
+          loading="lazy"
+          data-land="contour"
+          data-floors={floors}
+        />
+      ))
+    }
   </section>
   <div class="about-body">
     <h2><span data-land="text">Like my work?</span></h2>
@@ -50,16 +66,6 @@ import Layout from "../layouts/Layout.astro";
         something of mine saved you some time, you can <a href="https://github.com/sponsors/ceifa"
           >sponsor me on GitHub</a
         >.</span
-      >
-    </p>
-
-    <h2><span data-land="text">About this website</span></h2>
-    <p>
-      <span data-land="text"
-        >This site started in 2020 as a blog in Portuguese, built with Sapper. In 2026 I rebuilt it
-        with Astro and translated the posts to English. The little creature walking around is the
-        page's resident: it follows what you're reading, and you can drag it around or walk it with
-        the arrow keys. The source is <a href="https://github.com/ceifa/website">on GitHub</a>.</span
       >
     </p>
   </div>
