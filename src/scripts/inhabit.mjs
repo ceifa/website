@@ -1,6 +1,7 @@
 import { SIZE, jump, drop, step } from "./walker.mjs";
 import { Companion, findRoute } from "./companion.mjs";
 import { sit } from "./radio.mjs";
+import { feel, heart, land, look, pop, settle, spin, stir } from "./mood.mjs";
 
 const resident = document.getElementById("resident");
 const site = document.querySelector(".site");
@@ -8,6 +9,9 @@ const actor = { x: 0, y: 0, vx: 0, vy: 0, ground: null };
 const keys = new Set();
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const viewport = () => ({ top: scrollY, height: innerHeight });
+const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
+// How a throw turns the pointer's speed into the resident's, in px/s.
+const THROW = { gain: 0.65, min: 40, across: 860, up: 830, down: 660 };
 let companion = null,
   autoTimer,
   manualTimer,
@@ -34,7 +38,10 @@ let floors = [],
   drag = null,
   frame = null;
 let lastTime = 0,
-  inputAt = 0;
+  inputAt = 0,
+  tapAt = -1000,
+  stroked = 0,
+  strokedAt = 0;
 
 function measure() {
   floors = [...document.querySelectorAll("[data-land]")].flatMap((el, i) => {
@@ -94,6 +101,9 @@ function render() {
     Math.abs(actor.vx) > 20 && actor.ground !== null && !drag,
   );
   resident.classList.toggle("dragging", !!drag?.moved);
+  const airborne = !drag && actor.ground === null;
+  resident.classList.toggle("rising", airborne && actor.vy < -80);
+  resident.classList.toggle("falling", airborne && actor.vy > 80);
   const seated =
     !drag &&
     Math.abs(actor.vx) < 10 &&
@@ -102,6 +112,7 @@ function render() {
   sit(seated);
   if (Math.abs(actor.vx) > 10)
     resident.style.setProperty("--facing", actor.vx > 0 ? 1 : -1);
+  look(actor.x + SIZE.width / 2 - scrollX, actor.y + 12 - scrollY);
 }
 function manualActivity() {
   manualUntil = performance.now() + 6500;
@@ -154,9 +165,14 @@ function tick(now) {
   const direction = active
     ? Number(keys.has("right")) - Number(keys.has("left"))
     : command.direction;
-  const wasAirborne = actor.ground === null;
+  const fall = actor.ground === null ? actor.vy : null;
   step(actor, floors, bounds, dt, direction);
-  const landed = autonomous && wasAirborne && actor.ground !== null;
+  const touchedDown = fall !== null && actor.ground !== null;
+  if (touchedDown) {
+    actor.thrown = false;
+    land(fall);
+  }
+  const landed = autonomous && touchedDown;
   render();
   if (active && now - inputAt < 1800) {
     const screenY = actor.y - scrollY;
@@ -174,9 +190,13 @@ function tick(now) {
     command.needsFrame ||
     actor.ground === null ||
     Math.abs(actor.vx) > 0.2
-  )
+  ) {
+    stir();
     frame = requestAnimationFrame(tick);
-  else if (command.wakeAt) {
+    return;
+  }
+  settle();
+  if (command.wakeAt) {
     clearTimeout(autoTimer);
     autoTimer = setTimeout(wake, Math.max(0, command.wakeAt - now));
   }
@@ -192,21 +212,54 @@ resident.addEventListener("pointerdown", (e) => {
   resident.dataset.pointer = "";
   select(false);
   manualActivity();
+  stir();
+  actor.thrown = false;
   drag = {
     startX: e.pageX,
     startY: e.pageY,
     offsetX: e.pageX - actor.x,
     offsetY: e.pageY - actor.y,
     moved: false,
+    // The last few places the pointer was, and how far it has gone in all.
+    trail: [{ t: e.timeStamp, x: e.pageX, y: e.pageY }],
+    travel: 0,
+    still: 0,
   };
   resident.setPointerCapture(e.pointerId);
 });
+// Stroking it back and forth with the mouse, no button held, makes it happy.
+// Each move counts for little, so a pointer just passing over is not a stroke.
+function pet(e) {
+  if (e.pointerType !== "mouse" || e.buttons) return;
+  if (e.timeStamp - strokedAt > 400) stroked = 0;
+  strokedAt = e.timeStamp;
+  stroked += Math.min(12, Math.hypot(e.movementX, e.movementY));
+  if (stroked < 70) return;
+  stroked = 0;
+  stir();
+  feel("happy", 1500);
+  heart();
+  manualActivity();
+  wake();
+}
 resident.addEventListener("pointermove", (e) => {
-  if (!drag) return;
+  if (!drag) return pet(e);
   if (Math.hypot(e.pageX - drag.startX, e.pageY - drag.startY) > 4)
     drag.moved = tamed = true;
   if (!drag.moved) return;
   manualActivity();
+  // Held by the head, the body swings behind the pointer and settles when it stops.
+  const last = drag.trail.at(-1);
+  const elapsed = Math.max(1, e.timeStamp - last.t);
+  drag.travel += Math.hypot(e.pageX - last.x, e.pageY - last.y);
+  drag.trail.push({ t: e.timeStamp, x: e.pageX, y: e.pageY });
+  if (drag.trail.length > 8) drag.trail.shift();
+  resident.style.setProperty(
+    "--swing",
+    clamp(((e.pageX - last.x) / elapsed) * -26, -34, 34).toFixed(1),
+  );
+  clearTimeout(drag.still);
+  drag.still = setTimeout(() => resident.style.setProperty("--swing", 0), 70);
   actor.x = Math.max(
     4,
     Math.min(bounds.width - SIZE.width - 4, e.pageX - drag.offsetX),
@@ -219,23 +272,51 @@ resident.addEventListener("pointermove", (e) => {
   actor.vx = actor.vy = 0;
   render();
 });
-function release(cancelled = false) {
+// Called with the time of the pointerup, or with nothing when the drag is cancelled.
+function release(at) {
   if (!drag) return;
-  const moved = drag.moved;
+  const { moved, trail, travel, still } = drag;
   drag = null;
-  if (moved || cancelled) {
+  clearTimeout(still);
+  resident.style.removeProperty("--swing");
+  if (moved || at === undefined) {
     actor.vy = 0;
+    // Let go while the pointer is still moving and it is thrown that way.
+    const from = trail.find((point) => at - point.t < 110),
+      to = trail.at(-1);
+    if (moved && from && to.t > from.t && at - to.t < 60) {
+      // It takes a fraction of the pointer's speed, which is far beyond its
+      // own, and a slow hand just sets it down.
+      const gain = (THROW.gain * 1000) / (to.t - from.t);
+      const vx = (to.x - from.x) * gain,
+        vy = (to.y - from.y) * gain;
+      if (Math.hypot(vx, vy) > THROW.min) {
+        actor.vx = clamp(vx, -THROW.across, THROW.across);
+        actor.vy = clamp(vy, -THROW.up, THROW.down);
+        actor.thrown = true;
+      }
+    }
+    // Shaken about for long enough, it comes out dizzy.
+    if (travel > 2400) feel("dizzy", 2800);
     select(false);
   } else {
+    // A second tap right after the first is a somersault.
+    const flip = at - tapAt < 350 && jump(actor);
+    tapAt = flip ? -1000 : at;
+    if (flip) spin();
+    else pop();
     select(true);
     resident.focus({ preventScroll: true });
   }
   render();
   wake();
 }
-resident.addEventListener("pointerup", () => release());
+resident.addEventListener("pointerup", (e) => release(e.timeStamp));
+// A fast pull leaves whatever was under the resident, a link say, where the
+// press began. The browser would start dragging that, cancelling this drag.
+document.addEventListener("dragstart", (e) => drag && e.preventDefault());
 resident.addEventListener("blur", () => delete resident.dataset.pointer);
-resident.addEventListener("pointercancel", () => release(true));
+resident.addEventListener("pointercancel", () => release());
 resident.addEventListener("click", (e) => {
   if (e.detail === 0) select(!active);
 });

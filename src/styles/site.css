@@ -762,6 +762,17 @@ summary:focus-visible {
   border: 1px dashed var(--accent);
   border-radius: 8px;
 }
+/* The whole figure, body and legs: it breathes, and takes the squash, swing
+   and wobble of whatever is happening to it. */
+.pose {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  animation: breathe 3.4s ease-in-out infinite alternate;
+  transition:
+    scale 0.12s,
+    rotate 0.3s cubic-bezier(0.3, 1.7, 0.5, 1);
+}
 .sprite {
   position: absolute;
   width: 20px;
@@ -782,6 +793,12 @@ summary:focus-visible {
   top: 7px;
   box-shadow: 7px 0 var(--paper);
   border-radius: 1px;
+  /* Towards the mouse. The sprite is mirrored when it faces left. */
+  translate: calc(var(--look-x, 0) * var(--facing, 1) * 1px) calc(var(--look-y, 0) * 1px);
+  transition:
+    translate 0.15s,
+    height 0.15s,
+    top 0.15s;
   animation: blink 5s infinite;
 }
 .leg {
@@ -792,6 +809,7 @@ summary:focus-visible {
   top: 23px;
   border-radius: 0 0 2px 2px;
   transform-origin: top;
+  transition: rotate 0.15s;
 }
 .leg.left {
   left: 6px;
@@ -805,10 +823,12 @@ summary:focus-visible {
 .resident.walking .leg.right {
   animation: step 0.18s infinite alternate-reverse;
 }
-.resident[data-behavior="resting"] .sprite {
+.resident[data-behavior="resting"] .sprite,
+.resident[data-mood="asleep"] .sprite {
   top: 5px;
 }
-.resident[data-behavior="resting"] .leg {
+.resident[data-behavior="resting"] .leg,
+.resident[data-mood="asleep"] .leg {
   height: 3px;
   width: 6px;
   top: 25px;
@@ -843,11 +863,116 @@ body:has(.lounge.playing) .resident.sitting .leg.left {
 body:has(.lounge.playing) .resident.sitting .leg.right {
   animation: kick-right 7.2s ease-in-out infinite;
 }
-.resident.dragging .sprite {
-  transform: rotate(-7deg);
+.resident[data-behavior="held"] .eyes {
+  height: 5px;
+  top: 6px;
 }
-.resident.dragging .leg {
-  transform: rotate(25deg);
+/* Passing feelings: stroked, dozing, or shaken about. */
+.resident[data-mood] .eyes {
+  translate: none;
+  animation: none;
+}
+.resident[data-mood="happy"] .eyes,
+.resident[data-mood="asleep"] .eyes {
+  left: 4px;
+  width: 4px;
+  box-shadow: 8px 0 var(--paper);
+}
+.resident[data-mood="happy"] .eyes {
+  height: 2.5px;
+  top: 8px;
+  border-radius: 2px 2px 0 0;
+}
+.resident[data-mood="asleep"] .eyes {
+  height: 1.5px;
+  top: 10px;
+}
+.resident[data-mood="dizzy"] .eyes {
+  height: 3px;
+  border-radius: 50%;
+  animation: swirl 0.45s linear infinite;
+}
+.resident[data-mood="happy"] .pose {
+  animation: wiggle 0.26s ease-in-out infinite alternate;
+}
+.resident[data-mood="asleep"] .pose {
+  animation: doze 2.6s ease-in-out infinite alternate;
+}
+.resident[data-mood="dizzy"] .pose {
+  animation: wobble 0.9s ease-in-out infinite;
+}
+/* Stretched on the way up, legs apart on the way down. */
+.resident.rising .pose {
+  animation: none;
+  scale: 0.9 1.1;
+}
+.resident.falling .pose {
+  animation: none;
+  scale: 0.95 1.06;
+}
+.resident.falling .leg.left {
+  rotate: 24deg;
+}
+.resident.falling .leg.right {
+  rotate: -24deg;
+}
+/* Held by the head: --swing follows how fast the pointer is going. */
+.resident.dragging .pose {
+  animation: none;
+  transform-origin: 50% 10%;
+  rotate: calc(var(--swing, 0) * 1deg);
+}
+.resident.dragging .leg.left {
+  rotate: calc(var(--swing, 0) * 0.6deg + 9deg);
+}
+.resident.dragging .leg.right {
+  rotate: calc(var(--swing, 0) * 0.6deg - 9deg);
+}
+/* Whatever floats off the resident: hearts, a start, dust, sleep. */
+.resident-fx {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  pointer-events: none;
+  font: bold 11px/1 var(--font-site), sans-serif;
+  color: var(--accent);
+}
+.resident-fx i,
+.resident-fx:before,
+.resident-fx:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-style: normal;
+  opacity: 0;
+}
+.resident-fx .dust {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mint-strong);
+}
+/* Two stars going round its head. */
+.resident[data-mood="dizzy"] .resident-fx:before,
+.resident[data-mood="dizzy"] .resident-fx:after {
+  content: "";
+  width: 3px;
+  height: 3px;
+  margin: -2px 0 0 -1.5px;
+  background: var(--accent);
+  rotate: 45deg;
+  animation: orbit 0.9s linear infinite;
+}
+.resident[data-mood="dizzy"] .resident-fx:after {
+  animation-delay: -0.45s;
+}
+.resident[data-mood="asleep"] .resident-fx:before,
+.resident[data-mood="asleep"] .resident-fx:after {
+  content: "z";
+  animation: snore 3s ease-out infinite;
+}
+.resident[data-mood="asleep"] .resident-fx:after {
+  animation-delay: 1.5s;
 }
 .skip {
   position: fixed;
@@ -866,15 +991,92 @@ noscript p {
   padding: 15px 0;
   color: var(--muted);
 }
+/* Scaled, not resized, so a feeling can set the shape of the eyes. */
 @keyframes blink {
   0%,
   44%,
   48%,
   100% {
-    height: 4px;
+    scale: 1;
   }
   46% {
-    height: 1px;
+    scale: 1 0.25;
+  }
+}
+@keyframes breathe {
+  to {
+    scale: 1.02 0.97;
+  }
+}
+@keyframes doze {
+  to {
+    scale: 1.05 0.93;
+  }
+}
+@keyframes wiggle {
+  from {
+    rotate: -6deg;
+  }
+  to {
+    rotate: 6deg;
+  }
+}
+@keyframes wobble {
+  0%,
+  100% {
+    rotate: -9deg;
+  }
+  50% {
+    rotate: 9deg;
+  }
+}
+@keyframes swirl {
+  0%,
+  100% {
+    translate: 1.2px 0;
+  }
+  25% {
+    translate: 0 1.2px;
+  }
+  50% {
+    translate: -1.2px 0;
+  }
+  75% {
+    translate: 0 -1.2px;
+  }
+}
+@keyframes orbit {
+  0%,
+  100% {
+    opacity: 1;
+    translate: 10px -1px;
+  }
+  25% {
+    opacity: 1;
+    translate: 0 1px;
+  }
+  50% {
+    opacity: 0.35;
+    translate: -10px -1px;
+  }
+  75% {
+    opacity: 0.35;
+    translate: 0 -3px;
+  }
+}
+@keyframes snore {
+  0% {
+    opacity: 0;
+    translate: 5px -1px;
+    scale: 0.6;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    translate: 15px -21px;
+    scale: 1.15;
   }
 }
 @keyframes step {
@@ -1000,13 +1202,17 @@ noscript p {
     scroll-behavior: auto;
   }
   .eyes,
+  .resident .pose,
+  .resident[data-mood] .pose,
+  .resident[data-mood] .eyes,
   .resident.walking .leg,
   body:has(.lounge.playing) .resident.sitting .sprite,
   body:has(.lounge.playing) .resident.sitting .eyes,
   body:has(.lounge.playing) .resident.sitting .leg {
     animation: none;
   }
-  .lounge.playing .radio-notes i {
+  .lounge.playing .radio-notes i,
+  .resident-fx {
     display: none;
   }
 }

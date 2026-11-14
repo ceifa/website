@@ -149,11 +149,16 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
     <button
       class="resident"
       id="resident"
-      aria-label="The page's little resident. It follows your reading on its own. Drag it around, or use the arrow keys or WASD to walk, jump and drop, Space to jump and Escape to let go."
+      aria-label="The page's little resident. It follows your reading on its own. Drag it around or throw it, stroke it with the mouse, or double-click it for a somersault. Use the arrow keys or WASD to walk, jump and drop, Space to jump and Escape to let go."
       aria-pressed="false"
       hidden
     >
-      <span class="sprite"><span class="eyes"></span></span><span class="leg left"></span><span class="leg right"></span>
+      <span class="pose">
+        <span class="sprite"><span class="eyes"></span></span>
+        <span class="leg left"></span>
+        <span class="leg right"></span>
+      </span>
+      <span class="resident-fx"></span>
     </button>
     <script>
       import "../scripts/theme.mjs";

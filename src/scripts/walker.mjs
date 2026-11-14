@@ -30,12 +30,15 @@ export function drop(actor) {
 }
 
 export function step(actor, floors, bounds, dt, direction) {
-  actor.vx += (direction * MOTION.speed - actor.vx) * Math.min(1, dt * 16);
+  // A thrown walker keeps its speed through the air, and bounces off the
+  // page's edges, until it lands or is steered.
+  const flung = actor.thrown && actor.ground === null && !direction;
+  actor.vx +=
+    (direction * MOTION.speed - actor.vx) * Math.min(1, dt * (flung ? 1.25 : 16));
   if (Math.abs(actor.vx) < 0.2) actor.vx = 0;
-  const x = Math.max(
-    4,
-    Math.min(bounds.width - SIZE.width - 4, actor.x + actor.vx * dt),
-  );
+  const free = actor.x + actor.vx * dt;
+  const x = Math.max(4, Math.min(bounds.width - SIZE.width - 4, free));
+  if (flung && x !== free) actor.vx *= -0.5;
   if (floors.some((floor) => wall(actor, x, floor))) actor.vx = 0;
   else actor.x = x;
   if (actor.ground !== null) {
