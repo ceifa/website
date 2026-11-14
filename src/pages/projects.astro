@@ -2,10 +2,12 @@
 import Layout from "../layouts/Layout.astro";
 import { getStars } from "../lib/github";
 
+// `scene` names the module in src/scripts/scenes that the card plays on hover.
 const projects = [
   {
     name: "Wasmoon",
     repo: "ceifa/wasmoon",
+    scene: "wasmoon",
     href: "https://github.com/ceifa/wasmoon",
     description:
       "The real Lua 5.4 VM compiled to WebAssembly, with bindings that pass tables, functions and promises between Lua and JS. Runs in browsers, Node and Deno.",
@@ -14,6 +16,7 @@ const projects = [
   {
     name: "steamworks.js",
     repo: "ceifa/steamworks.js",
+    scene: "steamworks",
     href: "https://github.com/ceifa/steamworks.js",
     description: "The Steamworks SDK for Electron and NW.js games, with prebuilt binaries.",
     tags: ["Rust", "Games"],
@@ -21,6 +24,7 @@ const projects = [
   {
     name: "Eleven",
     repo: "ceifa/eleven",
+    scene: "eleven",
     href: "https://github.com/ceifa/eleven",
     description:
       "A small gateway that connects Discord and Telegram to AI agents running in your own folders, with a dashboard for every conversation.",
@@ -29,6 +33,7 @@ const projects = [
   {
     name: "agenthost",
     repo: "ceifa/agenthost",
+    scene: "agenthost",
     href: "https://agenthost.page",
     description:
       "Hosting for AI agents. An agent publishes a page, docs or any files and gets back a private link.",
@@ -37,6 +42,7 @@ const projects = [
   {
     name: "papagaia",
     repo: "ceifa/papagaia",
+    scene: "papagaia",
     href: "https://github.com/ceifa/papagaia",
     description: "Dictate into any app and rewrite selected text with a shortcut, on Linux Wayland desktops.",
     tags: ["Rust", "Desktop"],
@@ -44,6 +50,7 @@ const projects = [
   {
     name: "tiktoken-node",
     repo: "ceifa/tiktoken-node",
+    scene: "tiktoken",
     href: "https://github.com/ceifa/tiktoken-node",
     description: "OpenAI's tiktoken tokenizer for Node, with native bindings written in Rust.",
     tags: ["Rust", "AI"],
@@ -51,6 +58,7 @@ const projects = [
   {
     name: "demoon",
     repo: "ceifa/demoon",
+    scene: "demoon",
     href: "https://github.com/ceifa/demoon",
     description: "Run Lua files on top of Node: require npm modules and await promises from Lua.",
     tags: ["JavaScript", "Lua"],
@@ -58,6 +66,7 @@ const projects = [
   {
     name: "monaco-liquid",
     repo: "ceifa/monaco-liquid",
+    scene: "monaco",
     href: "https://ceifa.github.io/monaco-liquid/",
     description:
       "Liquid templates in the Monaco editor, with highlighting, validation, hover types and autocomplete.",
@@ -66,6 +75,7 @@ const projects = [
   {
     name: "garrysmod-docker",
     repo: "ceifa/garrysmod-docker",
+    scene: "gmod",
     href: "https://github.com/ceifa/garrysmod-docker",
     description: "A Docker image that runs a Garry's Mod server.",
     tags: ["Docker", "Games"],
@@ -73,6 +83,7 @@ const projects = [
   {
     name: "sqlier",
     repo: "ceifa/sqlier",
+    scene: "sqlier",
     href: "https://github.com/ceifa/sqlier",
     description:
       "A small database layer for Garry's Mod addons that works the same over different drivers.",
@@ -93,7 +104,14 @@ const compact = new Intl.NumberFormat("en", { notation: "compact" });
   <div class="project-grid">
     {
       projects.map((project) => (
-        <a class="project-card" data-land="top" href={project.href} target="_blank" rel="noopener noreferrer">
+        <a
+          class="project-card"
+          data-land="top"
+          data-scene={project.scene}
+          href={project.href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <div class="project-title">
             <h2><span data-land="text">{project.name}</span></h2>
             {stars.has(project.repo) && (
@@ -105,10 +123,12 @@ const compact = new Intl.NumberFormat("en", { notation: "compact" });
               </span>
             )}
           </div>
-          <p>{project.description}</p>
-          <ul class="project-tags">
-            {project.tags.map((tag) => <li>{tag}</li>)}
-          </ul>
+          <div class="project-body">
+            <p>{project.description}</p>
+            <ul class="project-tags">
+              {project.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+          </div>
         </a>
       ))
     }

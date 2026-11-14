@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import Social from "../components/Social.astro";
 import "../styles/site.css";
+import "../styles/scenes.css";
 
 interface Props {
   title: string;
@@ -164,6 +165,7 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
       import "../scripts/theme.mjs";
       import "../scripts/sky.mjs";
       import "../scripts/navigate.mjs";
+      import "../scripts/scenes.mjs";
       import "../scripts/inhabit.mjs";
     </script>
   </body>
