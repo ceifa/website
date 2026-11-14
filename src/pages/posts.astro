@@ -1,7 +1,10 @@
 ---
-import PostList from "../components/PostList.astro";
 import Layout from "../layouts/Layout.astro";
 import { getPosts } from "../lib/posts";
+
+// Newest first, so the years come out in order too.
+const years = Map.groupBy(await getPosts(), (post) => post.data.written.getUTCFullYear());
+const day = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 ---
 
 <Layout
@@ -11,5 +14,27 @@ import { getPosts } from "../lib/posts";
   <section class="page-head">
     <h1><span data-land="text" id="first-perch">Posts</span></h1>
   </section>
-  <PostList posts={await getPosts()} />
+  {
+    [...years].map(([year, posts]) => (
+      <section class="archive-year" data-land="top">
+        {/* The year sticks on wide screens, so it's no place for the resident to stand. */}
+        <h2>{year}</h2>
+        {/* Safari forgets a list is a list once its markers are gone. */}
+        <ul role="list">
+          {posts.map((post, i) => (
+            <li class="entry" data-land={i ? "top" : undefined}>
+              <h3>
+                <a href={`/${post.id}`}>
+                  <span data-land="text">{post.data.title}</span>
+                </a>
+              </h3>
+              <time class="entry-date" datetime={post.data.written.toISOString().slice(0, 10)}>
+                {day.format(post.data.written)}
+              </time>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
 </Layout>

@@ -1290,6 +1290,91 @@ noscript p {
     serif;
   letter-spacing: -2.2px;
 }
+/* The posts page: one band per year, the year in the margin beside its posts. */
+.archive-year {
+  display: grid;
+  grid-template-columns: clamp(96px, 13.5vw, 150px) minmax(0, 1fr);
+  column-gap: 30px;
+  border-top: 1px solid var(--line);
+}
+/* The year and the titles share a size and a top padding, so they share a
+   baseline. The bottom padding keeps a stuck year clear of the next band. */
+.archive-year h2 {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding: 22px 0 24px;
+  font: 500 24px/1.25 var(--font-display);
+  letter-spacing: -0.5px;
+  color: var(--muted);
+}
+.archive-year ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 40px;
+  align-items: baseline;
+  padding: 22px 0 24px;
+}
+.entry + .entry {
+  border-top: 1px solid var(--line);
+}
+.entry h3 {
+  font: 500 24px/1.25 var(--font-display);
+  letter-spacing: -0.5px;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.entry h3 a {
+  text-decoration: none;
+}
+/* The whole row opens the post. */
+.entry h3 a:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.entry:hover h3 a {
+  color: var(--accent);
+}
+.entry-date {
+  grid-area: 1 / 2;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--muted);
+}
+@media (max-width: 700px) {
+  .archive-year {
+    display: block;
+  }
+  /* On a phone the year is a small label over its posts. */
+  .archive-year h2 {
+    position: static;
+    padding: 24px 0 0;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+  }
+  .entry {
+    display: block;
+    padding: 16px 0 18px;
+  }
+  .archive-year h2 + ul > .entry:first-child {
+    padding-top: 6px;
+  }
+  .entry h3 {
+    font-size: 21px;
+  }
+  .entry-date {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+  }
+}
 .back {
   display: inline-block;
   font-size: 12px;
