@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { getImage } from "astro:assets";
 import dark from "../assets/gabriel-dark.png";
 import light from "../assets/gabriel-light.png";
 import Layout from "../layouts/Layout.astro";
@@ -12,6 +12,17 @@ const contour = JSON.stringify([
   0.049, 0.068, 0.121, 0.434, 0.446, 0.452, 0.465, 0.476, 0.486, 0.496, 0.499, 0.509, 0.519, 0.534,
   0.547, 0.563, 0.585, 0.623, 0.674, 0.812,
 ]);
+// AVIF at quality 60 is closer to the original than the WebP fallback, at under
+// two thirds of its size.
+const widths = [400, 800];
+const sizes = "(max-width: 700px) 320px, 400px";
+const portraits = await Promise.all(
+  [light, dark].map(async (src) => ({
+    variant: src === dark ? "portrait-dark" : "portrait-light",
+    avif: await getImage({ src, widths, format: "avif", quality: 60 }),
+    webp: await getImage({ src, widths, format: "webp" }),
+  })),
+);
 ---
 
 <Layout
@@ -43,17 +54,22 @@ const contour = JSON.stringify([
       </p>
     </div>
     {
-      [light, dark].map((photo) => (
-        <Image
-          class:list={["portrait", photo === dark ? "portrait-dark" : "portrait-light"]}
-          src={photo}
-          alt="Illustration of Gabriel waving, in a grey t-shirt."
-          widths={[400, 800]}
-          sizes="(max-width: 700px) 320px, 400px"
-          loading="lazy"
-          data-land="contour"
-          data-contour={contour}
-        />
+      portraits.map(({ variant, avif, webp }) => (
+        <picture class:list={["portrait", variant]}>
+          <source type="image/avif" srcset={avif.srcSet.attribute} sizes={sizes} />
+          <img
+            src={webp.src}
+            srcset={webp.srcSet.attribute}
+            sizes={sizes}
+            width={webp.attributes.width}
+            height={webp.attributes.height}
+            alt="Illustration of Gabriel waving, in a grey t-shirt."
+            loading="lazy"
+            decoding="async"
+            data-land="contour"
+            data-contour={contour}
+          />
+        </picture>
       ))
     }
   </section>

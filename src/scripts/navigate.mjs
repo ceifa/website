@@ -5,11 +5,11 @@ const internal = (a) =>
   !a.hasAttribute("download") &&
   !/\.(?!html$)\w+$/.test(a.pathname);
 
-function load(url) {
+function load(url, priority = "auto") {
   if (!pages.has(url))
     pages.set(
       url,
-      fetch(url).then((r) => {
+      fetch(url, { priority }).then((r) => {
         if (!r.ok) throw new Error(r.status);
         return r.text();
       }),
@@ -72,8 +72,39 @@ document.addEventListener("click", async (e) => {
   if (await go(a.href, 0)) history.pushState({ scroll: 0 }, "", a.href);
 });
 addEventListener("popstate", (e) => go(location.href, e.state?.scroll ?? 0));
+const prefetch = (a, priority) => {
+  if (internal(a) && a.pathname !== location.pathname)
+    load(a.href, priority).catch(() => pages.delete(a.href));
+};
 for (const type of ["pointerover", "focusin"])
   document.addEventListener(type, (e) => {
     const a = e.target.closest?.("a[href]");
-    if (a && internal(a)) load(a.href).catch(() => pages.delete(a.href));
+    if (a) prefetch(a);
   });
+
+// Touch screens have no hover, so links on screen are also fetched ahead,
+// quietly, once the page has finished loading. Pages are a few kilobytes,
+// but not on a connection that asked to save data or is crawling.
+const connection = navigator.connection;
+if (
+  "IntersectionObserver" in window &&
+  !connection?.saveData &&
+  !/2g/.test(connection?.effectiveType ?? "")
+) {
+  const idle = window.requestIdleCallback ?? ((run) => setTimeout(run, 200));
+  const seen = new IntersectionObserver((entries) => {
+    for (const { isIntersecting, target } of entries)
+      if (isIntersecting) {
+        seen.unobserve(target);
+        idle(() => prefetch(target, "low"));
+      }
+  });
+  const watch = () => {
+    seen.disconnect();
+    for (const a of document.querySelectorAll("a[href]"))
+      if (internal(a)) seen.observe(a);
+  };
+  if (document.readyState === "complete") watch();
+  else addEventListener("load", watch, { once: true });
+  document.addEventListener("page:enter", watch);
+}

@@ -3,6 +3,7 @@ import sitemap from "@astrojs/sitemap";
 import { defineConfig, fontProviders } from "astro/config";
 import { satteri } from "@astrojs/markdown-satteri";
 import land from "./src/plugins/land.mjs";
+import subsetFonts from "./src/plugins/subset-fonts.mjs";
 
 const variable = (file) => ({
   src: [`./src/assets/fonts/${file}`],
@@ -15,8 +16,9 @@ export default defineConfig({
   site: "https://ceifa.dev",
   // Keep the old blog's URLs: /webrtc, not /webrtc/.
   trailingSlash: "never",
-  build: { format: "file" },
-  integrations: [sitemap()],
+  // Inline the stylesheet: it is small, and the first paint then needs one request.
+  build: { format: "file", inlineStylesheets: "always" },
+  integrations: [sitemap(), subsetFonts()],
   markdown: {
     // Tokens take their colours from the --astro-code-* variables in site.css.
     shikiConfig: { theme: "css-variables" },

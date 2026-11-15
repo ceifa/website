@@ -1403,7 +1403,8 @@ main:focus {
   border-radius: 3px;
 }
 /* The illustration is cut flat at the waist, so it stands on the hero's bottom rule. */
-.portrait {
+.portrait,
+.portrait img {
   display: block;
   width: 100%;
   height: auto;
