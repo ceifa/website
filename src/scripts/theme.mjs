@@ -25,7 +25,34 @@ export function show(theme, keep = true) {
     } catch {}
   label();
 }
-button.addEventListener("click", () => soak(button, () => show(other())));
+// Pictures drawn for one theme, like the portrait on /about, wait hidden for
+// the other one, and a lazy image that is hidden never loads. Once the page has
+// loaded they are fetched and decoded too, so a change of theme finds them
+// ready instead of blinking in a moment later.
+const themed = () => document.querySelectorAll(".portrait img");
+function warm() {
+  for (const img of themed()) {
+    img.loading = "eager";
+    img.decode().catch(() => {});
+  }
+}
+if (document.readyState === "complete") warm();
+else addEventListener("load", warm, { once: true });
+document.addEventListener("page:enter", warm);
+// The switch waits for them, but never long enough to be felt.
+function ready() {
+  warm();
+  return Promise.race([
+    Promise.all([...themed()].map((img) => img.decode().catch(() => {}))),
+    new Promise((done) => setTimeout(done, 250)),
+  ]);
+}
+button.addEventListener("click", () =>
+  soak(button, async () => {
+    await ready();
+    show(other());
+  }),
+);
 system.addEventListener("change", label);
 label();
 button.hidden = false;
