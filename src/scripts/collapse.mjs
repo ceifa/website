@@ -1,5 +1,6 @@
 // The text gives way, a piece at a time. Three jumps in a row on the same line
-// shake that line's element loose: its words fall onto whatever lies beneath
+// shake that line's element loose: its words, and its icons and furniture,
+// fall onto whatever lies beneath
 // and heap up there, and the resident can stand on the heap. The element
 // comes back when its fallen words or the place it left are clicked, or when
 // the page is scrolled after the heap has lain a while. On the underside of
@@ -30,23 +31,59 @@ const copied = [
   "textTransform",
   "color",
 ];
+// What falls whole, beside the words: icons, and anything marked as a piece
+// (the armchair, the radio).
+const PIECE = "svg, [data-piece]";
+// How an icon is drawn, copied onto each of its shapes: its own rules hang
+// on classes of the page around it, which the copy leaves behind.
+const drawn = [
+  "fill",
+  "stroke",
+  "strokeWidth",
+  "strokeLinecap",
+  "strokeLinejoin",
+  "opacity",
+  "transform",
+  "transformOrigin",
+];
 const heaps = new Map(); // fallen element → its heap
 let streak = { ground: null, count: 0, at: 0 },
   jumped = false,
   serial = 0;
 
-// Every word of an element that can be seen, with where it is on the page
-// and how it is set.
+const visible = (el) =>
+  !el.checkVisibility || el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+
+// Every word and piece of an element that can be seen, with where it is on
+// the page and how it is set.
 function gather(element) {
   const words = [];
   const styles = new Map();
+  const pieces = [
+    ...(element.matches(PIECE) ? [element] : []),
+    ...element.querySelectorAll(PIECE),
+  ].filter((piece) => !piece.parentElement.closest(PIECE) && visible(piece));
+  for (const piece of pieces) {
+    const box = piece.getBoundingClientRect();
+    if (box.width < 1 || box.height < 1) continue;
+    words.push({
+      piece,
+      parent: piece,
+      style: getComputedStyle(piece),
+      left: box.left + scrollX,
+      top: box.top + scrollY,
+      width: box.width,
+      height: box.height,
+    });
+  }
   const range = document.createRange();
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
   for (let node; (node = walker.nextNode()) && words.length < 900; ) {
     const parent = node.parentElement;
     if (!node.nodeValue.trim() || parent.closest("script,style,noscript")) continue;
-    if (parent.checkVisibility && !parent.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }))
-      continue;
+    // The notes of the radio go with the radio.
+    if (parent.closest(PIECE)) continue;
+    if (!visible(parent)) continue;
     for (const match of node.nodeValue.matchAll(/\S+/g)) {
       range.setStart(node, match.index);
       range.setEnd(node, match.index + match[0].length);
@@ -67,7 +104,73 @@ function gather(element) {
   return words;
 }
 
+// A copy of a piece to fall in its place: inert, with nothing the page would
+// find again (an id, a floor), and an icon drawn as it was.
+function copy(piece) {
+  const clone = piece.cloneNode(true);
+  for (const el of [clone, ...clone.querySelectorAll("*")])
+    for (const name of ["id", "data-land", "data-seat", "data-piece", "hidden"])
+      el.removeAttribute(name);
+  if (piece instanceof SVGElement) {
+    const color = getComputedStyle(piece).color;
+    const originals = [piece, ...piece.querySelectorAll("*")];
+    [clone, ...clone.querySelectorAll("*")].forEach((el, i) => {
+      const style = getComputedStyle(originals[i]);
+      for (const name of drawn)
+        el.style[name] = style[name] === color ? "currentColor" : style[name];
+    });
+    Object.assign(clone.style, { display: "block", width: "100%", height: "100%" });
+  }
+  clone.inert = true;
+  return clone;
+}
+
+// What each column of the page offers to land on beneath an element whose
+// lowest edge is at `lowest`: the nearest floor, or the edge of the page.
+function beneath(element, lowest, up) {
+  const fallen = (y) => (up ? -y : y);
+  const columns = Math.ceil(world.bounds.width / COLUMN) + 1;
+  const base = new Float32Array(columns).fill(fallen(world.level(world.bounds.bottom)));
+  for (const floor of world.floors) {
+    if (!floor.element || element.contains(floor.element)) continue;
+    const y = fallen(world.level(floor.y));
+    if (y < lowest - 2) continue;
+    const last = Math.min(columns - 1, Math.floor(floor.right / COLUMN));
+    for (let i = Math.max(0, Math.floor(floor.left / COLUMN)); i <= last; i++)
+      base[i] = Math.min(base[i], y);
+  }
+  return base;
+}
+
+// A heap whose ground gave way under it, the words of another element that
+// fell, say, falls again from where it lies, onto whatever is left beneath.
+function slump(heap) {
+  if (heap.up !== world.flipped || heap.leaving) return;
+  const base = beneath(heap.element, heap.lowest, heap.up);
+  const first = Math.floor(heap.left / COLUMN),
+    last = Math.min(base.length - 1, Math.ceil(heap.right / COLUMN));
+  let sunk = false;
+  for (let i = first; i <= last; i++) if (base[i] > heap.base[i] + 1) sunk = true;
+  if (!sunk) return;
+  heap.base = base;
+  heap.ground = base.slice();
+  heap.since = performance.now();
+  heap.last = 0;
+  for (const word of heap.words) {
+    word.settled = false;
+    word.wait = Math.random() * 0.15;
+    word.slides = word.tips = 0;
+    word.vx = (Math.random() - 0.5) * 120;
+    word.vy = 0;
+    word.el.style.transition = "";
+  }
+  cancelAnimationFrame(heap.frame);
+  heap.frame = requestAnimationFrame((now) => fall(heap, now));
+}
+
 function collapse(element) {
+  // Part of a piece brings the whole piece down: the armchair's seat, say.
+  element = element.parentElement?.closest("[data-piece]") ?? element;
   if (heaps.has(element) || calm.matches) return;
   const found = gather(element);
   if (!found.length) return;
@@ -83,18 +186,7 @@ function collapse(element) {
     height: box.height,
   };
   const lowest = Math.max(fallen(place.top), fallen(place.top + place.height));
-  // What each column of the page offers to land on beneath the element: the
-  // nearest floor, or the edge of the page.
-  const columns = Math.ceil(world.bounds.width / COLUMN) + 1;
-  const base = new Float32Array(columns).fill(fallen(world.level(world.bounds.bottom)));
-  for (const floor of world.floors) {
-    if (!floor.element || element.contains(floor.element)) continue;
-    const y = fallen(world.level(floor.y));
-    if (y < lowest - 2) continue;
-    const last = Math.min(columns - 1, Math.floor(floor.right / COLUMN));
-    for (let i = Math.max(0, Math.floor(floor.left / COLUMN)); i <= last; i++)
-      base[i] = Math.min(base[i], y);
-  }
+  const base = beneath(element, lowest, up);
   const origin = {
     x: world.actor.x + SIZE.width / 2,
     y: fallen(world.top() + (up ? 0 : SIZE.height)),
@@ -108,15 +200,21 @@ function collapse(element) {
   ghost.className = "rubble-place";
   for (const side in place) ghost.style[side] = `${place[side]}px`;
   overlay.append(ghost);
-  const words = found.map(({ text, parent, style, left, top, width, height }) => {
+  const words = found.map(({ text, piece, parent, style, left, top, width, height }) => {
     const el = document.createElement("span");
-    el.textContent = text;
-    for (const name of copied) el.style[name] = style[name];
+    if (piece) {
+      el.append(copy(piece));
+      el.style.color = style.color;
+      el.style.width = `${width}px`;
+    } else {
+      el.textContent = text;
+      for (const name of copied) el.style[name] = style[name];
+      el.style.lineHeight = `${height}px`;
+    }
     Object.assign(el.style, {
       left: `${left}px`,
       top: `${top}px`,
       height: `${height}px`,
-      lineHeight: `${height}px`,
     });
     overlay.append(el);
     const start = Math.min(fallen(top), fallen(top + height));
@@ -134,6 +232,7 @@ function collapse(element) {
       turn: 0,
       spin: (Math.random() - 0.5) * 5,
       slides: 0,
+      tips: 0,
       // The collapse spreads out from where the resident landed.
       wait:
         Math.hypot(left + width / 2 - origin.x, start - origin.y) * 0.0011 +
@@ -147,6 +246,8 @@ function collapse(element) {
     overlay,
     words,
     up,
+    lowest,
+    place,
     base,
     ground: base.slice(), // the heap's surface, column by column
     // Words stay over the place they fell from, give or take.
@@ -163,6 +264,7 @@ function collapse(element) {
   heaps.set(element, heap);
   world.terrain = terrain;
   world.measure();
+  for (const other of heaps.values()) if (other !== heap) slump(other);
   heap.frame = requestAnimationFrame((now) => fall(heap, now));
 }
 
@@ -237,7 +339,7 @@ function fall(heap, now) {
     moving++;
     if (age < word.wait) {
       // Still hanging on: tremble.
-      word.el.style.transform = `translate(${(Math.random() - 0.5) * 2}px, ${(Math.random() - 0.5) * 2}px)`;
+      word.el.style.transform = `translate(${word.x + (Math.random() - 0.5) * 2}px, ${word.y * side + (Math.random() - 0.5) * 2}px) rotate(${word.turn * side}rad)`;
       continue;
     }
     word.vy += GRAVITY * dt;
@@ -259,18 +361,32 @@ function fall(heap, now) {
     for (let i = first + quarter; i <= last - quarter; i++) high = Math.min(high, ground[i]);
     const holds = (i) => ground[i] - high < SUPPORT;
     let rest = 0,
-      held = 0;
+      held = 0,
+      from = Infinity,
+      to = -Infinity;
     for (let i = first + quarter; i <= last - quarter; i++)
       if (holds(i)) {
         rest += ground[i];
         held++;
+        from = Math.min(from, i);
+        to = Math.max(to, i);
       }
     rest /= held;
     if (word.top + word.y + word.height >= rest) {
       const before = ground[Math.max(0, first - REACH)],
         after = ground[Math.min(ground.length - 1, last + REACH)];
       const drop = Math.max(before, after) - rest;
-      if (word.slides < 6 && drop > STEEP && drop < CLIFF) {
+      // Caught by an edge, a card's over a gap say, with its middle beyond
+      // it: it tips off that edge, not to balance there and grow a tower.
+      const middle = (first + last) / 2;
+      const away = middle < from - 0.5 ? -1 : middle > to + 0.5 ? 1 : 0;
+      if (away && word.tips < 40) {
+        word.vx = away * (80 + Math.random() * 60);
+        word.vy = 0;
+        word.y = rest - word.height - word.top;
+        word.spin = away * 2.5;
+        word.tips++;
+      } else if (word.slides < 6 && drop > STEEP && drop < CLIFF) {
         // Too steep to stay: tumble down the lower side.
         word.vx = (before > after ? -1 : 1) * (120 + Math.random() * 140);
         word.vy = -120 - Math.random() * 90;
@@ -320,6 +436,22 @@ function restore(heap, now = false) {
     word.el.style.transform = "none";
   }
   heap.leaving = setTimeout(finish, longest + 40);
+  // What fell into the place the element takes back goes back too, and
+  // does not stay buried in it.
+  const { left, top, width, height } = heap.place;
+  for (const other of heaps.values()) {
+    if (other.leaving) continue;
+    const buried = other.words.some(({ el }) => {
+      const box = el.getBoundingClientRect();
+      return (
+        box.right + scrollX > left + 3 &&
+        box.left + scrollX < left + width - 3 &&
+        box.bottom + scrollY > top + 3 &&
+        box.top + scrollY < top + height - 3
+      );
+    });
+    if (buried) restore(other);
+  }
   // The heap stops being ground as soon as it starts to leave.
   world.measure();
 }

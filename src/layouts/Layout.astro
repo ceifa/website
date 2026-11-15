@@ -93,19 +93,19 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
     </div>
     <div class="site" id="top">
       <header class="header">
-        <a href="/" class="logo">ceifa<i>.</i><span>dev</span></a>
+        <a href="/" class="logo"><span data-land="text">ceifa<i>.</i><span>dev</span></span></a>
         <div class="header-end">
           <nav aria-label="Main">
             {
               nav.map(([href, label]) => (
                 <a href={href} aria-current={href === section ? "page" : undefined}>
-                  {label}
+                  <span data-land="text">{label}</span>
                 </a>
               ))
             }
           </nav>
           <button class="theme-toggle" id="theme-toggle" type="button" hidden>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true" data-land="top">
               <g class="sun">
                 <circle cx="12" cy="12" r="4.5"></circle>
                 <path
@@ -124,7 +124,7 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
         <p>Gabriel Francisco, ceifa.</p>
         <Social class="elsewhere footer-elsewhere" />
         <div class="lounge" id="lounge">
-          <span class="armchair" aria-hidden="true">
+          <span class="armchair" aria-hidden="true" data-piece>
             <span class="armchair-back"></span>
             <span class="armchair-arm left"></span>
             <span class="armchair-arm right"></span>
@@ -133,6 +133,7 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
           <button
             class="radio"
             id="radio"
+            data-piece
             type="button"
             aria-label="Radio. It plays while the little resident sits in the armchair. Press to turn the sound on or off."
             aria-pressed="true"

@@ -31,7 +31,9 @@ let companion = null,
   autoTimer,
   manualTimer,
   manualUntil = 0,
-  behavior = "watching";
+  behavior = "watching",
+  // Kept in the armchair after a change of page, not following the reading.
+  lounging = false;
 const horizontalKeys = {
   ArrowLeft: "left",
   ArrowRight: "right",
@@ -187,7 +189,7 @@ function tick(now) {
   const autonomous =
     !active && now >= manualUntil && !reducedMotion.matches && companion;
   const command = autonomous
-    ? companion.decide(actor, floors, viewport(), now, tamed)
+    ? companion.decide(actor, floors, viewport(), now, tamed || lounging)
     : { mode: now < manualUntil ? "waiting" : "watching", direction: 0 };
   behavior = command.mode;
   if (command.reenter) {
@@ -207,6 +209,7 @@ function tick(now) {
     : command.direction;
   const fall = actor.ground === null ? actor.vy : null;
   step(actor, floors, bounds, dt, direction);
+  if (lounging && !onSeat()) lounging = false;
   const touchedDown = fall !== null && actor.ground !== null;
   if (touchedDown) {
     actor.thrown = false;
@@ -413,18 +416,36 @@ document.addEventListener("focusin", (e) => {
 document.addEventListener("click", (e) => {
   if (e.target.closest("a,summary")) select(false, true);
 });
-let screenY = 0;
+let screenY = 0,
+  seatedAt = null;
+const seat = () => floors.find((floor) => floor.seat);
+const onSeat = () => floors.find((floor) => floor.id === actor.ground)?.seat;
 document.addEventListener("page:leave", () => {
   screenY = pageY(actor.y) - scrollY;
+  // Where along the armchair it sat, if it did.
+  seatedAt = !drag && onSeat() ? actor.x - seat().left : null;
 });
-// The resident keeps its place on screen and falls onto the new page.
+// The resident keeps its place on screen and falls onto the new page, unless
+// it was in the armchair: the footer comes along, and so does it.
 document.addEventListener("page:enter", () => {
   drag = null;
   measure();
-  actor.y = pageY(scrollY + Math.max(40, Math.min(innerHeight - 120, screenY)));
+  const armchair = seatedAt !== null && seat();
+  if (armchair) {
+    actor.x = armchair.left + seatedAt;
+    actor.y = armchair.y - SIZE.height;
+    actor.vx = 0;
+    actor.ground = armchair.id;
+  } else {
+    actor.y = pageY(scrollY + Math.max(40, Math.min(innerHeight - 120, screenY)));
+    actor.ground = null;
+  }
   actor.vy = 0;
-  actor.ground = null;
+  // Brought along in the armchair, it stays there until it is moved.
+  lounging = !!armchair;
   if (companion) companion.goal = null;
+  render();
+  wake();
 });
 window.addEventListener(
   "scroll",

@@ -153,7 +153,7 @@ summary:focus-visible {
   color: var(--accent);
   transition: transform 0.4s;
 }
-.logo span {
+.logo i + span {
   font-weight: 500;
   color: var(--muted);
 }
@@ -1623,13 +1623,13 @@ main:focus {
   z-index: 35;
   pointer-events: none;
 }
-.rubble span,
+.rubble > span,
 .rubble-place {
   position: absolute;
   pointer-events: auto;
   cursor: pointer;
 }
-.rubble span {
+.rubble > span {
   white-space: pre;
   user-select: none;
   -webkit-user-select: none;

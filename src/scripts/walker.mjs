@@ -1,5 +1,7 @@
 export const SIZE = { width: 26, height: 30 };
-export const MOTION = { speed: 220, jump: 690, gravity: 1500 };
+// A jump clears about 170px, enough to reach the header from the first line
+// of the home page.
+export const MOTION = { speed: 220, jump: 735, gravity: 1500 };
 // Highest ledge the walker climbs, or lowest it steps down to, without jumping.
 const STEP = 10;
 const spans = (x, floor) =>
