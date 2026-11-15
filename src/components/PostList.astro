@@ -6,15 +6,23 @@ interface Props {
 }
 
 const { posts } = Astro.props;
+const month = new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
 ---
 
-<div class="post-list">
+{/* The archive's entries (see posts.astro). */}
+<ul class="post-list" role="list">
   {
-    posts.map((post) => (
-      <a class="post" data-land="bottom" href={`/${post.id}`}>
-        <strong>{post.data.title}</strong>
-        <small>{post.data.written.getUTCFullYear()}</small>
-      </a>
+    posts.map((post, i) => (
+      <li class="entry" data-land={i ? "line" : undefined}>
+        <h3>
+          <a href={`/${post.id}`}>
+            <span data-land="text">{post.data.title}</span>
+          </a>
+        </h3>
+        <time class="entry-date" datetime={post.data.written.toISOString().slice(0, 10)}>
+          {month.format(post.data.written)}
+        </time>
+      </li>
     ))
   }
-</div>
+</ul>

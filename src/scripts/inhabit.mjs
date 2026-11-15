@@ -107,11 +107,7 @@ function measure() {
         element: el,
         seat: el.hasAttribute("data-seat"),
         interest:
-          el.closest("h1,h2,h3") || el.classList.contains("section-heading")
-            ? 2
-            : el.classList.contains("feature-project")
-              ? 1
-              : 0,
+          el.closest("h1,h2,h3") || el.classList.contains("section-heading") ? 2 : 0,
         left: r.left + scrollX,
         right: r.right + scrollX,
         y:
@@ -490,6 +486,13 @@ actor.x = Math.max(
   perch.left + 3,
   Math.min(perch.right - SIZE.width - 3, perch.right - 100),
 );
+// On a narrow screen the line above the perch reaches over that spot, and
+// the resident would stand in front of its last letters.
+const lineAbove = floors.find(
+  (f) => f.element !== perch.element && f.element?.parentElement === perch.element.parentElement,
+);
+if (lineAbove && lineAbove.y < perch.y && lineAbove.right + 4 > actor.x)
+  actor.x = Math.max(actor.x, perch.right - SIZE.width - 3);
 actor.y = perch.y - SIZE.height;
 actor.ground = perch.id;
 resident.hidden = false;

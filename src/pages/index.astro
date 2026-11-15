@@ -1,10 +1,9 @@
 ---
-import Featured from "../components/Featured.astro";
 import PostList from "../components/PostList.astro";
 import Layout from "../layouts/Layout.astro";
 import { getPosts } from "../lib/posts";
 
-const posts = (await getPosts()).slice(0, 3);
+const posts = (await getPosts()).slice(0, 4);
 ---
 
 <Layout
@@ -12,39 +11,23 @@ const posts = (await getPosts()).slice(0, 3);
   description="Gabriel Francisco's corner of the internet. Open source projects, posts and other stories."
 >
   <section class="hero">
-    <div>
-      <span class="hero-label">GABRIEL FRANCISCO / CEIFA</span>
-      <h1>
-        <span data-land="text">Code, games</span><span data-land="text" id="first-perch"
-          >and other <em>stories.</em></span
-        >
-      </h1>
-    </div>
+    <h1>
+      <span data-land="text">Code, games</span><span data-land="text" id="first-perch"
+        >and other <em>stories.</em></span
+      >
+    </h1>
   </section>
-  <section id="projects">
+  <section>
     <div class="section-heading" data-land="bottom">
-      <h2><a href="/projects">Projects</a></h2>
-      <a href="/projects">All projects</a>
-    </div>
-    <Featured
-      eleven="Your local AI agent, reachable from Discord and Telegram."
-      wasmoon="Wasmoon compiles the real Lua VM to WebAssembly. Hundreds of thousands of downloads a month on npm."
-    />
-  </section>
-  <section class="posts">
-    <div class="section-heading" data-land="bottom">
-      <h2><a href="/posts">Posts</a></h2>
-      <a href="/posts">All posts</a>
+      <h2>Latest writings</h2>
     </div>
     <PostList posts={posts} />
-  </section>
-  <section class="about">
-    <div class="section-heading" data-land="bottom">
-      <h2><a href="/about">About</a></h2>
-      <a href="/about">More</a>
-    </div>
-    <a class="about-teaser" href="/about"
-      ><span data-land="text">A wild duck that will probably <em>break your code.</em></span></a
-    >
+    {/* The section's one link to the archive, where the list ends. */}
+    <p class="all-posts" data-land="line">
+      <a href="/posts">
+        <span data-land="text">All posts</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path></svg>
+      </a>
+    </p>
   </section>
 </Layout>

@@ -141,17 +141,21 @@ summary:focus-visible {
   gap: 30px;
   padding: 30px 0 26px;
 }
+/* The site's address: the name, the dot in the accent, the ending quieter. */
 .logo {
-  font: 700 23px var(--font-site);
-  letter-spacing: -1.3px;
+  font: 600 19px var(--font-site);
+  letter-spacing: -0.6px;
   text-decoration: none;
 }
 .logo i {
   display: inline-block;
-  font-family: var(--font-display);
-  font-weight: 400;
+  font-style: normal;
   color: var(--accent);
   transition: transform 0.4s;
+}
+.logo span {
+  font-weight: 500;
+  color: var(--muted);
 }
 /* On the underside of the page (underside.mjs) the full stop hangs from the top. */
 :root[data-underside] .logo i {
@@ -317,19 +321,16 @@ summary:focus-visible {
     translate: 100vw;
   }
 }
+/* The home page opens on its title alone. */
 .hero {
-  padding: 66px 0 54px;
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 60px;
-  align-items: end;
+  padding: 96px 0 128px;
 }
 .hero h1 {
   font:
-    500 clamp(45px, 5.2vw, 67px) / 1.09 var(--font-display),
+    500 clamp(46px, 6vw, 76px) / 1.06 var(--font-display),
     Georgia,
     serif;
-  letter-spacing: -2.9px;
+  letter-spacing: -0.032em;
 }
 .hero h1 > span {
   display: table;
@@ -340,143 +341,61 @@ summary:focus-visible {
   font-weight: 400;
   color: var(--accent);
 }
-.hero-copy {
-  padding-bottom: 4px;
-  font-size: 14px;
-  line-height: 1.9;
-  color: var(--muted);
-  max-width: 33ch;
-}
-.hero-copy a {
-  color: var(--ink);
-}
-.hero-label {
-  display: block;
-  font: 11px var(--font-site);
-  letter-spacing: 0.03em;
-  color: var(--muted);
-  margin-bottom: 23px;
-}
 .section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 25px;
   padding: 20px 0 17px;
   border-bottom: 1px solid var(--line);
-  margin-bottom: 25px;
 }
 .section-heading h2 {
   font: 650 16px var(--font-site);
   letter-spacing: -0.2px;
 }
-.section-heading > span {
-  font-size: 11px;
-  color: var(--muted);
+/* The archive's rows, with more air between them. */
+.post-list .entry {
+  padding: 31px 0 33px;
 }
-.projects-grid {
-  display: grid;
-  grid-template-columns: 1.55fr 1fr;
-  gap: 35px;
-  align-items: start;
-}
-.feature-project {
-  background: var(--mint);
-  padding: 28px 30px 0;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  position: relative;
-  overflow: hidden;
-}
-.project-top {
+/* The way to the rest of them closes the list, under a last rule, on the
+   side where the dates are. */
+.all-posts {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 20px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line);
+  padding: 26px 0 24px;
+  font-size: 14px;
 }
-.project-top h3 {
-  font: 600 29px var(--font-display);
-  letter-spacing: -0.9px;
-}
-.project-top > a {
-  font-size: 20px;
+.all-posts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   text-decoration: none;
 }
-.feature-project p {
-  font-size: 13px;
-  line-height: 1.75;
-  max-width: 39ch;
-  margin-top: 11px;
-  color: var(--muted);
+.all-posts a:hover {
+  color: var(--accent);
 }
-.conversation {
-  margin: 27px 8px 0;
-  background: var(--plain);
-  border: 1px solid var(--mint-strong);
-  border-bottom: 0;
-  border-radius: 6px 6px 0 0;
-  box-shadow: 0 10px 22px #253b3708;
+.all-posts svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: translate 0.2s;
 }
-.conversation-top {
-  font-size: 10px;
-  letter-spacing: 0.025em;
-  border-bottom: 1px solid var(--line);
-  padding: 10px 16px;
-  color: var(--muted);
-  display: flex;
-  justify-content: space-between;
+.all-posts a:hover svg {
+  translate: 3px;
 }
-.conversation-body {
-  padding: 18px;
-  display: grid;
-  gap: 15px;
-  font-size: 12px;
+@media (prefers-reduced-motion: reduce) {
+  .all-posts svg {
+    transition: none;
+  }
 }
-.message {
-  max-width: 85%;
-  padding: 10px 13px;
-  border-radius: 5px;
-  background: var(--chat);
-  justify-self: start;
-}
-.message.you {
-  justify-self: end;
-  background: var(--mint);
-}
-.message-label {
-  font-size: 9px;
-  display: block;
-  color: var(--muted);
-  margin-bottom: 3px;
-}
-.side-project {
-  padding: 25px 0 10px;
-}
-.side-project h3 {
-  font: 500 27px/1.2 var(--font-display);
-  letter-spacing: -0.7px;
-  max-width: 17ch;
-}
-.side-project p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.8;
-  margin-top: 16px;
-  max-width: 29ch;
-}
-.side-project .project-link {
-  display: inline-block;
-  font-size: 12px;
-  margin-top: 22px;
-}
-.project-meta {
-  font-size: 10px;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 17px;
-}
-.posts {
-  padding-top: 35px;
+@media (max-width: 880px) {
+  .hero {
+    padding: 80px 0 96px;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 9.6vw, 72px);
+  }
 }
 .footer {
   position: relative;
@@ -486,7 +405,8 @@ summary:focus-visible {
   gap: 45px;
   border-top: 1px solid var(--line);
   padding-top: 25px;
-  margin-top: 48px;
+  /* The same air under every page, with room for the armchair on the line. */
+  margin-top: 112px;
   font-size: 11px;
   color: var(--muted);
 }
@@ -1106,85 +1026,29 @@ noscript p {
     font-size: 11px;
   }
   .hero {
-    grid-template-columns: 1fr;
-    gap: 27px;
-    padding: 53px 0 31px;
+    padding: 56px 0 64px;
   }
   .hero h1 {
-    font-size: clamp(36px, 11.5vw, 48px);
-    letter-spacing: -2px;
-    line-height: 1.13;
-  }
-  .hero-label {
-    font-size: 10px;
-    margin-bottom: 24px;
-  }
-  .hero-copy {
-    font-size: 13px;
-    max-width: 37ch;
-    line-height: 1.8;
+    line-height: 1.1;
   }
   .section-heading {
     padding-top: 18px;
-    margin-bottom: 20px;
   }
   .section-heading h2 {
     font-size: 15px;
   }
-  .section-heading > span {
-    font-size: 10px;
+  .post-list .entry {
+    padding: 24px 0 26px;
   }
-  .projects-grid {
-    grid-template-columns: 1fr;
-    gap: 9px;
-  }
-  .feature-project {
-    padding: 23px 23px 0;
-  }
-  .project-top h3 {
-    font-size: 28px;
-  }
-  .feature-project p {
-    font-size: 12px;
-  }
-  .conversation {
-    margin: 21px 0 0;
-  }
-  .conversation-body {
-    padding: 14px;
-    font-size: 11px;
-  }
-  .conversation-top {
-    font-size: 9px;
-    padding: 9px 13px;
-  }
-  .side-project {
-    padding: 23px 0 10px;
-  }
-  .side-project h3 {
-    font-size: 27px;
-    max-width: 100%;
-  }
-  .side-project p {
-    max-width: 100%;
-    font-size: 12px;
-    margin-top: 10px;
-  }
-  .side-project .project-link {
-    margin-top: 14px;
-  }
-  .project-meta {
-    font-size: 9px;
-    margin-bottom: 12px;
-  }
-  .posts {
-    padding-top: 19px;
+  .all-posts {
+    padding: 22px 0 18px;
+    font-size: 13px;
   }
   .footer {
     font-size: 10px;
     gap: 25px;
     padding-top: 21px;
-    margin-top: 35px;
+    margin-top: 72px;
   }
   .footer p {
     max-width: 30ch;
@@ -1198,9 +1062,6 @@ noscript p {
   .site {
     padding-left: 21px;
     padding-right: 21px;
-  }
-  .logo {
-    font-size: 21px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1222,69 +1083,8 @@ noscript p {
     display: none;
   }
 }
-.hero {
-  grid-template-columns: 1fr;
-  padding-bottom: 46px;
-}
-.post-list .post {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 25px;
-  padding: 17px 0;
-  border-bottom: 1px solid var(--line);
-  text-decoration: none;
-}
-.post-list .post strong {
-  font-size: 14px;
-  font-weight: 500;
-}
-.post-list .post small {
-  font-size: 11px;
-  flex-shrink: 0;
-  color: var(--muted);
-}
-.post-list .post:hover strong {
-  color: var(--accent);
-}
-@media (max-width: 700px) {
-  .post-list .post {
-    gap: 15px;
-  }
-  .post-list .post strong {
-    font-size: 13px;
-  }
-  .hero {
-    padding-bottom: 28px;
-  }
-}
-
-.section-heading > a {
-  font-size: 11px;
-  color: var(--muted);
-  text-decoration: none;
-}
-.section-heading > a:hover {
-  color: var(--ink);
-}
 .header nav a[aria-current="page"] {
   color: var(--ink);
-}
-.about-teaser {
-  display: block;
-  font: 500 38px/1.15 var(--font-display);
-  letter-spacing: -1.3px;
-  text-decoration: none;
-  padding: 5px 0 20px;
-  width: fit-content;
-}
-.about-teaser:hover em {
-  color: var(--ink);
-}
-.about-teaser em {
-  font-style: italic;
-  font-weight: 400;
-  color: var(--accent);
 }
 .page-head {
   padding: 66px 0 34px;
@@ -1381,6 +1181,11 @@ noscript p {
     font-size: 11px;
   }
 }
+.post-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .back {
   display: inline-block;
   font-size: 12px;
@@ -1419,6 +1224,10 @@ noscript p {
 }
 .article-body p {
   margin: 0 0 22px;
+}
+/* Every page ends the same distance from the footer. */
+.article-body > :last-child {
+  margin-bottom: 0;
 }
 .article-body h2 {
   font: 500 26px/1.3 var(--font-display);
@@ -1537,9 +1346,6 @@ main:focus {
   .article-body h2 {
     font-size: 23px;
   }
-  .about-teaser {
-    font-size: 32px;
-  }
 }
 .article-body img {
   display: block;
@@ -1618,9 +1424,6 @@ main:focus {
 }
 :root[data-theme="dark"] .portrait-dark {
   display: block;
-}
-.about {
-  padding-top: 42px;
 }
 .lost {
   font-size: 15px;
@@ -1746,12 +1549,6 @@ main:focus {
   .project-card h2 {
     font-size: 19px;
   }
-}
-.section-heading h2 a {
-  text-decoration: none;
-}
-.section-heading h2 a:hover {
-  color: var(--accent);
 }
 @media (max-width: 700px) {
   .header-end {
